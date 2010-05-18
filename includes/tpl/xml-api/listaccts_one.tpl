@@ -1,0 +1,11 @@
+        <acct>
+            <id>%ID%</id>
+            <userid>%USERID%</userid>
+            <email>%EMAIL%</email>
+            <signup>%SIGNUP%</signup>
+            <ip>%IP%</ip>
+            <domain>%DOMAIN%</domain>
+            <pid>%PID%</pid>
+            <status>%STATUS%</status>
+            <additional>%ADDITIONAL%</additional>
+        </acct>
