@@ -1,0 +1,290 @@
+/*
+ * TheHostingTool:: Reloaded v1.2
+ +-------------------------------
+ * Written by Jimmie32, THT Community
+ */
+
+body{
+	background: url(<IMG>bg.gif) repeat;
+	color:#333;
+	font-family:"Lucida Grande", "Segoe UI", "Arial", Helvetica, sans-serif;
+	font-size:11px;
+	margin: 0;
+}
+    
+body a{
+   background-color: url(<IMG>bg.gif) repeat-x #f7f7f7;
+   color: #333;
+   font-family: "Segoe UI", "Lucida Grande", Verdana, Arial;
+   font-size:11px;
+   text-decoration: none;
+   }
+   
+#wrapper {
+	width:75%;
+	margin:auto auto;
+}
+#right {
+	width:70%; 
+	float:right;
+}
+#left {
+	width:28%;
+	float:left;	
+}
+
+#header_right{
+  float:right;
+  margin-top: 12px;
+  vertical-align: top;
+  height: auto;
+  padding: 5px;
+  background: #F7F7F7;
+  color: #35586C;
+  -moz-border-radius: 8px;
+  -webkit-border-radius:8px;
+  }
+#header_logo {
+	background: url(<IMG>logo-bg.png);
+	height: 75px;
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+        padding-left: 5px;
+        padding-right: 5px;
+}
+#container{ /* container */
+
+    }
+    
+#footer {
+	clear:both;
+	/*padding-top:10px;*/
+	color: #000;
+}
+#footer a{
+color: #000 !important;
+}
+#tooltip {
+	background:#fafbfc;
+	border:1px solid #f1f4f7;
+	padding:5px;
+	color:#000;
+	font-size:11px;
+}
+.gap {
+	clear:both;
+	height:10px;
+}
+.table {
+	border:1px solid #82CFFD;
+	background-color:#F7F7F7;
+	padding-top:0;
+	padding-bottom: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+.cat {
+	background:url(<IMG>head.png) repeat-x top;
+	padding:5px;
+	margin:-1px;
+	color:#FFF;
+	font-family:"Arial", Helvetica, sans-serif;
+	font-size:12px;
+	text-align:left;
+	font-weight:bold;
+	border-bottom:1px solid #CCC;
+}
+.cat a{
+	vertical-align:middle;
+	background:0;
+}
+.text {
+	color:#333;
+	font-size:11px;
+	font-family:"Arial", Helvetica, sans-serif;
+	padding:2px;
+	text-align:left;
+}
+input, textarea, select {
+	font-size:11px;
+	color:#333;
+}
+p {
+	padding:0;
+	margin:0;
+}
+form {
+	padding:0;
+	margin:0;
+}
+img, img a {
+	border:0;
+	vertical-align:middle;
+}
+.errors {
+	color:#F00;
+}
+.sub {
+	background: #F7F7F7;
+	padding:3px;
+	color:#333;
+	font-family:"Arial", Helvetica, sans-serif;
+	font-size:11px;
+	text-align:left;
+}
+.sub a{
+	background:0;
+}
+.subborder {
+	margin:3px;
+	border:#CCC 1px solid;
+	padding:1px;
+	background-color:#FFF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+ 
+#tht_navigation {
+	background: #ffffff url(<IMG>navigation_bg.gif) repeat-x;
+	height: 31px;
+	padding-left: 10px;
+	font-size: 0.95em;
+	margin-bottom:-10px;
+	border-bottom: 1px solid #ccc;
+}
+	#tht_navigation ul {
+		width:80%;
+		margin:auto auto;
+	}
+	#tht_navigation ul li {
+		float: left;
+		color: #333;
+		font-size: 0.95em;
+		padding: 8px 12px;
+		display: inline;
+	}
+	
+		#tht_navigation ul li:hover {
+			background: #CCC;
+			color: #FFF;
+			margin-right: 7px;
+			font-size: 1.05em;
+			font-weight: bold;
+			display: block;
+			padding: 9px 15px 7px 15px;
+			color: #FFF;
+			text-decoration: none;
+		}
+           .active{
+              background: #ccc; color: #FFF;
+              margin-right: 7px;
+              font-size: 1.05em;
+              text-decoration:none;
+         }
+		.active a{
+            display:block;
+            
+            color: #FFF;
+            background: #CCC;
+            font-weight: bold;
+		}
+		
+	#tht_navigation ul li a {
+		color: #333;
+		text-decoration: none;
+	}
+	
+#information{
+        background: #B0E2FF;
+        color: #FFF;
+        height: 20px;
+        }
+	
+#header {
+	position: relative;
+        width: 100%;
+}
+#tht_footer {
+	clear: both;
+	padding: 8px 8px 15px 8px;
+	font-size: 0.85em;
+	color: #FFF;
+	width:75%;
+	margin:auto auto;
+}
+		
+	#tht_footer p {
+		float: right;
+	}
+	
+	#tht_footer a {
+		color: #FFF;
+	}
+.footer_info, 
+.footer_info a{ /* Added in nov23 release */
+   background: #F0FFFF;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   color: #FFF;
+   height: 20px;
+   padding-left: 2px;
+   padding-right: 2px;
+   padding-top: 3px;
+   padding-bottom:3px;
+   text-decoration: none;
+   margin-top:10px;
+   }
+   
+   
+.break {
+	height:1px;
+	border-bottom:1px dashed #CCC;
+	margin-top:4px;
+	margin-bottom:5px;
+}
+.rightbreak {
+
+
+	width:1px;
+	border-right:1px dashed #CCC;
+	margin-left:4px;
+	margin-right:5px;
+}
+
+ 
+ 
+/*
+* Version Checks
+*/
+.noupg{
+     border: 1px solid #9AFF9A;
+     background: #9AFF9A;
+     color: #003300;
+
+     padding: 3px;
+     font-weight: bold;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     margin-bottom: 5px;
+     }
+.warn{
+     border: 1px solid #FFA500;
+     background: #FFA500;
+     color: #FFFAF0;
+     padding: 3px;
+     font-weight: bold;
+     margin-bottom: 5px;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     }
+
+/*
+ * Mimic IPB! .catend rocks.
+ * No, really.
+ */
+ .catend{
+     background: url(<IMG>head.png) repeat-x;
+     height: 12px !important;
+ }
