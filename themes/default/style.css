@@ -1,0 +1,326 @@
+/*
+ * TheHostingTool:: Reloaded v1.1
+ * Release: 19284-251208
+ +-------------------------------
+ * Written by Jimmie Lin and Jonny H, THT Community
+ */
+
+/*
+ * This version of THTReloaded comes with developer notes
+ * So its easier to create styles
+ */
+ 
+ /* Main Styles: BODY, BODY A */
+/* <IMG> - This should be the url */
+body{
+	background:url(<IMG>bg.gif) repeat-x #F7F7F7;
+	background-color: #F7F7F7; /* This works? */
+	color:#333;
+	font-family:"Lucida Grande", "Segoe UI", "Arial", Helvetica, sans-serif;
+	font-size:11px;
+	margin:0;
+}
+body a{
+   background-color: url(<IMG>bg.gif) repeat-x #f7f7f7;
+   color: #333;
+   font-family: "Segoe UI", "Lucida Grande", Verdana, Arial;
+   font-size:11px;
+   }
+
+/* No, its not the food wrapper. Its the wrapper which goes around the main tht content (excluding the logo) */
+#wrapper {
+	width:75%;
+	margin:auto auto;
+}
+/* Tableless: Right makes stuff go right, Left makes stuff go left. Sidebar/LEFT, Content/RIGHT. */
+#right {
+	width:70%; 
+	float:right;	
+}
+#left {
+	width:28%;
+	float:left;	
+}
+/* Header Logo(strip) */
+#header_logo {
+	background: #fff url(<IMG>branding_bg.png) repeat-x top;
+	height: 100px;
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+/* The main container still needs a way....Same as the food wrapper. */
+#container{
+	width:95%;
+	margin:auto auto;
+    }
+
+/* Footer area */
+#footer {
+	clear:both;
+	color: #000;
+}
+#footer a{
+color: #000 !important;
+}
+
+/** TOOLTIPS **/
+#tooltip {
+	background:#fafbfc;
+	border:1px solid #f1f4f7;
+	padding:5px;
+	color:#000;
+	font-size:11px;
+}
+/* The gap between the logo and content */
+.gap {
+	clear:both;
+	height:10px;
+}
+/* The "boxes" border, actually. */
+.table {
+	border:1px solid #CCC;
+	background-color:#FFF;
+	padding:2px;
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+}
+/* The "boxes"s Main Title area */
+.cat {
+	background:url(<IMG>grad.gif) repeat-x top;
+	padding:5px;
+	margin:-1px;
+	color:#FFF;
+	font-family:"Arial", Helvetica, sans-serif;
+	font-size:12px;
+	text-align:left;
+	font-weight:bold;
+	border-bottom:1px solid #CCC;
+}
+.cat a{
+	vertical-align:middle;
+	background:0;
+}
+/* The content text */
+.text {
+	color:#333;
+	font-size:11px;
+	font-family:"Arial", Helvetica, sans-serif;
+	padding:2px;
+	text-align:left;
+}
+/* Form Elements */
+input, textarea, select {
+	font-size:11px;
+	color:#333;
+}
+
+form {
+	padding:0;
+	margin:0;
+}
+/* Paragraphs:: */
+p {
+	padding:0;
+	margin:0;
+}
+
+img, img a {
+	border:0;
+	vertical-align:middle;
+}
+/* Errors's Red color */
+.errors {
+	color:#F00;
+}
+.sub {
+	background: #F0F0F0;
+	padding:3px;
+	color:#333;
+	font-family:"Arial", Helvetica, sans-serif;
+	font-size:11px;
+	text-align:left;
+}
+.sub a{
+	background:0;
+}
+.subborder {
+	margin:3px;
+	border:#E9E9E9 1px solid;
+	padding:1px;
+	background-color:#FFF;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+ /****** HEADER AREA ******/
+#tht_navigation {
+	background: #ffffff url(<IMG>navigation_bg.gif) repeat-x;
+	height: 31px;
+	border-bottom: 5px solid #bb423e;
+	padding-left: 10px;
+	font-size: 0.95em;
+	margin-bottom:-10px;
+}
+	#tht_navigation ul {
+		width:80%;
+		margin:auto auto;
+	}
+	#tht_navigation ul li {
+		float: left;
+		color: #9bb2c8;
+		font-size: 0.95em;
+		padding: 8px 12px;
+		display: inline;
+	}
+	
+		#tht_navigation ul li.active {
+			background: #bb423e;
+			padding: 0;
+			color: #fff;
+			margin-right: 7px;
+			font-size: 1.05em;
+			font-weight: bold;
+			margin-top: -3px;
+			-moz-border-radius-topleft: 6px;
+	        -moz-border-radius-topright: 6px;
+	        -webkit-border-top-left-radius: 6px;
+	        -webkit-border-top-right-radius: 6px;
+		}
+		
+		#tht_navigation ul li.active a {
+			background: #bb423e;
+			display: block;
+			padding: 10px 15px 10px 15px;
+			margin-right: -5px;
+			color: #fff;
+			text-decoration: none;
+		    -moz-border-radius-topleft: 6px;
+	        -moz-border-radius-topright: 6px;
+	        -webkit-border-top-left-radius: 6px;
+	        -webkit-border-top-right-radius: 6px;
+		}
+		
+	#tht_navigation ul li a {
+		color: #fff;
+		text-decoration: none;
+	}
+	
+#header {
+	position: relative;
+}
+#top_nav {
+	position: relative;
+	top: -93px;
+	right: 12%;
+	float: right;
+	background: #FFF;
+	font-size: 0.9em;
+	margin-bottom: -93px;
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-width: 0 2px 2px 2px;
+	border-style: solid;
+	border-color: #FFF;
+	z-index: 9999;
+}
+#top_nav_info {
+		padding:5px;
+		color: #333;
+	}
+	
+	#top_nav p {
+		color: #d9e3ed;
+		margin-top: 6px;
+		white-space: nowrap;
+	}
+	
+		#top_nav p a {
+			color: #a1bad3;
+		}
+		
+	
+	#top_nav ul {
+		color: #fff;
+		font-size: 0.88em;
+		margin-top: 4px;
+	}
+		#top_nav ul a {
+			color: #d5dde5;
+		}
+#tht_footer {
+	clear: both;
+	padding: 8px 8px 15px 8px;
+	font-size: 0.85em;
+	color: #606060;
+	width:75%;
+	margin:auto auto;
+}
+		
+	#tht_footer p {
+		float: right;
+	}
+	
+	#tht_footer a {
+		color: #606060;
+	}
+.footer_info, 
+.footer_info a{
+   background: #E2E2E2;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   color: #000;
+   height: 20px;
+   padding-left: 2px;
+   padding-right: 2px;
+   padding-top: 3px;
+   padding-bottom:3px;
+   text-decoration: none;
+   margin-top:10px;
+   }
+    
+    
+    /** Client area search borders **/
+.break {
+	height:1px;
+	border-bottom:1px dashed #CCC;
+	margin-top:4px;
+	margin-bottom:5px;
+}
+.rightbreak {
+	width:1px;
+	border-right:1px dashed #CCC;
+	margin-left:4px;
+	margin-right:5px;
+}
+
+ 
+ 
+/*
+ * Version Checks
+ */
+ .noupg{
+     border: 1px solid #9AFF9A;
+     background: #9AFF9A;
+     color: #003300;
+     padding: 3px;
+     font-weight: bold;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     margin-bottom: 5px;
+     }
+ .warn{
+     border: 1px solid #FFA500;
+     background: #FFA500;
+     color: #FFFAF0;
+     padding: 3px;
+     font-weight: bold;
+     margin-bottom: 5px;
+     -moz-border-radius: 4px;
+     -webkit-border-radius: 4px;
+     }
+  
