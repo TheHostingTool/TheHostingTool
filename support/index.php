@@ -16,35 +16,8 @@ define("PAGE", "Support Area");
 ob_start();
 
 if(!$main->getvar['page']) { 
-	$main->getvar['page'] = "home";
+	$main->getvar['page'] = "kb";
 }
-if(!$_SESSION['cuser']) {
-	if($main->getvar['page'] == "forgotpass") {
-		$main->redirect("../client/?page=forgotpass");
-	}
-	else {
-		define("SUB", "Login");
-		define("INFO", "Support Area");
-		if($_POST) { # If user submitts form
-			if($main->clientLogin($main->postvar['user'], $main->postvar['pass'])) {
-				$main->redirect("?page=home");	
-			}
-			else {
-				$main->errors("Incorrect username or password!");
-			}
-		}
-		$array[] = "";
-		if($db->config("senabled") == 0) {
-			define("SUB", "Disabled");
-			define("INFO", "Support Area Disabled");
-			echo '<div align="center">'.$main->table("Support Area - Disabled", $db->config("smessage"), "300px").'</div>';
-		}
-		else {
-			echo '<div align="center">'.$main->table("Support Area - Login", $style->replaceVar("tpl/slogin.tpl", $array), "300px").'</div>';
-		}
-	}
-} 
-else {
 	$query = $db->query("SELECT * FROM `<PRE>supportnav` WHERE `link` = '{$main->getvar['page']}'");
 	$page = $db->fetch_array($query);
 	$header = $page['visual'];
@@ -57,29 +30,6 @@ else {
 		if(preg_match("/[\.*]/", $main->getvar['page']) == 0) {
 			include($link);
 			$content = new page;
-			// Main Side Bar HTML
-			$nav = "Sidebar";
-			$sub = $db->query("SELECT * FROM `<PRE>supportnav`");
-			while($row = $db->fetch_array($sub)) {
-				$array2['IMGURL'] = $row['icon'];
-				$array2['LINK'] = "?page=".$row['link'];
-				$array2['VISUAL'] = $row['visual'];
-				$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-			}
-			$sidebar = $style->replaceVar("tpl/sidebar.tpl", $array);
-			
-			//Page Sidebar
-			if($content->navtitle) {
-				$subnav = $content->navtitle;
-				$sub = $db->query("SELECT * FROM `<PRE>supportnav`");
-				foreach($content->navlist as $key => $value) {
-					$array2['IMGURL'] = $value[1];
-					$array2['LINK'] = "?page=".$main->getvar['page']."&sub=".$value[2];
-					$array2['VISUAL'] = $value[0];
-					$array3['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-				}
-				$subsidebar = $style->replaceVar("tpl/sidebar.tpl", $array3);
-			}
 			if(isset($main->getvar['sub'])) {
 				ob_start();
 				$content->content();
@@ -102,29 +52,9 @@ else {
 		}
 	}
 	
-	if($main->getvar['sub'] && $main->getvar['page'] != "type") {
-		foreach($content->navlist as $key => $value) {
-			if($value[2] == $main->getvar['sub']) {
-				define("SUB", $value[0]);
-				$header = $value[0];
-			}
-		}
-	}
-	$staffuser = $db->client($_SESSION['cuser']);
-	define("SUB", $header);
-	define("INFO", '<b>Welcome back, '. $staffuser['user'] .'</b><br />'. SUB);
-	echo '<div id="left">';
-	echo $main->table($nav, $sidebar);
-	if($content->navtitle) {
-		echo "<br />";
-		echo $main->table($subnav, $subsidebar);
-	}
-	echo '</div>';
-	
-	echo '<div id="right">';
+	echo '<div>';
 	echo $main->table($header, $html);
 	echo '</div>';
-}
 
 $data = ob_get_contents();
 ob_end_clean();

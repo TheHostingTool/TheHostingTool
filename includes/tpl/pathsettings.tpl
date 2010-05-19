@@ -12,7 +12,7 @@
     <td width="20%">URL: (Including trailing slash)</td>
     <td>
       <input name="url" type="text" id="host" value="%URL%" />
-      <a title="Your THT Website's URL." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      <a title="Your THT Website's URL. (Recommended: http://%RECURL%/)" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>

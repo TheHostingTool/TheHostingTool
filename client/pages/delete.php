@@ -13,9 +13,14 @@ class page {
 	
 	public function content() { # Displays the page 
 		global $style, $db, $main;
-		$_SESSION['cdelete'] = true;
-		$array['USER'] = $_SESSION['cuser'];
-		echo $style->replaceVar("tpl/cdelete.tpl", $array);
+		if(!$db->config("delacc")) {
+			die('Disabled.');
+		}
+		else {
+			$_SESSION['cdelete'] = true;
+			$array['USER'] = $_SESSION['cuser'];
+			echo $style->replaceVar("tpl/cdelete.tpl", $array);
+		}
 	}
 }
 ?>

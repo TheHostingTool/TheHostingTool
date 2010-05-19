@@ -39,7 +39,12 @@ function client() {
 			$content = new page;
 			// Main Side Bar HTML
 			$nav = "Sidebar";
-			$sub = $db->query("SELECT * FROM `<PRE>clientnav`");
+			if(!$db->config("delacc")) {
+				$sub = $db->query("SELECT * FROM `<PRE>clientnav` WHERE `link` != 'delete'");
+			}
+			else {
+				$sub = $db->query("SELECT * FROM `<PRE>clientnav`");
+			}
 			while($row = $db->fetch_array($sub)) {
 				$array2['IMGURL'] = $row['icon'];
 				$array2['LINK'] = "?page=".$row['link'];

@@ -6,9 +6,6 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-//Check if called by script
-if(THT != 1){die();}
-
 class page {
 	
 	public function content() { # Displays the page 

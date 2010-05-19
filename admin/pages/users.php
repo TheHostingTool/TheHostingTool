@@ -47,12 +47,12 @@ class page {
 					$pack = $db->fetch_array($pack2);
 					switch ($main->getvar['func']) {
 						case "sus":
-                                                        if(!empty($main->getvar['reason'])) {
-                                                            $command = $server->suspend($pack['id'], $main->getvar['reason']);
-                                                        }
-                                                        else {
-                                                            $command = $server->suspend($pack['id']);
-                                                        }
+                            if(!empty($main->getvar['reason'])) {
+								$command = $server->suspend($pack['id'], $main->getvar['reason']);
+                            }
+                            else {
+								$command = $server->suspend($pack['id']);
+                            }
 							if($command == true) {
 								$main->errors("User has been suspended!");	
 							}
@@ -71,8 +71,29 @@ class page {
 							}
 							break;
 							
+						case "cancel":
+							if(!empty($main->getvar['reason'])) {
+								$command = $server->cancel($pack['id'], $main->getvar['reason']);
+                            }
+                            else {
+								$command = $server->cancel($pack['id']);
+                            }
+							if($command == true) {
+								$main->errors("User has been cancelled!");
+								$main->done();
+							}
+							else {
+								$main->errors($command);
+							}
+							break;
+						
 						case "term":
-							$command = $server->terminate($pack['id']);
+							if(!empty($main->getvar['reason'])) {
+								$command = $server->terminate($pack['id'], $main->getvar['reason']);
+                            }
+                            else {
+								$command = $server->terminate($pack['id']);
+                            }
 							if($command == true) {
 								$main->errors("User has been terminated!");
 								$main->done();
@@ -90,19 +111,24 @@ class page {
 				}
 				if($main->getvar['do'] ) {
 					if($pack['status'] == "2") {
-						$array['SUS'] = "Unsuspend Account";
+						$array['SUS'] = "Unsuspend";
 						$array['FUNC'] = "unsus";
 						$array['IMG'] = "accept.png";
 					}
 					elseif($pack['status'] == "1") {
-						$array['SUS'] = "Suspend Account";
+						$array['SUS'] = "Suspend";
 						$array['FUNC'] = "sus";	
 						$array['IMG'] = "exclamation.png";
 					}
 					elseif($pack['status'] == "3") {
-						$array['SUS'] = "<a href='?page=users&sub=validate'>Admin Validation Page</a>";
+						$array['SUS'] = "<a href='?page=users&sub=validate'>Validate</a>";
 						$array['FUNC'] = "none";	
 						$array['IMG'] = "user_suit.png";
+					}
+					elseif($pack['status'] == "9") {
+						$array['SUS'] = "No Action";
+						$array['FUNC'] = "none";	
+						$array['IMG'] = "cancel.png";
 					}
 					else {
 						$array['SUS'] = "Other Status";
@@ -119,6 +145,15 @@ class page {
 							$array2['PACKAGE'] = $data2['name'];
 							$array2['USER'] = $client['user'];
 							$array2['DOMAIN'] = $client['domain'];
+							$array2['CLIENTIP'] = $client['ip'];
+							$array2['FIRSTNAME'] = $client['firstname'];
+							$array2['LASTNAME'] = $client['lastname'];
+							$array2['ADDRESS'] = $client['address'];
+							$array2['CITY'] = $client['city'];
+							$array2['STATE'] = $client['state'];
+							$array2['ZIP'] = $client['zip'];
+							$array2['COUNTRY'] = $client['country'];
+							$array2['PHONE'] = $client['phone'];
 							$invoicesq = $db->query("SELECT * FROM `<PRE>invoices` WHERE `uid` = '{$db->strip($client['id'])}' AND `is_paid` = '0'");
 							$array2['INVOICES'] = $db->num_rows($invoicesq);
 							switch($pack['status']) {
@@ -135,7 +170,11 @@ class page {
 									break;
 									
 								case "3":
-									$array2['STATUS'] = "Awaiting Admin";
+									$array2['STATUS'] = "Awaiting Validation";
+									break;
+								
+								case "9":
+									$array2['STATUS'] = "Cancelled";
 									break;
 							}
 							$class = $type->determineType($pack['pid']);
@@ -190,6 +229,94 @@ class page {
 					echo $style->replaceVar("tpl/clientsearch.tpl", $array);
 				}
 				break;
+			
+			//Displays a list of users based on account status.
+			case "list":
+				echo "<div class=\"subborder\"><form id=\"filter\" name=\"filter\" method=\"post\" action=\"\"><select size=\"1\" name=\"show\"><option value=\"all\">ALL</option><option value=\"1\">Active</option><option value=\"0\">Awaiting Validation</option><option value=\"2\">Suspended</option><option value=\"9\">Cancelled</option></select><input type=\"submit\" name=\"filter\" id=\"filter\" value=\"Filter Accounts\" /></form><table width=\"100%\" cellspacing=\"2\" cellpadding=\"2\" border=\"1\" style=\"border-collapse: collapse\" bordercolor=\"#000000\"><tr bgcolor=\"#EEEEEE\">";
+				echo "<td width=\"100\" align=\"center\" style=\"border-collapse: collapse\" bordercolor=\"#000000\">Date Registered</td><td width=\"100\" align=\"center\" style=\"border-collapse: collapse\" bordercolor=\"#000000\">Username</td><td align=\"center\" style=\"border-collapse: collapse\" bordercolor=\"#000000\">E-mail</td></tr>";
+				$l = $main->getvar['l'];
+				$p = $main->getvar['p'];
+				if (!$main->postvar['show'] && !$main->getvar['show']) {
+					$show = "all";
+				}
+				if (!$main->postvar['show']) {
+					$show = $main->getvar['show'];
+				}
+				else {
+					$show = $main->postvar['show'];
+					$p = 0;
+				}
+				if (!($l)) {
+					$l = 10;
+				}
+				if (!($p)) {
+					$p = 0;
+				}
+				if ($show != "all") {
+					$query = $db->query("SELECT * FROM `<PRE>users` WHERE `status` = '$show'");
+				}
+				else {
+					$query = $db->query("SELECT * FROM `<PRE>users`");
+				}
+				$pages = intval($db->num_rows($query)/$l);
+				if ($db->num_rows($query)%$l) {
+					$pages++;
+				}
+				$current = ($p/$l) + 1;
+				if (($pages < 1) || ($pages == 0)) {
+					$total = 1;
+				}
+				else {
+					$total = $pages;
+				}
+				$first = $p + 1;
+				if (!((($p + $l) / $l) >= $pages) && $pages != 1) {
+					$last = $p + $l;
+				}
+				else{
+					$last = $db->num_rows($query);
+				}
+				if ($show != "all") {
+					$query2 = $db->query("SELECT * FROM `<PRE>users` WHERE `status` = '$show' ORDER BY `user` ASC LIMIT $p, $l");
+				}
+				else {
+					$query2 = $db->query("SELECT * FROM `<PRE>users` ORDER BY `user` ASC LIMIT $p, $l");
+				}
+				if ($db->num_rows($query2) == 0) {
+					echo "No accounts found.";
+				}
+				else {
+					while($data = $db->fetch_array($query2)) {
+						$array['ID'] = $data['id'];
+						$array['USER'] = $data['user'];
+						$array['EMAIL'] = $data['email'];
+						$array['DATE'] = strftime("%m/%d/%Y", $data['signup']);
+					echo $style->replaceVar("tpl/clientlist.tpl", $array);
+					}
+				}
+				echo "</table></div>";
+				echo "<center>";
+				if ($p != 0) {
+					$back_page = $p - $l;
+					echo("<a href=\"$PHP_SELF?page=users&sub=list&show=$show&p=$back_page&l=$l\">BACK</a>    \n");
+				}
+
+				for ($i=1; $i <= $pages; $i++) {
+					$ppage = $l*($i - 1);
+					if ($ppage == $p){
+						echo("<b>$i</b>\n");
+					}
+					else{
+						echo("<a href=\"$PHP_SELF?page=users&sub=list&show=$show&p=$ppage&l=$l\">$i</a> \n");
+					}
+				}
+
+				if (!((($p+$l) / $l) >= $pages) && $pages != 1) {
+					$next_page = $p + $l;
+					echo("    <a href=\"$PHP_SELF?page=users&sub=list&show=$show&p=$next_page&l=$l\">NEXT</a>");
+				}
+				echo "</center>";
+				break;
 				
 			case "stats":
 				$query = $db->query("SELECT * FROM `<PRE>users`");
@@ -200,19 +327,21 @@ class page {
 				$array['SUSPENDED'] = $db->num_rows($query);
 				$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `status` = '3'");
 				$array['ADMIN'] = $db->num_rows($query);
+				$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `status` = '9'");
+				$array['CANCELLED'] = $db->num_rows($query);
 				echo $style->replaceVar("tpl/clientstats.tpl", $array);
 				break;
 				
 			case "validate":
 				if($main->getvar['do']) {
 					if($main->getvar['accept'] == 1) {
-						if($server->unsuspend($main->getvar['do'])) {
-							$db->query("UPDATE `<PRE>user_packs` SET `status` = '1' WHERE `id` = '{$main->getvar['do']}'");	
+						if($server->approve($main->getvar['do'])) {
 							$main->errors("Account activated!");
 							$emaildata = $db->emailTemplate("approvedacc");
 							$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->getvar['do']}'");
 							$data = $db->fetch_array($query);
 							$client = $db->client($data['userid']);
+							$db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `id` = '{$client['id']}'");
 							$email->send($client['email'], $emaildata['subject'], $emaildata['content']);
 						}
 					}
@@ -220,10 +349,8 @@ class page {
 						$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->getvar['do']}'");
 						$data = $db->fetch_array($query);
 						$client = $db->client($data['userid']);
-						if($server->terminate($main->getvar['do'])) {
-							$main->errors("Account deleted!");
-							$emaildata = $db->emailTemplate("declinedacc");
-							$email->send($client['email'], $emaildata['subject'], $emaildata['content']);
+						if($server->decline($main->getvar['do'])) {
+							$main->errors("Account declined!");
 						}	
 					}
 				}
@@ -239,6 +366,7 @@ class page {
 						$array['EMAIL'] = $client['email'];
 						$array['DOMAIN'] = $data['domain'];
 						$array['ID'] = $data['id'];
+						$array['CLIENTID'] = $data['userid'];
 						$tpl .= $style->replaceVar("tpl/adminval.tpl", $array);
 					}
 					echo $tpl;

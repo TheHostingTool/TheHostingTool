@@ -9,13 +9,76 @@ function check() {
 }
 </script>
 <ERRORS>
+%DISP%
 <form id="edit" name="edit" method="post" action="">
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
+  <tr>
+    <td width="20%">Username:</td>
+    <td>
+      <input type="text" name="username" id="username" value="%USER%" readonly="readonly" />
+      <a title="The username you registered with." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
   <tr>
     <td width="20%">Email:</td>
     <td>
       <input type="text" name="email" id="email" value="%EMAIL%" />
       <a title="Please type your email address here." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+    <tr>
+    <td width="20%">First Name:</td>
+    <td>
+      <input type="text" name="firstname" id="firstname" value="%FIRSTNAME%" readonly="readonly" />
+      <a title="Your first name." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+    <tr>
+    <td width="20%">Last Name:</td>
+    <td>
+      <input type="text" name="lastname" id="lastname" value="%LASTNAME%" readonly="readonly"/>
+      <a title="Your last name." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">Address:</td>
+    <td>
+      <input type="text" name="address" id="address" value="%ADDRESS%"/>
+      <a title="Your address." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">City:</td>
+    <td>
+      <input type="text" name="city" id="city" value="%CITY%"/>
+      <a title="Your city/province." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">State:</td>
+    <td>
+      <input type="text" name="state" id="state" value="%STATE%"/>
+      <a title="Your state/territory." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">Zip Code:</td>
+    <td>
+      <input type="text" name="zip" id="zip" value="%ZIP%"/>
+      <a title="Your zip/postal code." class="tooltip"><img src="<ICONDIR>information.png" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">Country:</td>
+    <td>
+		<img src="<URL>themes/flags/%COUNTRY%.gif" />
+	</td>
+  </tr>
+  <tr>
+    <td width="20%">Phone Number:</td>
+    <td>
+      <input type="text" name="phone" id="phone" value="%PHONE%"/>
+      <a title="Your phone number." class="tooltip"><img src="<ICONDIR>information.png" /></a>
     </td>
   </tr>
   <tr>
@@ -50,3 +113,4 @@ function check() {
     </tr>
 </table>
 </form>
+</div>

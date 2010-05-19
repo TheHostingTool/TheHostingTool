@@ -91,7 +91,7 @@ class page {
 		global $db;
 		global $email;
 		if(!$main->getvar['do']) {
-			$query = $db->query("SELECT * FROM `<PRE>tickets` WHERE `reply` = '0'");
+			$query = $db->query("SELECT * FROM `<PRE>tickets` WHERE `reply` = '0' ORDER BY `time` DESC");
 			if(!$db->num_rows($query)) {
 				echo "You currently have no tickets!";
 			}
@@ -100,8 +100,22 @@ class page {
 				$num_rows = $db->num_rows($query);
 				echo $style->replaceVar("tpl/support/acpticketjs.tpl", array('NUM_TICKETS' => $num_rows));
 				while($data = $db->fetch_array($query)) {
+					if($data['urgency'] == "Very High") {
+						$urg = " bgcolor=\"#FF0000\">";
+					}
+					elseif($data['urgency'] == "High") {
+						$urg = " bgcolor=\"#FFFF00\">";
+					}
+					elseif($data['urgency'] == "Medium") {
+						$urg = " bgcolor=\"#00FFFF\">";
+					}
+					else {
+						$urg = ">";
+					}
 					$array['TITLE'] = $data['title'];
 					$array['UPDATE'] = $this->lastUpdated($data['id']);
+					$array['STATUS'] = $data['status'];
+					$array['URGCOLOR'] = $urg;
 					$array['ID'] = $data['id'];
 					echo $style->replaceVar("tpl/support/acpticketviewbox.tpl", $array);
 				}

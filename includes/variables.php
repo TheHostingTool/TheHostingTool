@@ -33,8 +33,8 @@ if(INSTALL == 1) {
 				$output = shell_exec('mysql -V');
 				preg_match('@[0-9]+\.[0-9]+\.[0-9]+@', $output, $version);
 			}
-			$diskfreespace = disk_free_space('/') / 1073741824;
-			$disktotalspace = disk_total_space('/') / 1073741824;
+			$diskfreespace = disk_free_space('/home/username') / 1073741824;
+			$disktotalspace = disk_total_space('/home/username') / 1073741824;
 			global $style;
 			$array2['OS'] = getenv(SERVER_SOFTWARE);
 			$array2['PHP_VERSION'] = phpversion();

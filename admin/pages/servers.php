@@ -16,14 +16,14 @@ class page {
 							
 	public function __construct() {
 		$this->navtitle = "Servers Sub Menu";
+		$this->navlist[] = array("View Servers", "server_go.png", "view");
 		$this->navlist[] = array("Add Server", "server_add.png", "add");
-		$this->navlist[] = array("Edit Server", "server_edit.png", "edit");
 		$this->navlist[] = array("Delete Server", "server_delete.png", "delete");
 	}
 	
 	public function description() {
 		return "<strong>Managing Hosting Servers</strong><br />
-		Welcome to the Servers Management Area. Here you can add, edit and delete webhosting servers.<br />
+		Welcome to the Servers Management Area. Here you can view, add, and delete servers.<br />
 		To get started, choose a link from the sidebar's SubMenu.";	
 	}
 	
@@ -56,7 +56,7 @@ class page {
 				echo $style->replaceVar("tpl/addserver.tpl", $array);
 			break;
 			
-			case "edit":
+			case "view":
 				if(isset($main->getvar['do'])) {
 					$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$main->getvar['do']}'");
 					if($db->num_rows($query) == 0) {
@@ -94,18 +94,18 @@ class page {
 							$values[] = array($stype->name, $fname[0]);	
 						}
 						$array['TYPE'] = $main->dropDown("type", $values, $data['type'], 0, 0);
-						echo $style->replaceVar("tpl/editserver.tpl", $array);
+						echo $style->replaceVar("tpl/viewserver.tpl", $array);
 					}
 				}
 				else {
 					$query = $db->query("SELECT * FROM `<PRE>servers`");
 					if($db->num_rows($query) == 0) {
-						echo "There are no servers to edit!";	
+						echo "There are no servers to view!";	
 					}
 					else {
 						echo "<ERRORS>";
 						while($data = $db->fetch_array($query)) {
-							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=edit&do='.$data['id'].'"><img src="'. URL .'themes/icons/pencil.png"></a>');
+							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=view&do='.$data['id'].'"><img src="'. URL .'themes/icons/magnifier.png"></a>');
 							if($n) {
 								echo "<br />";	
 							}

@@ -40,6 +40,7 @@ class page {
 	public function server_status(){
 		$diskfreespace = disk_free_space('/') / 1073741824;
 		$disktotalspace = disk_total_space('/') / 1073741824;
+		$server = $_SERVER['HTTP_HOST'];
 		global $style;
 		$array['OS'] = PHP_OS;
 		$array['SOFTWARE'] = getenv('SERVER_SOFTWARE');
@@ -47,6 +48,7 @@ class page {
 		$array['MYSQL_VERSION'] = $this->mysqlversion();
 		$array['DISK_FREE_SPACE'] = substr($diskfreespace,0,4);
 		$array['DISK_TOTAL_SPACE'] = substr($disktotalspace,0,4);
+		$array['SERVER'] = $server;
 		echo $style->replaceVar('tpl/aserverstatus.tpl',$array);
 	}
 	

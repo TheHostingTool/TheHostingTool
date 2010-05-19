@@ -10,9 +10,9 @@
 <form id="settings" name="settings" method="post" action="">
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>
-    <td width="20%">Delete Account:</td>
+    <td width="20%">Cancel Account:</td>
     <td>
-      %DELACC%    <a title="Do you allow your clients to delete their own account?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      %DELACC%    <a title="Do you allow your clients to cancel their own account?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>

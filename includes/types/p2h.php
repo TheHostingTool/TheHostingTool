@@ -211,19 +211,39 @@ class p2h {
 					if(date("d") == date("t")) {
 						if($posts < $mposts) {
 							$user = $db->client($data['userid']);
-							$server->suspend($data['id'], "Only posted $posts out of $mposts!");
-							echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Suspended for not posting monthly amount! ($posts out of $mposts)<br />";
+							$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
+							$data2 = $db->fetch_array($query2);
+							$sd1 = strftime("%m", $data2['signup']);
+							$sd2 = strftime("%Y", $data2['signup']);
+							$sdate = "$sd1$sd2";
+							$cd1 = date("m");
+							$cd2 = date("Y");							
+							$chkdate = "$cd1$cd2";
+							if($sdate != $chkdate) {
+								$server->suspend($data['id'], "Only posted $posts out of $mposts!");
+								echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Suspended for not posting monthly amount! ($posts out of $mposts)<br />";
+							}
 							$dbcheck = 1;
 						}
 					}
 					if(date("d") == "20" && $checkdate[1] != "1") {
 						if($posts < $mposts) {
 							$user = $db->client($data['userid']);
-							$emaildata = $db->emailTemplate("p2hwarning");
-							$array['USERPOSTS'] = $posts;
-							$array['MONTHLY'] = $mposts;
-							$email->send($user['email'], $emaildata['subject'], $emaildata['content'], $array);
-							echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Has been warned about monthly posting!<br />";
+							$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
+							$data2 = $db->fetch_array($query2);
+							$sd1 = strftime("%m", $data2['signup']);
+							$sd2 = strftime("%Y", $data2['signup']);
+							$sdate = "$sd1$sd2";
+							$cd1 = date("m");
+							$cd2 = date("Y");							
+							$chkdate = "$cd1$cd2";
+							if($sdate != $chkdate) {
+								$emaildata = $db->emailTemplate("p2hwarning");
+								$array['USERPOSTS'] = $posts;
+								$array['MONTHLY'] = $mposts;
+								$email->send($user['email'], $emaildata['subject'], $emaildata['content'], $array);
+								echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Has been warned about monthly posting!<br />";
+							}
 							$dbcheck = 2;
 						}
 					}

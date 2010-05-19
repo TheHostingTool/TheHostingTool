@@ -31,6 +31,9 @@ if($db->config("general") == 0) {
 elseif(!$main->checkIP($ip) && !$db->config("multiple")) {
 	$maincontent = $main->table("IP Already Exists!", "Your IP already exists in the database!");
 }
+elseif($_SESSION['clogged']) {
+	$maincontent = $main->table("Unable to sign-up!", "One package per account!");
+}
 else {
 	$_SESSION['orderform'] = true;	
 }
@@ -38,9 +41,14 @@ else {
 echo '<div id="ajaxwrapper">'; #Ajax wrapper, for steps
 
 //Get all packages
-$packages2 = $db->query("SELECT * FROM `<PRE>packages` ORDER BY `order` ASC");
+if(!$main->getvar['id']) {
+$packages2 = $db->query("SELECT * FROM `<PRE>packages` WHERE `is_hidden` = 0 AND `is_disabled` = 0 ORDER BY `order` ASC"); 
+}
+else {
+$packages2 = $db->query("SELECT * FROM `<PRE>packages` WHERE `is_disabled` = 0 AND `id` = '{$main->getvar['id']}'");
+}
 if($db->num_rows($packages2) == 0) {
-	echo $main->table("No packages", "Sorry there are no packages on this server!");
+	echo $main->table("No packages", "Sorry there are no available packages!");
 }
 else {
 	while($data = $db->fetch_array($packages2)) {
@@ -80,11 +88,8 @@ else {
 	if(!$maincontent) {
 		$maincontent = $style->replaceVar("tpl/orderform.tpl", $array);
 	}
-	echo '<div id="left">';
-	echo $main->table("Client Area", $content);
-	echo '</div>';
-	
-	echo '<div id="right">';
+
+	echo '<div>';
 	echo $maincontent;
 	echo '</div>';
 

@@ -22,9 +22,13 @@ class page {
 		if(!$main->getvar['type'] || !$main->getvar['sub']) {
 			echo "Not all variables set!";	
 		}
-		else {
+		$user = $_SESSION['user'];
+		if($user == 1) {
 			$php = $type->classes[$main->getvar['type']];
 			$php->acpPage();
+		}
+		else {
+			echo "You don't have access to this page.";
 		}
 	}
 }

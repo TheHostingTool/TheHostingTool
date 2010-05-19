@@ -161,7 +161,7 @@ $(window).load(function () {
                   </tr>
                   <tr>
                     <td colspan="3" align="center"><label>
-                      <input type="button" name="2" id="two" value="Next Step" onclick="change()" />
+                      <input type="button" name="2" id="2" value="Next Step" onclick="change()" />
                     </label></td>
                     </tr>
                 </table>

@@ -48,6 +48,7 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (17, 'API', 'brick.png', 'api'),
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
 (19, 'Invoice Management', 'script.png', 'invoices');
+(20, 'Logs', 'report.png', 'logs');
 
 -- --------------------------------------------------------
 
@@ -110,7 +111,9 @@ INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`) VALUES
 (4, 'View Package', 'package.png', 'view'),
 (5, 'Edit Details', 'user_edit.png', 'details'),
 (2, 'Delete Account', 'cross.png', 'delete'),
-(7, 'Invoices', 'script.png', 'invoices');
+(7, 'Invoices', 'script.png', 'invoices'),
+(8, 'Tickets', 'page_white_text.png', 'tickets');
+
 
 -- --------------------------------------------------------
 
@@ -155,7 +158,7 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('show_page_gentime', '1'),
 ('alerts', '<p>&nbsp;</p>\r\n<p><em></em></p>'),
 ('p2hcheck', ''),
-('show_footer', '1'),
+('show_footer', '0'),
 ('senabled', '1'),
 ('smessage', '<p>Support area isn''t enabled. Sorry, contact your host for more details.</p>'),
 ('terminationdays', '14'),
@@ -211,7 +214,7 @@ INSERT INTO `%PRE%navbar` (`id`, `icon`, `visual`, `link`, `order`) VALUES
 (1, 'cart.png', 'Order Form', 'order', 1),
 (2, 'user.png', 'Client Area', 'client', 0),
 (3, 'key.png', 'Admin Area', 'admin', 2),
-(4, 'monitor.png', 'Support Area', 'support', 3);
+(4, 'report_magnify.png', 'Knowledge Base', 'support', 3);
 
 -- --------------------------------------------------------
 
@@ -230,6 +233,8 @@ CREATE TABLE IF NOT EXISTS `%PRE%packages` (
   `reseller` tinyint(4) NOT NULL,
   `additional` text NOT NULL,
   `order` int(11) NOT NULL default '0',
+  `is_hidden` int(1) NOT NULL,
+  `is_disabled` int(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -375,7 +380,8 @@ INSERT INTO `%PRE%templates` (`id`, `name`, `acpvisual`, `subject`, `content`, `
 (13, 'new response', 'Admin - New Ticket Response', 'New Ticket Response', '<p><strong>%USER% has replied to the ticket ''%TITLE%'' and now is awaiting your response!<br /></strong>Please look at the ticket ASAP and try to resolve the problem.</p>', 'This email is sent when the CLIENT has replied to a ticket.<br /><br />\r\n\r\nTicket Variables:<br />\r\n%TITLE% - The response title<br />\r\n%CONTENT% - The response<br />\r\n%USER% - The user who posted it<br />'),
 (14, 'clientresponse', 'New Ticket Response', 'New Ticket Response', '<p><strong>%STAFF% has replied to your ticket!<br /></strong>To view this ticket, please login to your support area and check. The title of his response is: %TITLE%</p>', 'This email is sent to the client when they''re ticket has been replied to by a staff member.<br /><br />\r\n\r\nTicket Variables:<br />\r\n%TITLE% - Reply Title<br />\r\n%CONTENT% - Reply Content<br />\r\n%STAFF% - Staff Member'),
 (15, 'areset', 'Admin Reset Password', 'New ACP Password!', '<p><span style="font-weight: bold;">Your ACP password has been reset!<br /><span style="font-weight: normal;">New Password: %PASS%<br /><br /><span style="font-weight: bold;"><span style="color: #ff0000;">Notice!<br /><span style="color: #000000;"><span style="font-weight: normal;">If you didn''t use the forgot password feature, we suggest you log into admin CP with your new password and use a different email.</span></span></span></span></span></span></p>', 'This is the email an admin recieves when they reset their password.<br /><br />\r\n\r\nTemplate Variables:<br />\r\n%PASS% = Their new password'),
-(16, 'newinvoice', 'New Invoice', 'New Invoice', '<p><strong>You have a new unpaid invoice on your account!<br /></strong>Make sure you log into your client area (%USER%) and pay the invoice.</p>\r\n<p><strong>Invoice Due: </strong>%DUE%</p>', 'This is the email a client receives when they''ve got a new unpaid invoice. There are certain variables:<br />\r\n%USER% - Username<br />\r\n%DUE% - The Invoice Due Date\r\n');
+(16, 'newinvoice', 'New Invoice', 'New Invoice', '<p><strong>You have a new unpaid invoice on your account!<br /></strong>Make sure you log into your client area (%USER%) and pay the invoice.</p>\r\n<p><strong>Invoice Due: </strong>%DUE%</p>', 'This is the email a client receives when they''ve got a new unpaid invoice. There are certain variables:<br />\r\n%USER% - Username<br />\r\n%DUE% - The Invoice Due Date\r\n'),
+(17, 'cancelacc', 'Account Cancelled', 'Cancelled', '<p><span style="font-weight: bold;">Your account has been cancelled!<br /><span style="font-weight: normal;">This now means that your client username and password no longer work and your web hosting package no longer exists. All your files, databases, records have been removed and aren''t retrievable.<br /><br /><span style="font-weight: bold;">Reason for cancellation: </span>%REASON%</span></span></p>', 'This is the email the client recives when their account has been cancelled by admin or when they manually cancel it in the client control panel.<br /><br />\r\n\r\nEmail Variables:<br />\r\n%REASON% - The reason why their account has been cancelled');
 
 -- --------------------------------------------------------
 
@@ -438,6 +444,15 @@ CREATE TABLE IF NOT EXISTS `%PRE%users` (
   `salt` varchar(50) NOT NULL,
   `signup` varchar(20) NOT NULL,
   `ip` text NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `zip` varchar(7) NOT NULL,
+  `state` varchar(55) NOT NULL,
+  `country` varchar(2) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `status` varchar(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -455,6 +470,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%users` (
 CREATE TABLE IF NOT EXISTS `%PRE%user_packs` (
   `id` mediumint(9) NOT NULL auto_increment,
   `userid` varchar(5) NOT NULL,
+  `username` varchar(50) NOT NULL,
   `domain` varchar(50) NOT NULL,
   `pid` varchar(5) NOT NULL,
   `signup` varchar(20) NOT NULL,
@@ -467,4 +483,73 @@ CREATE TABLE IF NOT EXISTS `%PRE%user_packs` (
 -- Dumping data for table `%PRE%user_packs`
 --
 
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `%PRE%users_bak`
+--
+
+CREATE TABLE IF NOT EXISTS `%PRE%users_bak` (
+  `id` mediumint(9) NOT NULL auto_increment,
+  `user` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `salt` varchar(50) NOT NULL,
+  `signup` varchar(20) NOT NULL,
+  `ip` text NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `zip` varchar(7) NOT NULL,
+  `state` varchar(55) NOT NULL,
+  `country` varchar(2) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `status` varchar(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `%PRE%users_bak`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `%PRE%user_packs_bak`
+--
+
+CREATE TABLE IF NOT EXISTS `%PRE%user_packs_bak` (
+  `id` mediumint(9) NOT NULL auto_increment,
+  `userid` varchar(5) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `domain` varchar(50) NOT NULL,
+  `pid` varchar(5) NOT NULL,
+  `signup` varchar(20) NOT NULL,
+  `status` varchar(1) NOT NULL,
+  `additional` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `%PRE%user_packs_bak`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `%PRE%logs`
+--
+
+CREATE TABLE IF NOT EXISTS `%PRE%logs` (
+  `id` mediumint(9) NOT NULL auto_increment,
+  `uid` varchar(5) NOT NULL,
+  `loguser` varchar(50) NOT NULL,
+  `logtime` varchar(20) NOT NULL,
+  `message` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `%PRE%user_packs_bak`
+--

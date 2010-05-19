@@ -51,6 +51,16 @@
     <td>
       <input name="reseller" type="checkbox" id="reseller" value="1" /><a title="Is this package a reseller package?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
+  <tr>
+    <td valign="top">Hidden:</td>
+    <td>
+      <input name="hidden" type="checkbox" id="hidden" value="1" /><a title="Is this package hidden on the order form? (Direct orders allowed.)" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+  </tr>
+  <tr>
+    <td valign="top">Disabled:</td>
+    <td>
+      <input name="disabled" type="checkbox" id="disabled" value="1" /><a title="Are new orders disabled for this package?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+  </tr>
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>

@@ -17,11 +17,11 @@ function check() {
 	}
 }
 
-function term(user, pass) {
+function cancel(user, pass) {
 	document.getElementById("finishtext").innerHTML = working;
 	$("#finish").slideDown(500);
 	$("#passwordpart").slideUp(500);
-	$.get("<AJAX>?function=termacc&user="+user+"&pass="+pass, function(data) {
+	$.get("<AJAX>?function=cancelacc&user="+user+"&pass="+pass, function(data) {
 		document.getElementById("finishtext").innerHTML = data;
 						});
 }
@@ -30,9 +30,9 @@ function term(user, pass) {
 <form id="delete" name="delete" method="post">
 <div class="subborder">
     <div class="sub">
-      <span class="errors">Notice:</span> This WILL delete your client account and your hosting account. This means all your files, once this step has completed can't be retrieved.<br />
+      <span class="errors">Notice:</span> This WILL cancel your client account and your hosting account. This means all your files, once this step has completed can't be retrieved. Your account will remain in our system for informational and auditing purposes so after this process you may not register another account.<br />
       <input name="understand" type="checkbox" id="understand" value="1" onchange="check()" /><strong>I understand this notice above</strong>
-       <a title="Tick here <b>only if you <i>really</i> want to delete your account!</b>" class="tooltip"><img src="<ICONDIR>information.png" /></a>
+       <a title="Tick here <b>only if you <i>really</i> want to cancel your account!</b>" class="tooltip"><img src="<ICONDIR>information.png" /></a>
     </div>
 </div>
 <div id="passwordpart" style="display:none">
@@ -43,7 +43,7 @@ function term(user, pass) {
                 <td width="25%">Your Password:</td>
                 <td width="10%"><input name="password" id="password" type="password" />
                 </td>
-                <td width="65%" align="left"><input name="delete" id="delete" type="button" value="Delete" onclick="term('%USER%', document.getElementById('password').value)"/>  <a title="Click here to terminate your account." class="tooltip"><img src="<ICONDIR>information.png" /></a></td>
+                <td width="65%" align="left"><input name="delete" id="delete" type="button" value="Cancel" onclick="cancel('%USER%', document.getElementById('password').value)"/>  <a title="Click here to cancel your account." class="tooltip"><img src="<ICONDIR>information.png" /></a></td>
               </tr>
             </table>
         </div>

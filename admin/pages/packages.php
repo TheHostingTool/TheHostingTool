@@ -50,7 +50,7 @@ class page {
 								$n++;
 							}
 						}
-						$db->query("INSERT INTO `<PRE>packages` (name, backend, description, type, server, admin ,additional, reseller) VALUES('{$main->postvar['name']}', '{$main->postvar['backend']}', '{$main->postvar['description']}', '{$main->postvar['type']}', '{$main->postvar['server']}', '{$main->postvar['admin']}','{$additional}', '{$main->postvar['reseller']}')");
+						$db->query("INSERT INTO `<PRE>packages` (name, backend, description, type, server, admin, is_hidden, is_disabled, additional, reseller) VALUES('{$main->postvar['name']}', '{$main->postvar['backend']}', '{$main->postvar['description']}', '{$main->postvar['type']}', '{$main->postvar['server']}', '{$main->postvar['admin']}', '{$main->postvar['hidden']}', '{$main->postvar['disabled']}', '{$additional}', '{$main->postvar['reseller']}')");
 						$main->errors("Package has been added!");
 					}
 				}
@@ -97,7 +97,9 @@ class page {
 										   `server` = '{$main->postvar['server']}',
 										   `admin` = '{$main->postvar['admin']}',
 										   `additional` = '{$additional}',
-										   `reseller` = '{$main->postvar['reseller']}'
+										   `reseller` = '{$main->postvar['reseller']}',
+										   `is_hidden` = '{$main->postvar['hidden']}',
+										   `is_disabled` = '{$main->postvar['disabled']}'
 										   WHERE `id` = '{$main->getvar['do']}'");
 								$main->errors("Package has been edited!");
 								$main->done();
@@ -107,6 +109,8 @@ class page {
 						$array['BACKEND'] = $data['backend'];
 						$array['DESCRIPTION'] = $data['description'];
 						$array['NAME'] = $data['name'];
+						$array['URL'] = $db->config("url");
+						$array['ID'] = $data['id'];
 						if($data['admin'] == 1) {
 							$array['CHECKED'] = 'checked="checked"';	
 						}
@@ -118,6 +122,18 @@ class page {
 						}
 						else {
 							$array['CHECKED2'] = "";
+						}
+						if($data['is_hidden'] == 1) {
+							$array['CHECKED3'] = 'checked="checked"';	
+						}
+						else {
+							$array['CHECKED3'] = "";
+						}
+						if($data['is_disabled'] == 1) {
+							$array['CHECKED4'] = 'checked="checked"';	
+						}
+						else {
+							$array['CHECKED4'] = "";
 						}
 						$additional = explode(",", $data['additional']);
 						foreach($additional as $key => $value) {

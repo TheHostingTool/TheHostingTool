@@ -55,6 +55,7 @@ class page {
 			default:
 				$array['NAME'] = $db->config("name");
 				$array['URL'] = $db->config("url");
+				$array['RECURL'] = $_SERVER['HTTP_HOST'];
 				$values[] = array("Admin Area", "admin");
 				$values[] = array("Order Form", "order");
 				$values[] = array("Client Area", "client");

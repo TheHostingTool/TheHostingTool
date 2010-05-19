@@ -37,7 +37,7 @@ $(window).load(function () {
   <tr>
     <td width="20%">Host:</td>
     <td>
-      <input name="host" type="text" id="host" /><a title="The Server's Hostname" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      <input name="host" type="text" id="host" /><a title="The Server's Hostname or IP" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>

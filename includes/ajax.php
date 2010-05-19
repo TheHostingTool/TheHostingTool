@@ -54,7 +54,11 @@ class AJAX {
 				return;
 			}
 		}
-		
+		// Alphanumeric only plz.
+		if(!preg_match("/^([0-9a-zA-Z])+$/",$main->getvar['user'])) {
+			echo 0;
+			return;
+		}
 		if(!$main->getvar['user']) {
 			$_SESSION['check']['user'] = false;
 		   echo 0;
@@ -76,6 +80,7 @@ class AJAX {
 		if($main->getvar['pass'] == ":") {
 			$_SESSION['check']['pass'] = false;
 		   echo 0;
+		   return;
 		}
 		else {
 			$pass = explode(":", $main->getvar['pass']);
@@ -90,25 +95,140 @@ class AJAX {
 		}
 	}
 	public function emailcheck() {
-		global $main;
+		global $main, $db;
 		if(!$main->getvar['email']) {
-			$_SESSION['check']['email'] = false;
+		   $_SESSION['check']['email'] = false;
 		   echo 0;
+		   return;
+		}
+		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `email` = '{$main->getvar['email']}'");
+		if($db->num_rows($query) != 0) {
+		   $_SESSION['check']['email'] = false;
+		   echo 0;
+		   return;
 		}
 		else {
 			if($main->check_email($main->getvar['email'])) {
 				$_SESSION['check']['email'] = true;
-				echo 1;	
+				echo 1;
 			}
 			else {
 				$_SESSION['check']['email'] = false;
-				echo 0;	
+				echo 0;
 			}
+		}
+	}
+
+	public function firstnamecheck() {
+		global $main;
+		if(!preg_match("/^([a-zA-Z\.\'\ \-])+$/",$main->getvar['firstname'])) {
+			$_SESSION['check']['firstname'] = false;
+			echo 0;
+		}
+		else {
+			$_SESSION['check']['firstname'] = true;
+			echo 1;
+		}
+	}
+	
+	public function lastnamecheck() {
+		global $main;
+		if(!preg_match("/^([a-zA-Z\.\'\ \-])+$/",$main->getvar['lastname'])) {
+			$_SESSION['check']['lastname'] = false;
+			echo 0;
+		}
+		else {
+			$_SESSION['check']['lastname'] = true;
+			echo 1;
+		}
+	}
+	
+	public function addresscheck() {
+		global $main;
+		if(!preg_match("/^([0-9a-zA-Z\.\ \-])+$/",$main->getvar['address'])) {
+			$_SESSION['check']['address'] = false;
+			echo 0;
+		}
+		else {
+			$_SESSION['check']['address'] = true;
+			echo 1;
+		}
+	}
+	
+	public function citycheck() {
+		global $main;
+		if (!preg_match("/^([a-zA-Z ])+$/",$main->getvar['city'])) {
+			$_SESSION['check']['city'] = false;
+			echo 0;			
+		}
+		else {
+			$_SESSION['check']['city'] = true;
+			echo 1;
+		}
+	}		
+	
+	public function statecheck() {
+		global $main;
+		if (!preg_match("/^([a-zA-Z\.\ -])+$/",$main->getvar['state'])) {
+			$_SESSION['check']['state'] = false;
+			echo 0;
+		}
+		else {
+			$_SESSION['check']['state'] = true;
+			echo 1;
+		}
+	}				
+	
+	public function zipcheck() {
+		global $main;
+		if(strlen($main->getvar['zip']) > 7) {
+			echo 0;
+			return;
+		}
+		else {
+			if (!preg_match("/^([0-9a-zA-Z\ \-])+$/",$main->getvar['zip'])) {
+				$_SESSION['check']['zip'] = false;
+				echo 0;
+			}
+			else {
+				$_SESSION['check']['zip'] = true;
+				echo 1;
+				}
+			}
+	}
+	
+	public function phonecheck() {
+		global $main;
+		if(strlen($main->getvar['phone']) > 15) {
+			echo 0;
+			return;
+		}
+		else {
+			if (!preg_match("/^([0-9\-])+$/",$main->getvar['phone'])) {
+				$_SESSION['check']['phone'] = false;
+				echo 0;
+			}
+			else {
+				$_SESSION['check']['phone'] = true;
+				echo 1;
+				}
+			}
+	}	
+	//Basic captcha check... thanks http://frikk.tk!
+	public function humancheck() {
+		global $main;
+		if($main->getvar['human'] != $_SESSION["pass"]) {
+			$_SESSION['check']['human'] = false;
+			echo 0;			
+		}		
+		else {
+			$_SESSION['check']['human'] = true;
+			echo 1;			
 		}
 	}
 	
 	public function clientcheck() {
-		if($_SESSION['check']['email'] == true && $_SESSION['check']['user'] == true && $_SESSION['check']['pass'] == true) {
+		if($_SESSION['check']['email'] == true && $_SESSION['check']['user'] == true && $_SESSION['check']['pass'] == true && $_SESSION['check']['human'] == true && $_SESSION['check']['address'] == true && $_SESSION['check']['state'] == true && $_SESSION['check']['zip'] == true && $_SESSION['check']['phone'] == true) {
 			echo 1;	
 		}
 		else {
@@ -145,7 +265,7 @@ class AJAX {
 		echo $type->orderForm($ptype);
 	}
 	
-	public function termacc() {
+	public function cancelacc() {
 		global $db, $main, $type, $server, $email;
 		$user = $main->getvar['user'];
 		$pass = $main->getvar['pass'];
@@ -158,12 +278,12 @@ class AJAX {
 			if(md5(md5($pass) . md5($data['salt'])) == $data['password']) {
 				$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$db->strip($user)}'");
 				$data2 = $db->fetch_array($query2);
-				if($server->terminate($data2['id'])) {
-					echo "Your account has been deleted successfully!";
+				if($server->cancel($data2['id'])) {
+					echo "Your account has been cancelled successfully!";
 					session_destroy();
 				}
 				else {
-					echo "Your account wasn't deleted! Try again..";	
+					echo "Your account wasn't cancelled! Try again..";	
 				}
 			}
 			else {

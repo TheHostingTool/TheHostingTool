@@ -6,6 +6,11 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
+$self = $_SERVER['PHP_SELF'];
+if ($self != "/install/index.php") { 
+die("Install can only be run from the install directory ($self)");
+} 
+
 //INSTALL GLOBALS
 define("CVER", "1.2.1");
 define("NVER", "1.2.2");

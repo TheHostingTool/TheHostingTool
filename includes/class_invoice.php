@@ -105,8 +105,13 @@ class invoice {
 	}
 	
 	public function set_paid($iid) { # Pay the invoice by giving invoice id
-		global $db;
+		global $db, $server;
 		$query = $db->query("UPDATE `<PRE>invoices` SET `is_paid` = '1' WHERE `id` = '{$iid}'");
+		$query2 = $db->query("SELECT * FROM `<PRE>invoices` WHERE `id` = '{$iid}' LIMIT 1");
+		$data2 = $db->fetch_array($query2);
+		$query3 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data2['uid']}'");
+		$data3 = $db->fetch_array($query3);
+		$server->unsuspend($data3['id']);
 		return $query;
 	}
 	
