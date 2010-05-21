@@ -1,5 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine on
-RewriteRule ^([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-z0-9]+)$ index.php?function=$1&params=$2&auth=$3
-RewriteRule ^([a-zA-Z0-9]+)/([a-z0-9]+)$ index.php?function=$1&auth=$2
-</IfModule>

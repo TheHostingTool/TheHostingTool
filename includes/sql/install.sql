@@ -45,7 +45,6 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (12, 'Client Importer', 'user_orange.png', 'import'),
 (13, 'Tickets', 'page_white_text.png', 'tickets'),
 (14, 'Knowledge Base', 'folder.png', 'kb'),
-(17, 'API', 'brick.png', 'api'),
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
 (19, 'Invoice Management', 'script.png', 'invoices'),
 (20, 'Logs', 'report.png', 'logs');
