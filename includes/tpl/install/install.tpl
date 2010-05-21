@@ -33,24 +33,29 @@ function change() {
 				document.getElementById("button3").disabled = true;
 				document.getElementById("button3").value = "Working...";
 				$.get("<AJAX>?function=sqlcheck&host="+document.getElementById("hostname").value+"&user="+document.getElementById("username").value+"&pass="+document.getElementById("password").value+"&db="+document.getElementById("database").value+"&pre="+document.getElementById("prefix").value, function(mydata) {
-																																																																												document.getElementById("button3").disabled = false;																																																																																																										document.getElementById("button3").value = "Next Step";
-																																																																												document.getElementById("sqlerror").innerHTML = mydata;
-				switch(mydata) {
-						case "0":
+				document.getElementById("button3").disabled = false;
+				document.getElementById("button3").value = "Next Step";
+				//This if statement isn't really a big deal, but it adds some polish.
+				if(parseInt(mydata) != 2) {
+					document.getElementById("sqlerror").innerHTML = mydata;
+				}
+
+				switch(parseInt(mydata)) {
+						case 0:
 							document.getElementById("sqlerror").innerHTML = wrong+"Your SQL Details are incorrect!";
 							break;
-						case "1":
+						case 1:
 							document.getElementById("sqlerror").innerHTML = wrong+"Your SQL Database is incorrect!";
 							break;
-						case "2":
+						case 2:
 							gogo();
 							document.getElementById("step3").innerHTML = working;
 							installstuff();
 							break;
-						case "3":
+						case 3:
 							document.getElementById("sqlerror").innerHTML = wrong+"Your Config isn't writeable!";
 							break;
-						case "4":
+						case 4:
 							document.getElementById("sqlerror").innerHTML = wrong+"THT is already installed!";
 							break;
 					}
