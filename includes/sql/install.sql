@@ -47,7 +47,7 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (14, 'Knowledge Base', 'folder.png', 'kb'),
 (17, 'API', 'brick.png', 'api'),
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
-(19, 'Invoice Management', 'script.png', 'invoices');
+(19, 'Invoice Management', 'script.png', 'invoices'),
 (20, 'Logs', 'report.png', 'logs');
 
 -- --------------------------------------------------------
