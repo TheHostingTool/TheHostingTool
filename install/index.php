@@ -6,10 +6,19 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-$self = $_SERVER['PHP_SELF'];
-if ($self != "/install/index.php") { 
-die("Install can only be run from the install directory ($self)");
-} 
+/*
+ * This is a pretty bad attempt at being secure. If you're having
+ * problems with it, feel free to comment it out. But it was
+ * better than what we had before and should work.
+*/
+
+// __FILE__ is an absolute path and we need to make it relative to
+// the document root. This file must be called directly and
+// directly only.
+$compare = explode($_SERVER["DOCUMENT_ROOT"], __FILE__);
+if($compare[1] !== $_SERVER["PHP_SELF"]) {
+	die("You can only run the install from the <em>".__FILE__."</em> file.");
+}
 
 //INSTALL GLOBALS
 define("CVER", "1.2.1");
