@@ -51,7 +51,7 @@ define("URL", "../"); # Set url to blank
 
 define("NAME", "THT");
 define("PAGE", "Install");
-define("SUB", "Enter Details");
+define("SUB", "Choose Method");
 
 $array['VERSION'] = NVER;
 $array['ANYTHING'] = "";
@@ -77,7 +77,7 @@ elseif(!is_writable($link)) {
 }
 echo $style->get("header.tpl");
 if($disable) {
-	echo '<script type="text/javascript">$(function(){$("#two").attr("disabled", "true");$("#method").attr("disabled", "true");});</script>';
+	echo '<script type="text/javascript">$(function(){$(".twobutton").attr("disabled", "true");$("#method").attr("disabled", "true");});</script>';
 }
 echo $style->replaceVar("tpl/install/install.tpl", $array);
 echo $style->get("footer.tpl");
