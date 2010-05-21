@@ -73,12 +73,14 @@ function change() {
 					  function(finisheddata) {
 							document.getElementById("button5").disabled = false;
 							document.getElementById("button5").value = "Next Step";
-							document.getElementById("finalerror").innerHTML = finisheddata;
-							switch(finisheddata) {
-								case "1":
+							if(parseInt(finisheddata) != 1) {
+								document.getElementById("finalerror").innerHTML = finisheddata;
+							}
+							switch(parseInt(finisheddata)) {
+								case 1:
 									gogo();
 									break;
-								case "0":
+								case 0:
 									document.getElementById("finalerror").innerHTML = wrong+"Please fill in all the fields!";
 									break;
 							}
