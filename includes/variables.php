@@ -38,6 +38,7 @@ if(INSTALL == 1) {
 			$array2['SOFTWARE'] = $_SERVER["SERVER_SOFTWARE"];
 			$array2['PHP_VERSION'] = phpversion();
 			$array2['MYSQL_VERSION'] = $version[0];
+			$array2["SERVER"] = $_SERVER["HTTP_HOST"];
 			$array['TITLE'] = $style->replaceVar('tpl/aserverstatus.tpl',$array2);
 			$pagegen .= $style->replaceVar('tpl/footerdebug.tpl',$array);
 		}
