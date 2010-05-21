@@ -228,7 +228,7 @@ $(window).load(function () {
                 <td width="30%">Your THT URL:<br />
                   (Including the trailing slash)</td>
                 <td><label>
-                  <input name="url" type="text" id="url" />
+                  <input name="url" type="text" id="url" value="%GENERATED_URL%" />
                 </label><a class="tooltip" title="This is a very important field. Make sure this is correct before clicking next. The THT URL is where your THT is located. Make sure it's in this format: http://example.com/tht/"><img src="<ICONDIR>information.png"></a></td>
               </tr>
                <tr>

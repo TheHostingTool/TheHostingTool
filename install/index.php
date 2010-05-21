@@ -12,12 +12,33 @@
  * better than what we had before and should work.
 */
 
-// __FILE__ is an absolute path and we need to make it relative to
-// the document root. This file must be called directly and
-// directly only.
+/*
+ * __FILE__ is an absolute path and we need to make it relative to
+ * the document root. This file must be called directly and
+ * directly only.
+*/
 $compare = explode($_SERVER["DOCUMENT_ROOT"], __FILE__);
 if($compare[1] !== $_SERVER["PHP_SELF"]) {
 	die("You can only run the install from the <em>".__FILE__."</em> file.");
+}
+
+
+/*
+ * Quick little function made to make generating a default site URL
+ * easy. Hopefully this will assist alot of support topics regarding
+ * bad site URLs, as the automatically generated ones should be correct.
+*/
+function generateSiteUrl() {
+	$url = "";
+	if(!empty($_SERVER["HTTPS"])) {
+		$url .= "https://";
+	}
+	else {
+		$url .= "http://";
+	}
+	$exploded = explode($_SERVER["DOCUMENT_ROOT"], realpath("../"));
+	$url .= $_SERVER["HTTP_HOST"] . $exploded[1] . "/";
+	return $url;
 }
 
 //INSTALL GLOBALS
@@ -79,6 +100,7 @@ echo $style->get("header.tpl");
 if($disable) {
 	echo '<script type="text/javascript">$(function(){$(".twobutton").attr("disabled", "true");$("#method").attr("disabled", "true");});</script>';
 }
+$array["GENERATED_URL"] = generateSiteUrl();
 echo $style->replaceVar("tpl/install/install.tpl", $array);
 echo $style->get("footer.tpl");
 
