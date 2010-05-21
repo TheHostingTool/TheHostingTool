@@ -16,10 +16,6 @@
 <td><strong>MySQL Version:</strong></td>
 <td> %MYSQL_VERSION% </td>
 </tr>
-<tr>
-<td><strong>Disk Total/Free Space:</strong></td>
-<td> Disk total: %DISK_TOTAL_SPACE%GBs (Free %DISK_FREE_SPACE%GBs)</td>
-</tr>
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
 <tr>

@@ -33,14 +33,11 @@ if(INSTALL == 1) {
 				$output = shell_exec('mysql -V');
 				preg_match('@[0-9]+\.[0-9]+\.[0-9]+@', $output, $version);
 			}
-			$diskfreespace = disk_free_space('/home/username') / 1073741824;
-			$disktotalspace = disk_total_space('/home/username') / 1073741824;
 			global $style;
-			$array2['OS'] = getenv(SERVER_SOFTWARE);
+			$array2['OS'] = PHP_OS;
+			$array2['SOFTWARE'] = $_SERVER["SERVER_SOFTWARE"];
 			$array2['PHP_VERSION'] = phpversion();
 			$array2['MYSQL_VERSION'] = $version[0];
-			$array2['DISK_FREE_SPACE'] = substr($diskfreespace,0,4);
-			$array2['DISK_TOTAL_SPACE'] = substr($disktotalspace,0,4);
 			$array['TITLE'] = $style->replaceVar('tpl/aserverstatus.tpl',$array2);
 			$pagegen .= $style->replaceVar('tpl/footerdebug.tpl',$array);
 		}
