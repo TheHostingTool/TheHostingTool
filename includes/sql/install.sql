@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%acpnav` (
   `icon` varchar(50) NOT NULL,
   `link` varchar(20) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
 --
 -- Dumping data for table `%PRE%acpnav`
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%articles` (
   `name` varchar(100) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%articles`
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%cats` (
   `name` varchar(50) NOT NULL,
   `description` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%cats`
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%clientnav` (
   `icon` varchar(50) NOT NULL,
   `link` varchar(20) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `%PRE%clientnav`
@@ -123,7 +123,7 @@ INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`) VALUES
 CREATE TABLE IF NOT EXISTS `%PRE%config` (
   `name` varchar(50) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `%PRE%config`
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%invoices` (
   `notes` text NOT NULL,
   `uniqueid` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%invoices`
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%navbar` (
   `link` varchar(20) NOT NULL,
   `order` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `%PRE%navbar`
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%packages` (
   `is_hidden` int(1) NOT NULL,
   `is_disabled` int(1) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%packages`
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%packages` (
 CREATE TABLE IF NOT EXISTS `%PRE%resources` (
   `resource_name` varchar(20) NOT NULL,
   `resource_value` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `%PRE%resources`
@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%servers` (
   `accesshash` text NOT NULL,
   `type` varchar(10) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%servers`
@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%staff` (
   `salt` text NOT NULL,
   `perms` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%staff`
@@ -314,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%subdomains` (
   `subdomain` varchar(20) NOT NULL,
   `server` varchar(5) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%subdomains`
@@ -333,7 +333,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%supportnav` (
   `icon` varchar(20) NOT NULL,
   `link` varchar(20) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `%PRE%supportnav`
@@ -358,7 +358,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%templates` (
   `content` text NOT NULL,
   `description` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `%PRE%templates`
@@ -400,7 +400,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%tickets` (
   `userid` mediumint(9) NOT NULL,
   `status` mediumint(9) NOT NULL default '1',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `%PRE%tickets`
@@ -418,7 +418,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%types` (
   `name` varchar(15) NOT NULL,
   `visual` varchar(20) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `%PRE%types`
@@ -453,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%users` (
   `phone` varchar(15) NOT NULL,
   `status` varchar(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%users`
@@ -476,7 +476,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%user_packs` (
   `status` varchar(1) NOT NULL,
   `additional` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%user_packs`
@@ -506,7 +506,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%users_bak` (
   `phone` varchar(15) NOT NULL,
   `status` varchar(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%users_bak`
@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%user_packs_bak` (
   `status` varchar(1) NOT NULL,
   `additional` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%user_packs_bak`
@@ -547,7 +547,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
   `logtime` varchar(20) NOT NULL,
   `message` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `%PRE%user_packs_bak`
