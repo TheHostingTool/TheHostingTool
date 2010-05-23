@@ -24,19 +24,19 @@ function stopRKey(evt) {
 document.onkeypress = stopRKey;
 
 function check(name, value) {
-	document.getElementById(name+"check").innerHTML = loading;
+	$("#"+name+"check").html(loading);
 	document.getElementById("next").disabled = true;
 	window.setTimeout(function() {
 		$.get("<AJAX>?function="+name+"check&THT=1&"+name+"="+value, function(data) {
 			if(data == "1") {
-				document.getElementById(name+"check").innerHTML = right;
+				$("#"+name+"check").html(right);
 			}
 			else {
-				document.getElementById(name+"check").innerHTML = wrong;
+				$("#"+name+"check").html(wrong);
 			}													
 			document.getElementById("next").disabled = false;
-																		});
-							   },500);
+		});
+	},500);
 }
 
 function orderstepme(id) {
