@@ -61,16 +61,40 @@ class db {
 	}
 	
 	public function strip($value) { # Gets a string and returns a value without SQL Injection
-		if(get_magic_quotes_gpc()) { # Check if Magid Quotes are on
-			  $value = stripslashes($value); 
+		if(is_array($value)) {
+			$array = array();
+			foreach($value as $k => $v) {
+				if(is_array($v)) {
+					$array[$k] = $this->strip($v);
+				}
+				else {
+					if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
+						  $v = stripslashes($v); 
+					}
+					if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
+						  $v = mysql_real_escape_string($v);
+					} 
+					else { # If all else fails..
+						  $v = addslashes($v);
+					}
+					$array[$k] = $v;
+				}
+			}
+			return $array;
 		}
-		if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
-			  $value = mysql_real_escape_string($value);
-		} 
-		else { # If all else fails..
-			  $value = addslashes($value);
+		else {
+			if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
+				  $value = stripslashes($value); 
+			}
+			if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
+				  $value = mysql_real_escape_string($value);
+			} 
+			else { # If all else fails..
+				  $value = addslashes($value);
+			}
+			return $value;
 		}
-		return $value;
+
 	}
 	
 	public function config($name) { # Returns a value of a config variable
