@@ -1094,8 +1094,10 @@ class AJAX {
 }
 if(isset($_GET['function']) and $_GET['function'] != "") {
 	$ajax = new AJAX;
-	$ajax->{$_GET['function']}();
-	include(LINK."output.php");
+	if(method_exists($ajax, $_GET['function'])) {
+		$ajax->{$_GET['function']}();
+		include(LINK."output.php");
+	}
 }
 
 ?>
