@@ -702,14 +702,16 @@ class AJAX {
 		}
 	}
 	function massemail() {
-		global $main, $email, $db;
-		$subject = $main->getvar['subject'];
-		$msg = $main->getvar['msg'];
-		$query = $db->query("SELECT * FROM `<PRE>users`");
-		while($client = $db->fetch_array($query)) {
-			$email->send($client['email'], $subject, $msg);	
+		if($_SESSION['logged']) {
+			global $main, $email, $db;
+			$subject = $main->getvar['subject'];
+			$msg = $main->getvar['msg'];
+			$query = $db->query("SELECT * FROM `<PRE>users`");
+			while($client = $db->fetch_array($query)) {
+				$email->send($client['email'], $subject, $msg);	
+			}
+			echo 1;
 		}
-		echo 1;
 	}
 	function porder() {
 		global $main, $db;
