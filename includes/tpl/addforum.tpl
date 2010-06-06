@@ -26,7 +26,7 @@ function changePrefix(value)
 		  <tr>
             <td>Forum Name:</td>
 		    <td><label>
-              <input name="name" type="text" class="form" id="name" />
+              <input name="name" type="text" class="form" id="name" maxlength="28"/>
             </label></td>
 	      </tr>
           <tr>
