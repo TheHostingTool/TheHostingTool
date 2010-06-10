@@ -17,8 +17,15 @@
  * the document root. This file must be called directly and
  * directly only.
 */
-$compare = explode($_SERVER["DOCUMENT_ROOT"], __FILE__);
-if($compare[1] !== $_SERVER["PHP_SELF"]) {
+if(strtoupper(substr(PHP_OS, 0, 3)) === "WIN") {
+	$file = str_replace("\\", "/", __FILE__);
+}
+else {
+	$file = __FILE__;
+}
+$compare = explode($_SERVER["DOCUMENT_ROOT"], $file);
+
+if("/" . $compare[1] !== $_SERVER["PHP_SELF"]) {
 	die("You can only run the install from the <em>".__FILE__."</em> file.");
 }
 
