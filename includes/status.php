@@ -20,7 +20,7 @@ if (empty($port)){
     $port = 80;
 }
 //Test the server connection
-$churl = @fsockopen(server($addr), $port, $errno, $errstr, 20);
+$churl = @fsockopen(server($addr), $port, $errno, $errstr, 5);
              if (!$churl){
              //echo $errstr;
                 header("Location: $dead");
