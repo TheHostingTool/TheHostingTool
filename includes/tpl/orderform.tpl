@@ -201,7 +201,7 @@ function previousstep() {
     <div class="table" id="2" style="display:none">
         <div class="cat">Step Two - Terms of Service</div>
         <div class="text">
-        	<table border="0" cellspacing="2" cellpadding="0" align="center">
+        	<table border="0" cellspacing="2" cellpadding="0" align="center" style="width: 100%;">
               <tr>
                 <td colspan="2"><div class="subborder">
                 <div class="sub" id="description">
@@ -219,7 +219,7 @@ function previousstep() {
 	<div class="table" id="3" style="display:none">
         <div class="cat">Step Three - Client Account</div>
         <div class="text">
-        	<table border="0" cellspacing="2" cellpadding="0" align="center">
+        	<table border="0" cellspacing="2" cellpadding="0" align="center" style="width: 100%;">
               <tr>
                 <td>Username:</td>
                 <td><input type="text" name="username" id="username" /></td>
