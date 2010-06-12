@@ -33,7 +33,7 @@ class whm {
 	private function remote($url, $xml = 0, $term = false) {
                 global $db;
 		$data = $this->serverDetails($this->server);
-		//Curl Script done by Krakjoe, Thanks.
+		//Curl Script done by Krakjoe and Kevin, Thanks.
 		$cleanaccesshash = preg_replace("'(\r|\n)'","",$data['accesshash']);
 		$authstr = $data['user'] . ":" . $cleanaccesshash;
 		$ch = curl_init();
@@ -215,7 +215,12 @@ class whm {
 			return true;
 		}
 		else {
-			return false;
+			if(isset($command->passwd->statusmsg)) {
+				return $command->passwd->statusmsg;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 }

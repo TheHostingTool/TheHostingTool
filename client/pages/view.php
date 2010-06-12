@@ -29,8 +29,13 @@ class page {
 		if($_POST) {
 				if(md5(md5($main->postvar['currentpass']) . md5($data['salt'])) == $data['password']) {
 					if($main->postvar['newpass'] == $main->postvar['cpass']) {
-						$server->changePwd($data3['id'],$main->postvar['cpass']);
-						$main->errors("Details updated!");
+						$cmd = $main->changeClientPassword($data3['id'], $main->postvar['cpass']);
+						if($cmd === true) {
+							$main->errors("Details updated!");
+						}
+						else {
+							$main->errors((string)$cmd);
+						}
 					}
 					else {
 						$main->errors("Your passwords don't match!");		

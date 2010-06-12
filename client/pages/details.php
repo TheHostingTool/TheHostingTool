@@ -107,17 +107,21 @@ class page {
 				if($main->postvar['change']) {
 					$data = $db->client($_SESSION['cuser']);
 					if(md5(md5($main->postvar['currentpass']) . md5($data['salt'])) == $data['password']) {
-						if($main->postvar['newpass'] == $main->postvar['cpass']) {
-						$password = md5(md5($main->postvar['newpass']) . md5($data['salt']));
-						$db->query("UPDATE `<PRE>users` SET `password` = '{$password}' WHERE `id` = '{$_SESSION['cuser']}'");
-						$main->errors("Details updated!");
+						if($main->postvar['newpass'] === $main->postvar['cpass']) {
+						$cmd = $main->changeClientPassword($_SESSION['cuser'], $main->postvar['newpass']);
+						if($cmd === true) {
+							$main->errors("Details updated!");
+						}
+						else {
+							$main->errors((string)$cmd);
+						}
 					}
 						else {
 							$main->errors("Your passwords don't match!");		
 						}
 					}
 					else {
-						$main->errors("Your current password wasn't correct!");
+						$main->errors("Your current password is incorrect.");
 					}
 				}
 				else {

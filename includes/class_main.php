@@ -386,6 +386,45 @@ class main {
 		  }
 	   }
 	   return $isValid;
+	}
+	
+	/*
+	 * A more or less centralized function for changing a client's
+	 * password. This updates both the cPanel/WHM and THT password.
+	 * Will return true ONLY on success. Any other returned value should
+	 * be treated as a failure. If the return value happens to be a
+	 * string, it is an error message.
+	 */
+	function changeClientPassword($clientid, $newpass) {
+		global $db, $server;
+		//Making sure the $clientid is a reference to a valid id.
+		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = {$db->strip($clientid)}");
+		if($db->num_rows($query) == 0) {
+			return "That client does not exist.";
+		}
+		
+		/*
+		 * We're going to set the password in cPanel/WHM first. That way
+		 * if the password is rejected for some reason, THT will not 
+		 * desync.
+		 */
+		$command = $server->changePwd($clientid, $newpass);
+		if($command !== true) {
+			return $command;
+		}
+		
+		/*
+		 * Let's change THT's copy of the password. Might as well make a
+		 * new salt while we're at it.
+		 */
+		mt_srand((int)microtime(true));
+		$salt = md5(mt_rand());
+		$password = md5(md5($newpass) . md5($salt));
+		$db->query("UPDATE `<PRE>users` SET `password` = '{$password}' WHERE `id` = '{$db->strip($clientid)}'");
+		$db->query("UPDATE `<PRE>users` SET `salt` = '{$salt}' WHERE `id` = '{$db->strip($clientid)}'");
+		
+		//Let's wrap it all up.
+		return true;
 	}
 }
 ?>

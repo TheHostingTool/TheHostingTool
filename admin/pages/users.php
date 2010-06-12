@@ -201,15 +201,18 @@ class page {
 						case "passwd":
 							if($_POST) {
 								if(empty($main->postvar['passwd'])) {
-									$main->errors('A password was never provided.');
-									break;
-								}
-								$command = $server->changePwd($pack['id'], $main->postvar['passwd']);
-								if($command == true) {
-									$main->errors('Password was changed!');
+									$main->errors('A password was not provided.');
+									$array['BOX'] = "";
+									$array['CONTENT'] = $style->replaceVar("tpl/clientpwd.tpl");
 								}
 								else {
-									$main->errors($command);
+									$command = $main->changeClientPassword($pack['id'], $main->postvar['passwd']);
+									if($command === true) {
+										$main->errors('Password changed!');
+									}
+									else {
+										$main->errors((string)$command);
+									}
 								}
 							}
 							$array['BOX'] = "";

@@ -502,7 +502,7 @@ class server {
 			else {
 				$donestuff = $serverphp->changePwd($data2['user'], $newpwd, $server);
 			}
-			if($donestuff == true) {
+			if($donestuff === true) {
 				$date = time();
 				$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 													  '{$db->strip($data['userid'])}',
@@ -512,7 +512,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return $donestuff;
 			}
 		}
 	}
