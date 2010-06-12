@@ -5,7 +5,7 @@
 // By Jonny H
 // Released under the GNU-GPL
 //////////////////////////////
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL & ~E_DEPRECATED);
 
 #Define the main THT
 define("THT", 1);
