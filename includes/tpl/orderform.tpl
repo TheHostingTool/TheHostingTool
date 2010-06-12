@@ -187,7 +187,7 @@ function previousstep() {
                     <td width="20%">Domain/Subdomain:</td>
                     <td><select name="domain" id="domain">
                       <option value="dom" selected="selected">Domain</option>
-                      <option value="sub">Subdomain</option>
+                      %CANHASSUBDOMAIN%
                     </select></td>
                     <td width="70%"><a title="Choose the type of hosting:<br /><strong>Domain:</strong> example.com<br /><strong>Subdomain:</strong> example.subdomain.com" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                   </tr>

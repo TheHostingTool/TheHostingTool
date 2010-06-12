@@ -72,6 +72,12 @@ else {
 	$array['USER'] = "";
 	$array['DOMAIN'] = '<input name="cdom" id="cdom" type="text" />';
 	$sub = $db->query("SELECT * FROM `<PRE>subdomains`");
+	if($db->num_rows($sub) == 0) {
+		$array["CANHASSUBDOMAIN"] = "";
+	}
+	else {
+		$array["CANHASSUBDOMAIN"] = '<option value="sub">Subdomain</option>';
+	}
 	while($sub2 = $db->fetch_array($sub)) {
 		$values2[] = array($sub2['subdomain'], $sub2['subdomain']);	
 	}
