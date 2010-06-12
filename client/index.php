@@ -189,9 +189,8 @@ if(!$_SESSION['clogged']) {
 				}
 				else {
 					$client = $db->fetch_array($query);
-					$password = rand(0,999999);
-					$newpass = md5(md5($password) . md5($client['salt']));
-					$db->query("UPDATE `<PRE>users` SET `password` = '{$newpass}' WHERE `id` = '{$client['id']}'");
+					$password = rand(0,99999) . 'P@$$w0rD' . rand(0,99999);
+					$cmd = $main->changeClientPassword($client['id'], $password);
 					$main->errors("Password reset!");
 					$array['PASS'] = $password;
 					$emaildata = $db->emailTemplate("reset");
