@@ -326,6 +326,7 @@ class server {
 				$notes = "Your current hosting package monthly invoice. Package: ". $pname['name'];
 				$invoice->create($data['id'], $amount, $due, $notes);
 				$serverphp->suspend($main->getvar['username'], $type->determineServer($main->getvar['package']));
+				$db->query("UPDATE `<PRE>user_packs` SET `status` = '4' WHERE `id` = '{$data['id']}'");
 				$iquery = $db->query("SELECT * FROM `<PRE>invoices` WHERE `uid` = '{$data['id']}' AND `due` = '{$due}'");
 				$idata = $db->fetch_array($iquery);
 				echo '<div class="errors"><b>You are being redirected to payment! It will load in a couple of seconds..</b></div>';
@@ -502,7 +503,7 @@ class server {
 			else {
 				$donestuff = $serverphp->changePwd($data2['user'], $newpwd, $server);
 			}
-			if($donestuff === true) {
+			if($donestuff == true) {
 				$date = time();
 				$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 													  '{$db->strip($data['userid'])}',
@@ -512,14 +513,14 @@ class server {
 				return true;
 			}
 			else {
-				return $donestuff;
+				return false;	
 			}
 		}
 	}
 	
 	public function unsuspend($id) { # Unsuspends a user account from the package ID
 		global $db, $main, $type, $email;
-		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3')");
+		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That package doesn't exist or cannot be unsuspended!";
 			$array['User PID'] = $id;
@@ -555,7 +556,7 @@ class server {
 	
 	public function approve($id) { # Unsuspends a user account from the package ID
 		global $db, $main, $type, $email;
-		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3')");
+		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That package doesn't exist or cannot be approved!";
 			$array['User PID'] = $id;

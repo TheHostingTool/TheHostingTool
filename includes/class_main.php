@@ -214,7 +214,7 @@ class main {
 	public function clientLogin($user, $pass) { # Checks the credentails of the client and logs in, returns true or false
 		global $db, $main;
 		if($user && $pass) {
-			$query = $db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$main->postvar['user']}' AND `status` <= '2'");
+			$query = $db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$main->postvar['user']}' AND (`status` <= '2' OR `status` = '4')");
 			if($db->num_rows($query) == 0) {
 				return false;
 			}

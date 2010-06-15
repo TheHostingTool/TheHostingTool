@@ -52,6 +52,10 @@ class page {
 				$array['STATUS'] = "Awaiting Admin";
 				break;
 			
+			case "4":
+				$array['STATUS'] = "Awaiting Payment";
+				break;
+			
 			case "9":
 				$array['STATUS'] = "Cancelled";
 				break;

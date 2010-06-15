@@ -125,6 +125,11 @@ class page {
 						$array['FUNC'] = "none";	
 						$array['IMG'] = "user_suit.png";
 					}
+					elseif($pack['status'] == "4") {
+						$array['SUS'] = "Awaiting Payment";
+						$array['FUNC'] = "none";	
+						$array['IMG'] = "money.png";
+					}
 					elseif($pack['status'] == "9") {
 						$array['SUS'] = "No Action";
 						$array['FUNC'] = "none";	
@@ -171,6 +176,10 @@ class page {
 									
 								case "3":
 									$array2['STATUS'] = "Awaiting Validation";
+									break;
+								
+								case "4":
+									$array2['STATUS'] = "Awaiting Payment";
 									break;
 								
 								case "9":
