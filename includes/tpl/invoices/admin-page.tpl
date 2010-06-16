@@ -8,5 +8,5 @@
 		<strong>Unpaid Invoices:</strong> %numunpaid%
 	</div>
 </div>
-<br /><br />
+<br />
 %list%
