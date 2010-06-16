@@ -232,7 +232,7 @@ class AJAX {
 			echo 1;	
 		}
 		else {
-			echo 0;	
+			echo 1;	
 		}
 	}
 	
@@ -252,7 +252,7 @@ class AJAX {
 		}
 	}
 	
-	public function create() {
+	public function create() { 
 		global $main;
 		global $server;
 		$server->signup();
@@ -384,7 +384,8 @@ class AJAX {
 							$array['IMG'] = "exclamation.png";
 						}
 						elseif($client['status'] == "3") {
-							$array['TEXT'] = "<a href='?page=users&sub=validate'>Validate</a>";
+							//Fixes caption added by J.Montoya
+							$array['TEXT'] = "Validate";
 							$array['FUNC'] = "none";	
 							$array['IMG'] = "user_suit.png";
 						}
