@@ -29,7 +29,7 @@ class page {
 			$sql = "SELECT user, firstname, lastname FROM `<PRE>users` WHERE `id` = ".$array["uid"];
 			$query_users 		= $db->query($sql);
 			$user_info  		= $db->fetch_array($query_users);
-			$array['userinfo'] =  $user_info['lastname'].' '.$user_info['firstname'].' ('.$user_info['user'].')';
+			$array['userinfo'] =  $user_info['lastname'].', '.$user_info['firstname'].' ('.$user_info['user'].')';
 			$array['due'] = strftime("%D", $array['due']);
 			
 			//Getting the domain info
