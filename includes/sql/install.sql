@@ -223,7 +223,7 @@ INSERT INTO `%PRE%navbar` (`id`, `icon`, `visual`, `link`, `order`) VALUES
 
 CREATE TABLE IF NOT EXISTS `%PRE%packages` (
   `id` mediumint(9) NOT NULL auto_increment,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `backend` varchar(50) NOT NULL,
   `description` text NOT NULL,
   `type` varchar(10) NOT NULL,
