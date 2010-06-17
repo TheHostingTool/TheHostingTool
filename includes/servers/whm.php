@@ -202,7 +202,17 @@ class whm {
 				$i++;
 			}
 		}
-
+		
+		$list = $xml->getElementsByTagName('email');
+		$i=0;
+		foreach ($list AS $element)
+		{
+			foreach ($element->childNodes AS $item)
+			{
+				$result[$i]['email']=$item->nodeValue;
+				$i++;
+			}
+		}
 		//return the result array
 		return $result;
 	}

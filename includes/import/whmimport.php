@@ -60,7 +60,7 @@ class whmimport {
 							$db->query("INSERT INTO `<PRE>users` (user,email,password,salt,signup,ip) 
 																	 VALUES(
 																			'{$data['user']}',
-																			'imported-whm@account.com',
+																			'{$data['email']}',
 																			'',
 																			'saltme',
 																			'{$data['start_date']}',
