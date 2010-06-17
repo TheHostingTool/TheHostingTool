@@ -389,6 +389,11 @@ class AJAX {
 							$array['FUNC'] = "none";	
 							$array['IMG'] = "user_suit.png";
 						}
+						elseif($client['status'] == "4") {
+							$array['TEXT'] = "Awaiting Payment";
+							$array['FUNC'] = "none";	
+							$array['IMG'] = "money.png";
+						}
 						else {
 							$array['TEXT'] = "Other Status";
 							$array['FUNC'] = "none";	
