@@ -18,7 +18,7 @@
   <tr>
     <td width="20%">Backend:</td>
     <td>
-      <input name="backend" type="text" id="backend" /><a title="The <b>backend</b> name of your package. This is the name of the package shown in your WebHost Manager." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      <input name="backend" type="text" id="backend" /><a title="The <b>backend</b> name of your package. This is the name of the package shown in your WebHost Manager. DO NOT USE SPACES!" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>
