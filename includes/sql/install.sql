@@ -1,18 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 3.2.4
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Mar 21, 2010 at 10:29 PM
--- Server version: 5.0.89
--- PHP Version: 5.2.6
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
---
--- Database: `%PRE%testtrunk`
---
-
 -- --------------------------------------------------------
 
 --
@@ -134,7 +120,6 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('version', '1.2.1'),
 ('smtp_user', 'user'),
 ('senabled', '1'),
-('api-key', '%API-KEY%'),
 ('whm-ssl', '0'),
 ('paypalemail', 'your@email.com'),
 ('default', 'order'),
