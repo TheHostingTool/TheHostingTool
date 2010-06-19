@@ -23,7 +23,7 @@ Support Team:
 	David
 	Matt <matt@thehostingtool.com>
 Wiki Team:
-	asiansaga
+	asiansaga <asiansaga@thehostingtool.com>
 	mghq2 <mghq2@thehostingtool.com>
 	Oloty
 	zzbomb <zzbomb@thehostingtool.com>
