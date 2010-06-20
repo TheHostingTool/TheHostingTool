@@ -93,7 +93,7 @@ class page {
 		if(!$main->getvar['do']) {
 			$query = $db->query("SELECT * FROM `<PRE>tickets` WHERE `reply` = '0' AND `status` != '3' ORDER BY `time` DESC");
 			if(!$db->num_rows($query)) {
-				echo "You currently have no new tickets!";
+				echo "You currently have no new tickets! <i><u><a href=\"?page=ticketsall\" title=\"View all tickets.\">View all tickets</a></u></i>";
 			}
 			else {
 				echo "<div style=\"display: none;\" id=\"nun-tickets\">You currently have no new tickets!</div>";
