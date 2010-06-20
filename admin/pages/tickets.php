@@ -85,18 +85,18 @@ class page {
 		return $style->replaceVar("tpl/support/replybox.tpl", $array);
 	}
 	
-	public function content() { # Displays the page 
+	public function content($status) { # Displays the page 
 		global $main;
 		global $style;
 		global $db;
 		global $email;
 		if(!$main->getvar['do']) {
-			$query = $db->query("SELECT * FROM `<PRE>tickets` WHERE `reply` = '0' ORDER BY `time` DESC");
+			$query = $db->query("SELECT * FROM `<PRE>tickets` WHERE `reply` = '0' AND `status` != '3' ORDER BY `time` DESC");
 			if(!$db->num_rows($query)) {
-				echo "You currently have no tickets!";
+				echo "You currently have no new tickets!";
 			}
 			else {
-				echo "<div style=\"display: none;\" id=\"nun-tickets\">You currently have no tickets!</div>";
+				echo "<div style=\"display: none;\" id=\"nun-tickets\">You currently have no new tickets!</div>";
 				$num_rows = $db->num_rows($query);
 				echo $style->replaceVar("tpl/support/acpticketjs.tpl", array('NUM_TICKETS' => $num_rows));
 				while($data = $db->fetch_array($query)) {
@@ -119,6 +119,7 @@ class page {
 					$array['ID'] = $data['id'];
 					echo $style->replaceVar("tpl/support/acpticketviewbox.tpl", $array);
 				}
+				echo "<center><i><u><a href=\"?page=ticketsall\" title=\"View all tickets.\">View all tickets</a></u></i></center>";
 			}
 		}
 		else {
