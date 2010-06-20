@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%config` (
 
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('url', 'http://thehostingtool.com/'),
-('version', '1.2.1'),
+('version', '1.2.3'),
 ('smtp_user', 'user'),
 ('senabled', '1'),
 ('whm-ssl', '0'),
