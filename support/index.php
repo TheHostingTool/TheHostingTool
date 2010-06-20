@@ -22,6 +22,10 @@ if(!$main->getvar['page']) {
 	$page = $db->fetch_array($query);
 	$header = $page['visual'];
 	$link = "pages/". $main->getvar['page'] .".php";
+if($db->config("senabled") == 0) {
+	$html = $db->config("smessage");
+}
+else{
 	if(!file_exists($link)) {
 		$html = "Seems like the .php is non existant. Is it deleted?";	
 	}
@@ -51,7 +55,7 @@ if(!$main->getvar['page']) {
 			$email->staff("Possible Hacking Attempt", "A user has been logged trying to hack your copy of THT, their IP is: ". $_SERVER['REMOTE_ADDR']);
 		}
 	}
-	
+}
 	echo '<div>';
 	echo $main->table($header, $html);
 	echo '</div>';
