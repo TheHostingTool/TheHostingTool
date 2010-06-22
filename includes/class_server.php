@@ -567,6 +567,13 @@ class server {
 			$main->error($array);
 			return;	
 		}
+		$query2 = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$query['userid']}' AND (`status` = '1')");
+		if($db->num_rows($query2) == 0) {
+			$array['Error'] = "That user doesn't exist or cannot be approved! (Did they confirm their e-mail?)";
+			$array['User PID'] = $id;
+			$main->error($array);
+			return;	
+		}
 		else {
 			$data = $db->fetch_array($query);
 			$query2 = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$db->strip($data['userid'])}'");
@@ -591,7 +598,7 @@ class server {
 		}
 	}
 	
-	public function confirm($username, $confirm) { # Suspends a user account from the package ID
+	public function confirm($username, $confirm) { # Set's user's account to Active when the unique link is visited.
 		global $db, $main, $type, $email;
 		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$username}' AND `signup` = {$confirm} AND `status` = '3'");
 		if($db->num_rows($query) == 0) {
