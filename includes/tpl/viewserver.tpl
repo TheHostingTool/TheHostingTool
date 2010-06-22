@@ -40,7 +40,7 @@ $(window).load(function () {
     <td width="20%">Host:</td>
     <td>
       <input name="host" type="text" id="host" value="%HOST%" />
-      <a title="The server's hostname or IP." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      <a title="The Server's Hostname. Must be a FQDN!" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>
