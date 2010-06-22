@@ -558,18 +558,12 @@ class server {
 		}
 	}
 	
-	public function approve($id) { # Unsuspends a user account from the package ID
+	public function approve($id) { # Approves a user's account (Admin Validation).
 		global $db, $main, $type, $email;
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
-		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That package doesn't exist or cannot be approved!";
-			$array['User PID'] = $id;
-			$main->error($array);
-			return;	
-		}
-		$query2 = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$query['userid']}' AND (`status` = '1')");
-		if($db->num_rows($query2) == 0) {
-			$array['Error'] = "That user doesn't exist or cannot be approved! (Did they confirm their e-mail?)";
+		$uquery = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$query['userid']}' AND (`status` = '1')");
+		if($db->num_rows($query) == 0 AND $db->num_rows($uquery) == 0) {
+			$array['Error'] = "That package doesn't exist or cannot be approved! (Did they confirm their e-mail?)";
 			$array['User PID'] = $id;
 			$main->error($array);
 			return;	
