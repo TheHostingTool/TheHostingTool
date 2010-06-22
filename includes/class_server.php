@@ -215,7 +215,7 @@ class server {
 			$password = md5(md5($main->getvar['password']).md5($salt));
 			$UsrName = $main->getvar['username'];
 			$newusername = $main->getvar['username'];	
-			$db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone) VALUES(
+			$db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone, status) VALUES(
 													  '{$main->getvar['username']}',
 													  '{$main->getvar['email']}',
 													  '{$password}',
@@ -229,7 +229,8 @@ class server {
 													  '{$main->getvar['state']}',
 													  '{$main->getvar['zip']}',
 													  '{$main->getvar['country']}',
-													  '{$main->getvar['phone']}')");
+													  '{$main->getvar['phone']}',
+													  '3')");
 			$db->query("INSERT INTO `<PRE>users_bak` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone) VALUES(
 													  '{$main->getvar['username']}',
 													  '{$main->getvar['email']}',
@@ -276,9 +277,12 @@ class server {
 													  '{$date}',
 													  'Package created ({$main->getvar['fdom']})')");
 				global $email;
+				$url = $db->config("url");
 				$array['USER'] = $newusername;
-				$array['PASS'] = $main->getvar['password']; $array['EMAIL'] = $main->getvar['email'];
+				$array['PASS'] = $main->getvar['password']; 
+				$array['EMAIL'] = $main->getvar['email'];
 				$array['DOMAIN'] = $main->getvar['fdom'];
+				$array['CONFIRM'] = $url . "client/confirm.php?u=" . $newusername . "&c=" . $date;
 				
 				//Get plan email friendly name
 				$pquery = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$main->getvar['package']}'");
@@ -584,6 +588,27 @@ class server {
 			else {
 				return false;	
 			}
+		}
+	}
+	
+	public function confirm($username, $confirm) { # Suspends a user account from the package ID
+		global $db, $main, $type, $email;
+		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$username}' AND `signup` = {$confirm} AND `status` = '3'");
+		if($db->num_rows($query) == 0) {
+			$array['Error'] = "That package doesn't exist or cannot be confirmed!";
+			$main->error($array);
+			return false;	
+		}
+		else {
+			$data = $db->fetch_array($query);
+			$date = time();
+			$db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `user` = '{$username}'");
+			$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+												  '{$db->strip($data['userid'])}',
+												  '{$data['user']}',
+												  '{$date}',
+												  'Account/E-mail Confirmed.')");
+			return true;
 		}
 	}
 }
