@@ -47,6 +47,11 @@ class AJAX {
 			echo 0;
 			return;
 		}
+		//If it's less than 4 characters then complain.
+		if(strlen($main->getvar['user']) < 4) {
+			echo 0;
+			return;
+		}
 		else {
 			//If the first character is a number, then complain.
 			if(is_numeric(substr($main->getvar['user'], 0, 1))) {
