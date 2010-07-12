@@ -1,4 +1,4 @@
-<?
+<?php
 // *** CAPTCHA image generation ***
 // *** http://frikk.tk ***
 
