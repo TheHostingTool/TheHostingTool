@@ -30,16 +30,16 @@ unset($_SESSION['check']);
 #Check stuff
 if($db->config("general") == 0) {
 	$maincontent = $main->table("Signups Closed", $db->config("message"));
-}
-elseif(!$main->checkIP($ip) && !$db->config("multiple")) {
+} elseif(!$main->checkIP($ip) && !$db->config("multiple")) {
 	$maincontent = $main->table("IP Already Exists!", "Your IP already exists in the database!");
-}
-elseif($_SESSION['clogged']) {
+} elseif($_SESSION['clogged'] && $db->config('multiple') != 1) {
 	$maincontent = $main->table("Unable to sign-up!", "One package per account!");
-}
-else {
+} else {
 	$_SESSION['orderform'] = true;	
 }
+
+
+global $billing; 
 
 echo '<div id="ajaxwrapper">'; #Ajax wrapper, for steps
 
