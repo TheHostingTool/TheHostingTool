@@ -18,6 +18,7 @@ class type {
 	
 	public function acpPadd($type) { # Returns the html of a custom form
 		global $style;
+		$type_value = $type;
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
 		}
@@ -25,56 +26,67 @@ class type {
 			$type = $this->classes[$type];	
 		}
 		if($type->acpForm) {
-                        $html .= $style->javascript();
-                        $html .= '<script type="text/javascript">
-                        var gi = 0;
-                        $(document).ready(function(){
-                            //var info = new Array();
-                            var info;
-                            $("#submitIt").click(function() {
-                                $("input").each(function(i) {
-                                    if(gi == 0) {
-                                        info = this.name + "="  + $("#" + this.id).val();
-                                    }
-                                    else {
-                                        info = info + "," + this.name + "="  + $("#" + this.id).val();
-                                    }
-
-                                    
-                                    gi++;
-                                });
-                                $("select").each(function(i) {
-                                    if(gi == 0) {
-                                        info = this.name + "="  + $("#" + this.id).val();
-                                    }
-                                    else {
-                                        info = info + "," + this.name + "="  + $("#" + this.id).val();
-                                    }
-                                    gi++;
-                                });
-                                var id = window.name.toString().split("-")[1];
-                                window.opener.transfer(id, info);
-                                window.close();
-                            });
-                        });
-                        </script>';
-
-			foreach($type->acpForm as $key => $value) {
-				$array['NAME'] = $value[0] .":";
-				$array['FORM'] = $value[1];
-				$html .= $style->replaceVar("tpl/acptypeform.tpl", $array);
+	        $html .= $style->javascript();
+	        $html .= '<script type="text/javascript">
+	        var gi = 0;
+	        $(document).ready(function(){
+	            //var info = new Array();
+	            var info;
+	            $("#submitIt").click(function() {
+	                $("input").each(function(i) {
+	                    if(gi == 0) {
+	                        info = this.name + "="  + $("#" + this.id).val();
+	                    }
+	                    else {
+	                        info = info + "," + this.name + "="  + $("#" + this.id).val();
+	                    }
+	
+	                    
+	                    gi++;
+	                });
+	                $("select").each(function(i) {
+	                    if(gi == 0) {
+	                        info = this.name + "="  + $("#" + this.id).val();
+	                    }
+	                    else {
+	                        info = info + "," + this.name + "="  + $("#" + this.id).val();
+	                    }
+	                    gi++;
+	                });
+	                var id = window.name.toString().split("-")[1];
+	                window.opener.transfer(id, info);
+	                window.close();
+	            });
+	        });
+	        </script>';
+			if (count($type->acpForm) > 0 ) { 
+				foreach($type->acpForm as $key => $value) {
+					$array['NAME'] = $value[0] .":";
+					$array['FORM'] = $value[1];
+					$html .= $style->replaceVar("tpl/acptypeform.tpl", $array);
+				}
 			}
-                        $html .= "<button id=\"submitIt\">Submit</button>";
+			if ($type_value != 'paid') {
+            	$html .= "<button id=\"submitIt\">Submit2</button>";
+			}
 			return $html;
+		} else {			
+			switch ($type_value) {
+				case 'paid':
+					echo 'You need to create first new billing cycles: <a href="index.php?page=billing">here</a>';
+				break;
+				default:
+				break;
+			}
 		}
 	}
 	
 	public function orderForm($type) { # Returns the html of a custom form
 		global $style;
+		
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
-		}
-		else {
+		} else {
 			$type = $this->classes[$type];	
 		}
 		if($type->orderForm) {
@@ -129,6 +141,7 @@ class type {
 		$this->classes = $classes;
 	}
 	
+	//@todo this should be move or removed to class_package
 	public function determineType($id) { # Returns type of a package
 		global $db;
 		global $main;
@@ -136,10 +149,9 @@ class type {
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That package doesn't exist!";
 			$array['Package ID'] = $id;
-			$main->error($array);
-			return;
-		}
-		else {
+			//$main->error($array);
+			return false;
+		} else {
 			$data = $db->fetch_array($query);
 			return $data['type'];
 		}
@@ -174,6 +186,7 @@ class type {
 			return $data['type'];
 		}
 	}
+	//@todo this should be move or removed to class_package
 	public function determineBackend($id) { # Returns server of a package
 		global $db;
 		global $main;
@@ -182,9 +195,8 @@ class type {
 			$array['Error'] = "That package doesn't exist!";
 			$array['Package ID'] = $id;
 			$main->error($array);
-			return;	
-		}
-		else {
+			return false;	
+		} else {
 			$data = $db->fetch_array($query);
 			return $data['backend'];
 		}
