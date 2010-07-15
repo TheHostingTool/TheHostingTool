@@ -261,6 +261,16 @@ class db {
 			return $db->fetch_array($query);	
 		}
 	}
+	
+	/**
+	 * Gets the ID of the last item inserted into the database
+	 * @param resource $connection (optional)	The database server connection, for detailed description see the method query().
+	 * @return int								The last ID as returned by the DB function
+	 */
+	public static function insert_id($connection = null) {
+		return self::use_default_connection($connection) ? mysql_insert_id() : mysql_insert_id($connection);
+	}
+	
 }
 //End SQL
 ?>
