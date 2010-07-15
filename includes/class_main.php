@@ -378,8 +378,7 @@ class main {
 				$isValid = false;
 			 }
 		  }
-		  if ($isValid && !(checkdnsrr($domain,"MX") || 
-	 ↪checkdnsrr($domain,"A")))
+		  if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
 		  {
 			 // domain not found in DNS
 			 $isValid = false;
@@ -425,6 +424,6 @@ class main {
 		
 		//Let's wrap it all up.
 		return true;
-	}		/**	 * Creates a checkbox	 * @param string	label	 * @param string	name	 * @param bool		true if the checkbox will be checked	 * @return string html	 * 	 */	public function createCheckbox($label, $name, $checked = false) {		if ($checked == true) {			$checked = 'checked="'.$checked.'"';		} else {			$checked = '';		}		if(empty($label)) {			$label = '';		} else {			$label = $label.':';		}		$html = $label.'<input type="checkbox" name="'.$name.'"  '.$checked.' > <br/>';		return $html;	}	
+	}		/**	 * Creates a checkbox	 * @param string	label	 * @param string	name	 * @param bool		true if the checkbox will be checked	 * @return string html	 * 	 */	public function createCheckbox($label, $name, $checked = false) {		if ($checked == true) {			$checked = 'checked="'.$checked.'"';		} else {			$checked = '';		}		if(empty($label)) {			$label = '';		} else {			$label = $label.':';		}		$html = $label.'<input type="checkbox" name="'.$name.'"  '.$checked.' > <br/>';		return $html;	}		/**	 * Creates an input	 * @param string	label	 * @param string	name	 * @param bool		true if the checkbox will be checked	 * @return string html	 * 	 */	public function createInput($label, $name, $value) {		$html = $label.' <input name="'.$name.'" value="'.$value.'"> <br/>';		return $html;	}	
 }
 ?>
