@@ -33,7 +33,8 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (14, 'Knowledge Base', 'folder.png', 'kb'),
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
 (19, 'Invoice Management', 'script.png', 'invoices'),
-(20, 'Logs', 'report.png', 'logs');
+(20, 'Logs', 'report.png', 'logs'),
+(21, 'Billing Cycles', 'rainbow.png', 'billing');
 
 -- --------------------------------------------------------
 
@@ -539,3 +540,22 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 --
 -- Dumping data for table `%PRE%user_packs_bak`
 --
+
+
+
+
+
+CREATE TABLE `%PRE%billing_cycles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `number_months` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cycle_month` (`number_months`,`name`)
+);
+
+
+INSERT INTO `%PRE%billing_cycles` (`number_months`, `name`, `status`) VALUES
+('12', 'Annually', '1'),
+('6', 'Semiannually', '1'),
+('1', 'Monthly', '1');
