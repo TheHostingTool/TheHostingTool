@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // Database (mySQL) Class
-// By Jonny H
+// By Jonny H, Julio Montoya <gugli100@gmail.com> BeezNest 2010 Adding new functions
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -122,14 +122,18 @@ class db {
 		return $result; # Return mySQL result
 	}
 	
-	public function num_rows($sql) { # Runs a query and returns the rows
-		$sql = mysql_num_rows($sql); # Run query
-		return $sql; # Return SQL
+	/**
+	 * Gets the number of rows from the last query result - help achieving database independence
+	 * @param resource		The result
+	 * @return integer		The number of rows contained in this result
+	 **/
+	public function num_rows($result) {		
+		return is_resource($result) ? mysql_num_rows($result) : false;
 	}
 	
-	public function fetch_array($sql) { # Gets a query and returns the rows/columns as array
-		$sql = @mysql_fetch_array($sql); # Fetch the SQL Array, all the data
-		return $sql; # Return SQL
+	public function fetch_array($result, $option = 'BOTH') { # Gets a query and returns the rows/columns as array
+		//$sql = @mysql_fetch_array($result); # Fetch the SQL Array, all the data
+		return $option == 'ASSOC' ? mysql_fetch_array($result, MYSQL_ASSOC) : ($option == 'NUM' ? mysql_fetch_array($result, MYSQL_NUM) : mysql_fetch_array($result));		
 	}
 	
 	public function strip($value) { # Gets a string and returns a value without SQL Injection
@@ -153,8 +157,7 @@ class db {
 				}
 			}
 			return $array;
-		}
-		else {
+		} else {
 			if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
 				  $value = stripslashes($value); 
 			}
@@ -269,6 +272,16 @@ class db {
 	 */
 	public static function insert_id($connection = null) {
 		return self::use_default_connection($connection) ? mysql_insert_id() : mysql_insert_id($connection);
+	}	
+	
+	public static function store_result($result, $option = 'ASSOC') {
+		$array = array();
+		if ($result !== false) { // For isolation from database engine's behaviour.
+			while ($row = self::fetch_array($result, $option)) {
+				$array[] = $row;
+			}
+		}
+		return $array;
 	}
 	
 }
