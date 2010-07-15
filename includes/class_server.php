@@ -33,16 +33,16 @@ class server {
 	}
 	
 	public function signup() { # Echos the result of signup for ajax
-		global $main;
-		global $db;
-		global $type;
-			
-		//Check details
-		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$main->getvar['package']}' AND `is_disabled` = 0"); # Package disabled?
-		if($db->num_rows($query) != 1) {
-			echo "Package is disabled.!";
+		global $main, $db, $type, $addon, $order, $package, $email, $user;
+		
+		//Check package details
+		$package_id 	= intval($main->getvar['package']);
+		$package_info 	= $package->getPackage($package_id);	
+		
+		if (empty($package_info) || $package_info['is_disable'] == 1) {
+			echo 'Package doesn\'t exist please contact the administrator';
 			return;
-		}
+		}		
 		if($main->getvar['domain'] == "dom") { # If Domain
 			if(!$main->getvar['cdom']) {
 				echo "Please fill in the domain field!";
@@ -68,12 +68,14 @@ class server {
 			}
 			$main->getvar['fdom'] = $main->getvar['cdom'];
 		}
-		if($main->getvar['domain'] == "sub") { # If Subdomain
+		if($main->getvar['domain'] == 'sub') { # If Subdomain
 			if(!$main->getvar['csub']) {
 				echo "Please fill in the subdomain field!";
 				return;
-			}
-			$main->getvar['fdom'] = $main->getvar['csub'].".".$main->getvar['csub2'];
+			}			
+			$subdomain_list = $main->getSubDomainByServer($package_info['server']);			
+			$subdomain = $subdomain_list[$main->getvar['csub2']];			
+			$main->getvar['fdom'] = $main->getvar['csub'].".".$subdomain;
 		}
 		
 		if((!$main->getvar['username'])) {

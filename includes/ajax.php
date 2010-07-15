@@ -423,12 +423,9 @@ class AJAX {
 	public function sub() {
 		global $main, $db, $type;
 		$pack = $main->getvar['pack'];
-		$server = $type->determineServer($pack);
-		$select = $db->query("SELECT * FROM `<PRE>subdomains` WHERE `server` = '{$server}'");
-		while($select = $db->fetch_array($select)) {
-			$values[] = array($select['subdomain'], $select['subdomain']);	
-		}
-		echo $main->dropdown("csub2", $values);
+		$server = $type->determineServer($pack);	
+		$values = $main->getSubDomainByServer($server);
+		echo $main->createSelect('csub2', $values);		
 	}
 	
 	public function phpinfo() {
