@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // Order Form
-// By Jonny H
+// By Jonny H, Julio Montoya <gugli100@gmail.com> BeezNest 2010
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -23,6 +23,9 @@ if($main->getvar['do'] == "logout") {
 
 echo $style->get("header.tpl"); #Output Header
 $ip = $_SERVER['REMOTE_ADDR'];
+
+//Deleting check every time a user logs for the first time
+unset($_SESSION['check']);
 
 #Check stuff
 if($db->config("general") == 0) {
