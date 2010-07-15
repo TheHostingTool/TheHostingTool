@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // AJAX Class
-// By Jonny H and Kevin M
+// By Jonny H and Kevin M, Julio Montoya <gugli100@gmail.com> BeezNest 2010
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -11,8 +11,7 @@ include("compiler.php");
 
 class AJAX {
 
-	public function orderIsUser()
-	{
+	public function orderIsUser() {
 		if(!$_SESSION['clogged']) {
 			echo "0";
 		} else {
@@ -1104,6 +1103,215 @@ class AJAX {
 			   }
 		   }
 	   }
+	   
+	   function getAddons() {
+	   		global $main, $db, $currency;
+			$billing_id = $main->getvar['billing_id'];			
+	   		$package_id = $main->getvar['package_id'];
+	   		
+	   		
+	   		$html = '<fieldset style="width: 90%;"><legend><b>Package Order</b></legend><table width="100%" >';
+	   		
+	   		$sql = "SELECT a.name, amount, bc.name  as billing_name  FROM `<PRE>packages` a INNER JOIN `<PRE>billing_products` b ON (a.id = b.product_id) INNER JOIN `<PRE>billing_cycles` bc
+					ON (bc.id = b.billing_id) WHERE a.id = {$package_id} AND bc.id = {$main->getvar['billing_id']}  AND b.type = '".BILLING_TYPE_PACKAGE."' ";
+			$result = $db->query($sql); 
+			$package_billing_info_exist = false;
+			if ($db->num_rows($result) > 0) {				
+				while($data = $db->fetch_array($result)) {
+					$amount_to_show  = $currency->toCurrency($data['amount']);			
+			       	$html .= "<tr><td width=\"33%\"> {$data['name']}</td>
+			            <td width=\"33%\" align=\"right\"><strong>{$data['billing_name']}</strong></td>
+			            <td width=\"33%\" align=\"right\">{$amount_to_show}</td>		     
+			        	</tr>";
+			        $package_billing_info_exist = true;
+				} 
+			} else {
+				$html .='No data for this package at the moment'; 					
+			}
+			
+	   		$html .='</table></fieldset><br />';
+	   		
+	   		$sql = "SELECT * FROM `<PRE>package_addons` WHERE `package_id` = '{$main->getvar['package_id']}' ";
+	   		$result = $db->query($sql); 		
+	   		
+	   		if ($db->num_rows($result) > 0) {
+	   			$info_exist = false;
+		   		$html .= '<fieldset  style="width: 90%;"> <legend><b>Order Add-Ons</b></legend>';
+		   		$html .= '<table width="100%" >';
+		   		
+		   		while($data = $db->fetch_array($result)) {		   			
+		   			$sql = "SELECT a.name, description, setup_fee, bc.name as billing_name, b.amount FROM `<PRE>addons` a INNER JOIN `<PRE>billing_products` b ON (a.id = b.product_id) INNER JOIN `<PRE>billing_cycles` bc
+							ON (bc.id = b.billing_id) WHERE a.status = ".ADDON_STATUS_ACTIVE." AND a.id = {$data['addon_id']} AND bc.id = {$main->getvar['billing_id']}  AND b.type = '".BILLING_TYPE_ADDON."' ORDER BY a.name";
+					$addon_result = $db->query($sql);
+					if ($db->num_rows($addon_result) > 0) {
+						$addon = $db->fetch_array($addon_result);
+						
+						$addon['amount'] = $currency->toCurrency($addon['amount']);
+					
+						//@todo setup feee per 	
+						//$setup_fee = '<b>Setup Fee:</b></td><td align="right">'.$addon['setup_fee'];
+						$setup_fee ='';
+						$html .='<tr><td width="1%"><input id="addon_ids" value="'.$data['addon_id'].'" name="addon_ids" type="checkbox"></td>';
+						$html .='<td width="33%">'.$addon['name'].'</td><td align="right">'.$setup_fee.'</td><td align="right"><strong>'.$addon['billing_name'].'</strong></td>';
+						$html .='<td width="33%" align="right">'.$addon['amount'].'</td></tr>';
+						$info_exist = true;
+					}
+		   		}
+		   		$html .='</table></fieldset>';		   		
+		   		
+		   		$html .='<input type="hidden" name="billing_id" value="'.$billing_id.'">';
+	   		}
+   			if ($package_billing_info_exist) {
+	   			echo $html;
+	   		} else {
+	   			echo 'No billing cycle for this package';
+	   		}
+	   }
+	   
+	   function getSummary() {
+	   		global $main, $db, $currency;
+	   		
+	   		$package_id = $main->getvar['package_id'];
+			$billing_id = $main->getvar['billing_id'];
+			$addon_list = $main->getvar['addon_list'];
+			
+			$addon_list = explode('-' , $addon_list);
+			//var_dump($addon_list);
+			
+			$new_addon_list = array();
+			foreach($addon_list as $addon) {
+				if (!empty($addon) && is_numeric($addon)) {
+					$addon = intval($addon);
+					$addon = "'$addon'";
+					$new_addon_list[] =  $addon;
+				}
+			}
+			$new_addon_list = implode(',', $new_addon_list);
+			
+			$sql = "SELECT a.name, amount , bc.name as billing_name  FROM `<PRE>packages` a INNER JOIN `<PRE>billing_products` b ON (a.id = b.product_id) INNER JOIN `<PRE>billing_cycles` bc
+					ON (bc.id = b.billing_id) WHERE a.id = {$package_id} AND bc.id = {$main->getvar['billing_id']} AND b.type = '".BILLING_TYPE_PACKAGE."'";
+			$result = $db->query($sql); 
+			$html = '';
+			$total = 0;
+			
+			$html  = '<fieldset  style="width: 90%;"> <legend><b>Summary</b></legend>';
+			$html .= '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="3">
+					        <tr>
+					            <td width="2%"></td>
+					            <td width="28%"><b>Items in basket</b></td>
+					            <td width="50%"><b>Description</b></td>
+					            <td width="18%" align="right"><b>Cost</b></td>
+					            <td width="2%"></td>
+					        </tr>';
+					        					        
+			while($data = $db->fetch_array($result,'ASSOC')) {	
+				$amount_to_show  = $currency->toCurrency($data['amount']);			
+		       	$html .= "<tr>
+		            <td></td>
+		            <td>{$data['name']}</td>
+		            <td>{$data['billing_name']} {$amount_to_show}</td>
+		            <td align=\"right\">{$amount_to_show}</td>
+		            <td></td>
+		        	</tr>";		        	
+		        	$total = $total + $data['amount'];
+			}			
+			
+			if (!empty($new_addon_list) && !empty($main->getvar['billing_id'])) {
+				$sql = "SELECT a.name, setup_fee, bc.name as billing_name, b.amount FROM `<PRE>addons` a INNER JOIN `<PRE>billing_products` b ON (a.id = b.product_id) INNER JOIN `<PRE>billing_cycles` bc
+						ON (bc.id = b.billing_id) WHERE a.id IN ({$new_addon_list}) AND bc.id = {$main->getvar['billing_id']} AND b.type = '".BILLING_TYPE_ADDON."' ORDER BY a.name";
+				$result = $db->query($sql); 
+			
+				while($data = $db->fetch_array($result)) {
+					$amount_to_show  = $currency->toCurrency($data['amount']);	
+					
+			       	$html .= "<tr>
+			            <td></td>
+			            <td>{$data['name']}</td>
+			            <td>{$data['billing_name']} {$amount_to_show}</td>
+			            <td align=\"right\">{$amount_to_show}</td>
+			            <td></td>
+			        	</tr>";
+			        $total = $total + $data['amount'];
+				}
+			}
+			
+			$total_to_show  = $currency->toCurrency($total);	
+			$html .="<tr>
+			            <td></td>
+			            <td></td>
+			            <td><b><h2>Total</h2></b></td>
+			            <td align=\"right\"><h2>{$total_to_show}</h2></td>
+			            <td></td>
+			        </tr>";
+			$html .='</table>';
+			$html .='</fieldset>';	  	        
+			echo $html;
+	   }
+	   
+	   function changeAddons() {
+	   		global $main, $db, $addon, $currency, $order;
+	   		$package_id = $main->getvar['package_id'];
+			$order_id	= $main->getvar['order_id'];	  
+			 		
+	   		$order_info = $order->getOrderInfo($order_id);	   		
+	   		$billing_id = $order_info['billing_cycle_id'];
+	   		
+	   		$addon_list = $addon->getAddonsByPackage($package_id);
+	   		
+	   		foreach($addon_list as $addon_item) {
+				$checked = false;
+				if (isset($selected_values[$addon_item['id']])) {
+					$checked = true;
+				}	
+				$html .= $main->createCheckbox($addon_item['name'], 'addon_'.$addon_item['id'], $checked);					
+			}
+			echo $html;
+	   		
+	   }	   
+	   
+	   function loadaddons() {
+	   		global $main, $db, $addon, $currency, $order;
+	   		
+	   		$package_id = $main->getvar['package_id'];
+			$billing_id	= $main->getvar['billing_id'];
+			$order_id	= $main->getvar['order_id'];
+			$addon_selected_list = array();
+			if (!empty($order_id)) {
+				$order_info = $order->getOrderInfo($order_id);
+				$addon_selected_list = $order_info['addons'];
+			}									
+			$result = $addon->showAllAddonsByBillingCycleAndPackage($billing_id, $package_id,array_flip($addon_selected_list));
+			echo $result['html'];			
+	   }
+	   
+	   
+	   function searchuser() {
+			global $main, $user;
+	   		$query = $main->postvar['query'];
+	   		$user_list = $user->searchUser($query);
+	   		foreach($user_list as $user) {
+	   			$user_name = $user['firstname']." - ".$user['lastname']." ( ".$user['email'].")";
+	   			echo "<li onclick=\"fill('{$user_name}', '{$user['id']}');\">$user_name</li>";	
+	   		}	       
+	   }
+	   
+	   function loadpackages() {
+	   		global $main, $db, $addon, $currency, $order, $package;
+	   		$billing_id = $main->getvar['billing_id'];
+	   		$order_id	= $main->getvar['order_id'];
+			$order_info = $order->getOrderInfo($order_id);
+			
+			$packages = $package->getAllPackagesByBillingCycle($billing_id);
+					
+	   		$package_list = array();
+	   		$package_list['0'] = array(' -- Select -- ','0');
+			foreach($packages as $package) {
+				$package_list[$package['id']] = array($package['name'].' - '.$currency->toCurrency($package['amount']), $package['id']);				
+			}
+				
+			echo $main->dropDown('package_id', $package_list, $order_info['pid'], 1, '', array('onchange'=>'loadAddons(this);'));
+	   }
+	 
 }
 if(isset($_GET['function']) and $_GET['function'] != "") {
 	$ajax = new AJAX;
