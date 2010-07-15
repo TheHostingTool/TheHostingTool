@@ -1,5 +1,10 @@
 <?php
-
+/**			
+ *  Billing cycle class
+ * 
+ *	@author 	Julio Montoya <gugli100@gmail.com> Beeznest 2010
+ *	@package	tht.addons	
+*/
 
 //Check if called by script
 if(THT != 1){

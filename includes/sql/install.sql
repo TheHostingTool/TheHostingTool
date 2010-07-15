@@ -34,7 +34,8 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
 (19, 'Invoice Management', 'script.png', 'invoices'),
 (20, 'Logs', 'report.png', 'logs'),
-(21, 'Billing Cycles', 'rainbow.png', 'billing');
+(21, 'Billing Cycles', 'rainbow.png', 'billing'),
+(22, 'Addons', 'rainbow.png', 'addons');
 
 -- --------------------------------------------------------
 
@@ -543,7 +544,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 
 
 
-
+-- Billing cycle structure
 
 CREATE TABLE `%PRE%billing_cycles` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -559,3 +560,41 @@ INSERT INTO `%PRE%billing_cycles` (`number_months`, `name`, `status`) VALUES
 ('12', 'Annually', '1'),
 ('6', 'Semiannually', '1'),
 ('1', 'Monthly', '1');
+
+
+-- Relation of Addons || Packages with billing cycles
+
+CREATE TABLE  `%PRE%billing_products` (
+  `billing_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `amount` decimal(16,6) NOT NULL DEFAULT '0.000000',
+  `type` varchar(255) NOT NULL
+);
+
+-- Table structure for addons
+
+CREATE TABLE  `%PRE%addons` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `setup_fee` decimal(16,6) NOT NULL DEFAULT '0.000000',
+  `description` varchar(255) NOT NULL,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- Relationship between package and addons
+
+CREATE TABLE  `%PRE%package_addons` (
+  `package_id` int NOT NULL DEFAULT '0',
+  `addon_id` int NOT NULL DEFAULT '0'
+);
+
+-- Relationship between user_pack and addons
+CREATE TABLE `%PRE%user_pack_addons` (
+  `order_id` int NOT NULL,
+  `addon_id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+);
+
+
