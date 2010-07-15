@@ -8,7 +8,24 @@
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 #Define the main THT
-define("THT", 1);
+define('THT', 1);
+
+//Billing types
+define('BILLING_TYPE_ADDON', 					'addon');
+define('BILLING_TYPE_PACKAGE', 					'package');
+
+//Addong status
+define('ADDON_STATUS_ACTIVE', 					1);
+define('ADDON_STATUS_INACTIVE', 				0);
+
+//Billing cycle status
+define('BILLING_CYCLE_STATUS_ACTIVE', 			1);
+define('BILLING_CYCLE_STATUS_INACTIVE', 		0);
+
+//Used in admin/billing.php
+define('MAX_NUMBER_MONTHS',						48);
+
+
 
 #Page generated
 $starttime = explode(' ', microtime());
@@ -47,6 +64,8 @@ if($sql['install']) {
 }
 
 $folder = LINK;
+require_once LINK."/model.php"; # Get the file
+
 if ($handle = opendir($folder)) { # Open the folder
 	while (false !== ($file = readdir($handle))) { # Read the files
 		if($file != "." && $file != "..") { # Check aren't these names
