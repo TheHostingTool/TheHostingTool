@@ -47,7 +47,13 @@ class invoice {
 		$query = $db->query("SELECT * FROM `<PRE>invoices` WHERE `id` = '{$iid}'");
 		$array = $db->fetch_array($query);
 		if($_SESSION['cuser'] == $array['uid']) {
-			$paypal->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
+			
+			if ($db->config('paypal_mode') == PAYPAL_STATUS_LIVE) {
+				$paypal->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';				
+			} else {
+				$paypal->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+			}
+			
 			$paypal->add_field('business', 			$db->config('paypalemail'));
 			
 			$paypal->add_field('return', 			urlencode($db->config('url')."client/index.php?page=invoices&sub=paid&invoiceID=".$iid));

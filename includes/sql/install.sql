@@ -151,7 +151,8 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('suspensiondays', '14'),
 ('tldonly', '0'),
 ('currency', 'USD'),
-('ui-theme', 'cupertino');
+('ui-theme', 'cupertino'),
+('paypal_mode', '0'); 
 
 -- --------------------------------------------------------
 
@@ -160,15 +161,18 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `%PRE%invoices` (
-  `id` int(255) NOT NULL auto_increment,
-  `uid` int(255) NOT NULL,
-  `amount` int(255) NOT NULL,
-  `is_paid` int(1) NOT NULL default '0',
+  `id` int NOT NULL auto_increment,
+  `uid` int NOT NULL,
+  `amount` decimal(16,6) NOT NULL,
+  `is_paid` int NOT NULL default '0',
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `due` text NOT NULL,
-  `is_suspended` int(1) NOT NULL default '0',
+  `is_suspended` int NOT NULL default '0',
   `notes` text NOT NULL,
   `uniqueid` varchar(255) NOT NULL,
+  `addon_fee` longtext NOT NULL,
+  `status` int NOT NULL,
+  `transaction_id` varchar(255) NOT NULL,  
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -516,6 +520,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%user_packs_bak` (
   `signup` varchar(20) NOT NULL,
   `status` varchar(1) NOT NULL,
   `additional` text NOT NULL,
+  `billing_cycle_id` int NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -597,4 +602,12 @@ CREATE TABLE `%PRE%user_pack_addons` (
   PRIMARY KEY (`id`)
 );
 
+
+
+CREATE TABLE `%PRE%order_invoices` (
+  `id` INT  NOT NULL AUTO_INCREMENT,
+  `order_id` INT  NOT NULL,
+  `invoice_id` INT  NOT NULL,
+  PRIMARY KEY (`id`)
+);
 

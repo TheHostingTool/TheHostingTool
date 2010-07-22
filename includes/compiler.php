@@ -25,7 +25,8 @@ define('BILLING_CYCLE_STATUS_INACTIVE', 		0);
 //Used in admin/billing.php
 define('MAX_NUMBER_MONTHS',						48);
 
-
+define('PAYPAL_STATUS_LIVE', 					1);
+define('PAYPAL_STATUS_SANDBOX', 				0);
 
 #Page generated
 $starttime = explode(' ', microtime());

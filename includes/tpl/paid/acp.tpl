@@ -22,6 +22,13 @@
     <td><input name="paypalemail" type="text" id="paypalemail" size="20" value="%PAYPALEMAIL%" /></td>
     <td><a title="The email you want paypal working with." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
+  
+      <tr>
+    <td>Paypal Mode:</td>
+    <td>%PAYPAL_MODE%</td>
+    <td><a title="Use sandbox or live mode" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+  </tr>
+  
   <tr>
     <td colspan="3" align="center"><input type="submit" name="submit" id="submit" value="Save Settings" /></td>
     </tr>

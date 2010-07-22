@@ -63,6 +63,8 @@ class paid {
 						$db->updateConfig("terminationdays", $main->postvar['termdays']);
 						$db->updateConfig("currency", $main->postvar['currency']);
 						$db->updateConfig("paypalemail", $main->postvar['paypalemail']);
+						$db->updateConfig('paypal_mode', 		$main->postvar['paypal_mode']);
+								
 						$main->errors("Values have been updated!");
 					}
 					else {
@@ -92,6 +94,11 @@ class paid {
 			$array['SUSDAYS'] = $db->config("suspensiondays");
 			$array['TERDAYS'] = $db->config("terminationdays");
 			$array['PAYPALEMAIL'] = $db->config("paypalemail");
+			
+			$selected_id = $db->config('paypal_mode');
+			$values=array(0=>'Sandbox',1=>'Live');			
+			$array['PAYPAL_MODE'] = $main->createSelect('paypal_mode', $values, $selected_id);
+			
 			echo $style->replaceVar("tpl/paid/acp.tpl", $array);
 		}
 	
