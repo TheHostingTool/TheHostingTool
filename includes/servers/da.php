@@ -14,22 +14,7 @@ class da extends Panel {
 	public $hash = false; # Password or Access Hash?
 	
 	private $server;
-	
-	private function serverDetails($server_id) {
-		global $db;
-		global $main;
-		$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$db->strip($server_id)}'");
-		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That server doesn't exist!";
-			$array['Server ID'] = $server_id;
-			$main->error($array);
-			return;	
-		}
-		else {
-			return $db->fetch_array($query);
-		}
-	}
-	
+		
 	private function remote($action, $url) {
 		$data = $this->serverDetails($this->server);
 		$ch = curl_init();
