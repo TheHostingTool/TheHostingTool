@@ -1,133 +1,108 @@
 <?php
+//////////////////////////////
+// The Hosting Tool
+// Main functions class
+// By Jonny H
+// Released under the GNU-GPL
 //////////////////////////////
-// The Hosting Tool
-// Main functions class
-// By Jonny H
-// Released under the GNU-GPL
-//////////////////////////////
-
 //Check if called by script
 if(THT != 1){die();}
-
-class main {
-	
+class main {	
 	public $postvar = array(), $getvar = array(); # All post/get strings
-	
-	public function cleaninteger($var){ # Transforms an Integer Value (1/0) to a Friendly version (Yes/No)
-	     $patterns[0] = '/0/';
-         $patterns[1] = '/1/';
-         $replacements[0] = 'No';
-         $replacements[1] = 'Yes';
-         return preg_replace($patterns, $replacements, $var);
+	public function cleaninteger($var){ # Transforms an Integer Value (1/0) to a Friendly version (Yes/No)
+	     $patterns[0] = '/0/';
+         $patterns[1] = '/1/';
+         $replacements[0] = 'No';
+         $replacements[1] = 'Yes';
+         return preg_replace($patterns, $replacements, $var);
 	}
-	
-	public function cleanwip($var){ # Cleans v* from the version Number so we can work
-	     if(preg_match('/v/', $var)){
-	     $wip[0] = '/v/';
-	     $wipr[0] = '';
-	     $cleaned = preg_replace($wip, $wipr, $var);
-	     return $cleaned;
-	     }
-	     else{
-	 	     return $var; #Untouched
-	     }
+	public function cleanwip($var){ # Cleans v* from the version Number so we can work
+	     if(preg_match('/v/', $var)) {
+	     	$wip[0] = '/v/';
+	     	$wipr[0] = '';
+	     	$cleaned = preg_replace($wip, $wipr, $var);
+	     	return $cleaned;
+	     } else {	     	return $var; #Untouched
+	     }
 	}
-	public function error($array) { # The main THT Error show
-		echo "<strong>/////////////////THT ERROR<br /></strong>";
-		foreach($array as $key => $data) {
-			echo "<strong>". $key . ":</strong> ". $data ."<br />";
-		}
-		echo "/////////////////<br />";
+	public function error($array) { # The main THT Error show
+		echo "<strong>/////////////////THT ERROR<br /></strong>";
+		foreach($array as $key => $data) {
+			echo "<strong>". $key . ":</strong> ". $data ."<br />";
+		}
+		echo "/////////////////<br />";
+	}	
+	public function redirect($url, $headers = 0, $long = 0) { # Redirects user, default headers
+		if(!$headers) {
+			header("Location: ". $url);	# Redirect with headers
+		} else {
+			echo '<meta http-equiv="REFRESH" content="'.$long.';url='.$url.'">'; # HTML Headers
+		}
 	}
-	
-	public function redirect($url, $headers = 0, $long = 0) { # Redirects user, default headers
-		if(!$headers) {
-			header("Location: ". $url);	# Redirect with headers
+		/**	 *  Shows error default, sets error if $error set	 */
+	public function errors($error = 0) {		
+		if(!$error) {
+			if($_SESSION['errors']) {
+				return $_SESSION['errors'];
+			}
+		} else {
+			$_SESSION['errors'] = $error;
+		}			}	
+	public function table($header, $content = 0, $width = 0, $height = 0) { # Returns the HTML for a THT table
+		global $style;
+		if($width) {
+			$props = "width:".$width.";";		}		
+		if($height) {
+			$props .= "height:".height.";";
 		}
-		else {
-			echo '<meta http-equiv="REFRESH" content="'.$long.';url='.$url.'">'; # HTML Headers
-		}
-	}
-	
-	public function errors($error = 0) { # Shows error default, sets error if $error set
-		if(!$error) {
-			if($_SESSION['errors']) {
-				return $_SESSION['errors'];
-			}
-		}
-		else {
-			$_SESSION['errors'] = $error;
-		}
-	}
-	
-	public function table($header, $content = 0, $width = 0, $height = 0) { # Returns the HTML for a THT table
-		global $style;
-		if($width) {
-			$props = "width:".$width.";";	
-		}
-		if($height) {
-			$props .= "height:".height.";";	
-		}
-		$array['PROPS'] = $props;
-		$array['HEADER'] = $header;
+		$array['PROPS'] = $props;
+		$array['HEADER'] = $header;
 		$array['CONTENT'] = $content;
-		$array['ID'] =rand(0,999999);
-		$link = LINK."../themes/". THEME ."/tpl/table.tpl";
-		if(file_exists($link)) {
-			$tbl = $style->replaceVar("../themes/". THEME ."/tpl/table.tpl", $array);
-		}
-		else {
-			$tbl = $style->replaceVar("tpl/table.tpl", $array);
-		}
-		return $tbl;
+		$array['ID'] =rand(0,999999);
+		$link = LINK."../themes/". THEME ."/tpl/table.tpl";
+		if(file_exists($link)) {
+			$tbl = $style->replaceVar("../themes/". THEME ."/tpl/table.tpl", $array);
+		} else {
+			$tbl = $style->replaceVar("tpl/table.tpl", $array);
+		}
+		return $tbl;
 	}
-	public function sub($left, $right) { # Returns the HTML for a THT table
-		global $style;
-		$array['LEFT'] = $left;
-		$array['RIGHT'] = $right;
-		$link = LINK."../themes/". THEME ."/tpl/sub.tpl";
-		if(file_exists($link)) {
-			$tbl = $style->replaceVar("../themes/". THEME ."/tpl/sub.tpl", $array);
-		}
-		else {
-			$tbl = $style->replaceVar("tpl/sub.tpl", $array);
-		}
-		return $tbl;
+	public function sub($left, $right) { # Returns the HTML for a THT table
+		global $style;
+		$array['LEFT'] = $left;
+		$array['RIGHT'] = $right;
+		$link = LINK."../themes/". THEME ."/tpl/sub.tpl";
+		if(file_exists($link)) {
+			$tbl = $style->replaceVar("../themes/". THEME ."/tpl/sub.tpl", $array);
+		} else {
+			$tbl = $style->replaceVar("tpl/sub.tpl", $array);
+		}
+		return $tbl;
 	}
-	
-	public function evalreturn($code) { # Evals code and then returns it without showing
-		ob_start();
-		eval("?> " . $code . "<?php ");
-		$data = ob_get_contents();
-		ob_clean();
-		return $data;
-	}
-	
-	public function done() { # Redirects the user to the right part
-		global $main;
-		foreach($main->getvar as $key => $value) {
-			if($key != "do") {
-				if($i) {
-					$i = "&";	
-				}
-				else {
-					$i = "?";	
-				}
-				$url .= $i . $key . "=" . $value;
-			}
-		}
-		$main->redirect($url);
+	public function evalreturn($code) { # Evals code and then returns it without showing		ob_start();		eval("?> " . $code . "<?php ");		$data = ob_get_contents();		ob_clean();		return $data;	}
+	public function done() { # Redirects the user to the right part
+		global $main;
+		foreach($main->getvar as $key => $value) {
+			if($key != "do") {
+				if($i) {
+					$i = "&";
+				} else {
+					$i = "?";
+				}
+				$url .= $i . $key . "=" . $value;
+			}
+		}
+		$main->redirect($url);
 	}
 	
-	public function check_email($email) {
-		if($this->validEmail($email)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	public function check_email($email) {
+		if($this->validEmail($email)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
-	
+	/**	 * Creates an input	 * @param string	label	 * @param string	name	 * @param bool		true if the checkbox will be checked	 * @return string html	 * 	 */	public function createInput($label, $name, $value) {		$html = $label.' <input name="'.$name.'" value="'.$value.'"> <br/>';		return $html;	}		/**	 * Creates a checkbox	 * @param string	label	 * @param string	name	 * @param bool		true if the checkbox will be checked	 * @return string html	 * 	 */	public function createCheckbox($label, $name, $checked = false) {		if ($checked == true) {			$checked = 'checked="'.$checked.'"';		} else {			$checked = '';		}		if(empty($label)) {			$label = '';		} else {			$label = $label.':';		}		$html = $label.'<input type="checkbox" name="'.$name.'"  '.$checked.' > <br/>';		return $html;	}	
 	public function dropDown($name, $values, $default = 0, $top = 1, $class = "") { # Returns HTML for a drop down menu with all values and selected
 		if($top) {
 			$html .= '<select name="'.$name.'" id="'.$name.'" class="'.$class.'">';
@@ -145,7 +120,7 @@ class main {
 			$html .= '</select>';
 		}
 		return $html;
-	}
+	}		/**	 * New simpler version of the dropDown function	 * @param 	string	name of the select tag	 * @param	array	values with this structure array(1=>'Item 1', 2=>'Item 2')	 * @param 	array	extra information to add in the select i.e onclick, onBlur, etc	 * @param	bool	show or not a blank item	 * @return	html	returns the select html  	 */	public function createSelect($name, $values, $default = 0, $parameter_list = array(), $show_blank_item = true) {				$extra = '';		foreach($parameter_list as $key=>$parameter) {			$extra .= $key.'="'.$parameter.'"';		}		$html .= '<select name="'.$name.'" id="'.$name.'" '.$extra.'>';			if ($show_blank_item) {			$html .= '<option value="">-- Select --</option>';		}		if($values) {			foreach($values as $key => $value) {				$html .= '<option value="'.$key.'"';				if($default == $key) {					$html .= 'selected="selected"';				}				$html .= '>'.$value.'</option>';			}		}				$html .= '</select>';				return $html;	}		
 	
 	public function userDetails($id) { # Returns the details of a user in an array
 		global $db;
