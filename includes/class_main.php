@@ -226,7 +226,7 @@ class main {
 	
 	public function staffLogin($user, $pass) { # Checks the credentials of a staff member and returns true or false
 		global $db, $main;
-		if($user && $pass) {
+		if($user && $pass) {				
 			$query = $db->query("SELECT * FROM `<PRE>staff` WHERE `user` = '{$main->postvar['user']}'");
 			if($db->num_rows($query) == 0) {
 				return false;
@@ -401,5 +401,30 @@ class main {
 		//Let's wrap it all up.
 		return true;
 	}		/**	 * Generates a random password	 */	public function generatePassword() {		for ($digit = 0; $digit < 5; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$passwd .= chr($c);		}		return $passwd;	}		/**	 * Generates a random username	 */	public function generateUsername() {		$t = rand(5,8);		for ($digit = 0; $digit < $t; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$user .= chr($c);		}		return $user;	}
+	
+	public function getToken () {
+		$token = md5(uniqid(rand(),TRUE));
+		$_SESSION['sec_token'] = $token;
+		return $token;
+	}		
+	public function clearToken() {
+		$_SESSION['sec_token'] = null;
+		unset($_SESSION['sec_token']);
+	}	
+	public function checkToken() {
+		if (isset($this->postvar['_post_token'])) {
+			if (isset($_SESSION['sec_token']) && isset($this->postvar['_post_token']) && $_SESSION['sec_token'] === $this->postvar['_post_token']) {
+				$this->clearToken();
+				return true;
+			}
+		} elseif(isset($this->getvar['_get_token'])) {
+			if (isset($_SESSION['sec_token']) && isset($this->getvar['_get_token']) && $_SESSION['sec_token'] === $this->getvar['_get_token']) {
+				$this->clearToken();
+				return true;
+			}						
+		}
+		$this->clearToken();
+		return false;
+	}
 }
 ?>
