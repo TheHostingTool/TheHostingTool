@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // Admin Area - Servers
-// By Jonny H
+// By Jonny H, Julio Montoya <gugli100@gmail.com> BeezNest 2010
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -12,13 +12,31 @@ if(THT != 1){die();}
 class page {
 	
 	public $navtitle;
-	public $navlist = array();
+	public $navlist = array();	
+	public $array_type = null;
+	
 							
 	public function __construct() {
+		global $main;
 		$this->navtitle = "Servers Sub Menu";
 		$this->navlist[] = array("View Servers", "server_go.png", "view");
 		$this->navlist[] = array("Add Server", "server_add.png", "add");
 		$this->navlist[] = array("Delete Server", "server_delete.png", "delete");
+		
+		$files = $main->folderFiles(LINK."servers/");
+		require_once LINK.'servers/panel.php';
+		if(is_array($files) && count($files) > 0) {
+			foreach($files as $value) {						
+				if ($value != 'panel.php') {
+					require_once LINK."servers/".$value;
+					$fname = explode(".", $value);					
+					$stype = new $fname[0];
+					$values[] = array($stype->name, $fname[0]);	
+				}
+			}
+		}
+		$this->array_type = $main->dropDown("type", $values, 0, 0);
+		
 	}
 	
 	public function description() {
@@ -45,18 +63,11 @@ class page {
 						$main->errors("Server has been added!");
 					}
 				}
-				$files = $main->folderFiles(LINK."servers/");
-				foreach($files as $value) {
-					include(LINK."servers/".$value);
-					$fname = explode(".", $value);
-					$stype = new $fname[0];
-					$values[] = array($stype->name, $fname[0]);	
-				}
-				$array['TYPE'] = $main->dropDown("type", $values, 0, 0);
+				$array['TYPE'] = $this->array_type;
 				echo $style->replaceVar("tpl/addserver.tpl", $array);
 			break;
 			
-			case "view":
+			case 'view':
 				if(isset($main->getvar['do'])) {
 					$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$main->getvar['do']}'");
 					if($db->num_rows($query) == 0) {
@@ -86,14 +97,7 @@ class page {
 						$array['NAME'] = $data['name'];
 						$array['HASH'] = $data['accesshash'];
 						$array['ID'] = $data['id'];
-						$files = $main->folderFiles(LINK."servers/");
-						foreach($files as $value) {
-							include(LINK."servers/".$value);
-							$fname = explode(".", $value);
-							$stype = new $fname[0];
-							$values[] = array($stype->name, $fname[0]);	
-						}
-						$array['TYPE'] = $main->dropDown("type", $values, $data['type'], 0, 0);
+						$array['TYPE'] = $this->array_type;
 						echo $style->replaceVar("tpl/viewserver.tpl", $array);
 					}
 				}
@@ -105,7 +109,7 @@ class page {
 					else {
 						echo "<ERRORS>";
 						while($data = $db->fetch_array($query)) {
-							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=view&do='.$data['id'].'"><img src="'. URL .'themes/icons/magnifier.png"></a>');
+							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=view&do='.$data['id'].'"><img src="'. URL .'themes/icons/pencil.png"></a>');
 							if($n) {
 								echo "<br />";	
 							}
