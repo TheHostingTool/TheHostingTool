@@ -27,7 +27,7 @@ abstract class Panel {
 		}
 	}
 	
-	public	function remote($action, $params){}
+	private	function remote($action, $params){}
 	public	function changePwd($username, $newpwd, $server_id) {}
 	public	function signup($server, $reseller, $user, $email, $pass ) {}
 	public	function suspend($username, $server_id, $reason) {}
