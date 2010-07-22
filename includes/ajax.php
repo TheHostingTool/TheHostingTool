@@ -451,7 +451,8 @@ class AJAX {
 	public function serverhash() {
 		global $main;
 		$type = $main->getvar['type'];
-		include(LINK ."servers/". $type .".php");
+		require LINK.'servers/panel.php';
+		require LINK.'servers/'. $type .'.php';
 		$server = new $type;
 		if($server->hash) {
 			echo 0;	
@@ -466,7 +467,8 @@ class AJAX {
 			global $main, $db;
 			$type = $main->getvar['type'];
 			$id = $main->getvar['server'];
-			include(LINK ."servers/". $type .".php");
+			require LINK.'servers/panel.php';
+			require LINK ."servers/". $type .".php";
 			$server = new $type;
 			if($server->hash) {
 				echo 0;	
