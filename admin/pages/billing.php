@@ -125,13 +125,12 @@ class page {
 						}
 					}
 				}
-				break;
-				
+				break;				
 			case 'delete':
 				if($main->getvar['do']) {
 					$billing->setPrimaryKey($main->getvar['do']);
 					$billing->delete();
-					$main->errors("Billing cycles has been Deleted!");		
+					$main->errors("Billing cycle #{$main->getvar['do']} has been deleted!");		
 				}
 				$query = $db->query("SELECT * FROM `<PRE>billing_cycles`");
 				if($db->num_rows($query) == 0) {
