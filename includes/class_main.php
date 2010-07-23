@@ -400,31 +400,115 @@ class main {
 		
 		//Let's wrap it all up.
 		return true;
-	}		/**	 * Generates a random password	 */	public function generatePassword() {		for ($digit = 0; $digit < 5; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$passwd .= chr($c);		}		return $passwd;	}		/**	 * Generates a random username	 */	public function generateUsername() {		$t = rand(5,8);		for ($digit = 0; $digit < $t; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$user .= chr($c);		}		return $user;	}
+	}
+	
+	/**
+	 * Gets current user info 
+	 */
+	public function getCurrentUserInfo() {
+		if (isset($_SESSION['cuser']) && is_array($_SESSION['cuser'])) {
+			return $_SESSION['cuser'];
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Gets the curren user id 
+	 */
+	public function getCurrentUserId() {
+		if (isset($_SESSION['cuser']) && is_array($_SESSION['cuser'])) {
+			return intval($_SESSION['cuser']['id']);
+		} else {
+			return false;
+		}
+	}	
+	
+	/**
+	 * Gets current staff info 
+	 */
+	public function getCurrentStaffInfo() {
+		if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+			return $_SESSION['user'];
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Gets the curren staff id 
+	 */
+	public function getCurrentStaffId() {
+		if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+			return intval($_SESSION['user']['id']);
+		} else {
+			return false;
+		}
+	}
+			/**	 * Generates a random password	 */	public function generatePassword() {		for ($digit = 0; $digit < 5; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$passwd .= chr($c);		}		return $passwd;	}		/**	 * Generates a random username	 */	public function generateUsername() {		$t = rand(5,8);		for ($digit = 0; $digit < $t; $digit++) {			$r = rand(0,1);			$c = ($r==0)? rand(65,90) : rand(97,122);			$user .= chr($c);		}		return $user;	}
+	
+	/**
+	 * Adds a log
+	 * @param	string	message to save in the log
+	 */		
+	public function addLog($message) {
+		global $db;		
+		$date = time();
+		//Tries to save the log as a staff user		
+		if($this->getCurrentStaffId() != false) {
+			$user_id   	= $this->getCurrentStaffId();
+			$user_name 	= $this->getCurrentStaffInfo();
+			$user_name 	= $user_name['user'];
+		} elseif ($this->getCurrentUserId() != false) {
+			$user_id	= $this->getCurrentUserId();
+			$user_name 	= $this->getCurrentUserInfo();
+			$user_name 	= $user_name['user'];
+		} elseif (CRON == 1) {
+			$user_id = '0';
+			$user_name = 'Cron';
+		} else {
+			$user_id = '0';
+			$user_name = 'Anonymous';
+		}		
+		$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+			'{$user_id}',
+			'{$user_name}',
+			'{$date}',
+			'{$message}')");
+	}
 	
 	public function getToken () {
 		$token = md5(uniqid(rand(),TRUE));
 		$_SESSION['sec_token'] = $token;
 		return $token;
-	}		
+	}	
+		
 	public function clearToken() {
 		$_SESSION['sec_token'] = null;
 		unset($_SESSION['sec_token']);
 	}	
-	public function checkToken() {
-		if (isset($this->postvar['_post_token'])) {
+	
+	public function checkToken($clean_token = true) {
+		if (isset($this->postvar['_post_token'])) {			
 			if (isset($_SESSION['sec_token']) && isset($this->postvar['_post_token']) && $_SESSION['sec_token'] === $this->postvar['_post_token']) {
-				$this->clearToken();
+				if($clean_token)
+					$this->clearToken();
 				return true;
 			}
 		} elseif(isset($this->getvar['_get_token'])) {
+			
 			if (isset($_SESSION['sec_token']) && isset($this->getvar['_get_token']) && $_SESSION['sec_token'] === $this->getvar['_get_token']) {
-				$this->clearToken();
+				if ($clean_token)
+					$this->clearToken();
 				return true;
 			}						
 		}
-		$this->clearToken();
+		if ($clean_token)
+			$this->clearToken();
 		return false;
 	}
+	
+	public function logout() {
+		session_destroy();
+	}
 }
-?>
