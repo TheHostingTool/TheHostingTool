@@ -44,7 +44,7 @@ class page {
 						}
 					}
 					if(!$n) {
-						$query = $query = $db->query("SELECT * FROM `<PRE>staff` WHERE `user` = '{$main->postvar['user']}'");
+						$query = $db->query("SELECT * FROM `<PRE>staff` WHERE `user` = '{$main->postvar['user']}'");
 						if(!$main->check_email($main->postvar['email'])) {
 							$main->errors("Your email is the wrong format!");
 						}
