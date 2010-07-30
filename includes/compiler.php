@@ -110,9 +110,13 @@ $path = dirname($_SERVER['PHP_SELF']);
 $position = strrpos($path,'/') + 1;
 define("FOLDER", substr($path,$position)); # Add current folder name to global
 if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we installing?	
-	$error['Error'] = "THT isn't Installed!";
-	$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
-	die($main->error($error));
+		// Old Method- Uncomment if having trouble installing
+	//$error['Error'] = "THT isn't Installed!";
+	//$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
+	//die($main->error($error));
+		//Lets just redirect to the installer, shall we?
+	$installURL = substr($path, 0, $position) . "install/";
+	header("Location: $installURL");
 }
 
 //Resets the error.
