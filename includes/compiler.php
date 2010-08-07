@@ -114,8 +114,9 @@ if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we insta
 	//$error['Error'] = "THT isn't Installed!";
 	//$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
 	//die($main->error($error));
+	
 		//Lets just redirect to the installer, shall we?
-	$installURL = substr($path, 0, $position) . "install/";
+	$installURL = LINK . "../install";
 	header("Location: $installURL");
 }
 
