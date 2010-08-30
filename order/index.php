@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // Order Form
-// By Jonny H, Julio Montoya <gugli100@gmail.com> BeezNest 2010
+// By Jonny H, Julio Montoya
 // Released under the GNU-GPL
 //////////////////////////////
 

@@ -1,8 +1,8 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Database (mySQL) Class
-// By Jonny H, Julio Montoya <gugli100@gmail.com> BeezNest 2010 Adding new functions
+// Database (MySQL) Class
+// By Jonny H, Julio Montoya
 // Released under the GNU-GPL
 //////////////////////////////
 

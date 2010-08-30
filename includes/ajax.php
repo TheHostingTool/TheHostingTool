@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // AJAX Class
-// By Jonny H and Kevin M, Julio Montoya <gugli100@gmail.com> BeezNest 2010
+// By Jonny H and Kevin M, Julio Montoya
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -424,8 +424,11 @@ class AJAX {
 		global $main, $db, $type;
 		$pack = $main->getvar['pack'];
 		$server = $type->determineServer($pack);	
-		$values = $main->getSubDomainByServer($server);
-		echo $main->createSelect('csub2', $values);		
+		$result = $db->query("SELECT * FROM `<PRE>subdomains` WHERE `server` = '{$server}'");
+		while($result = $db->fetch_array($result)) {
+			$subdomains[$result["id"]] = $result["subdomain"];
+		}
+		echo $main->createSelect('csub2', $subdomains);		
 	}
 	
 	public function phpinfo() {
