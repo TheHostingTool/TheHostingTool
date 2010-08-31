@@ -17,6 +17,7 @@ class server {
 		if($this->servers[$server]) {
 			return;	
 		}
+		require_once LINK."servers/panel.php";		
 		$link = LINK."servers/".$server.".php";
 		if(!file_exists($link)) {
 			$array['Error'] = "The server .php doesn't exist!";
