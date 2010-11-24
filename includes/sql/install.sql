@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%staff` (
 
 CREATE TABLE IF NOT EXISTS `%PRE%subdomains` (
   `id` mediumint(9) NOT NULL auto_increment,
-  `subdomain` varchar(20) NOT NULL,
+  `subdomain` varchar(50) NOT NULL,
   `server` varchar(5) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
