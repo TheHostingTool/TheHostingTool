@@ -65,7 +65,7 @@ if(INSTALL == 1) {
 	if(FOLDER != "install") {
 		$navbar = $db->query("SELECT * FROM `<PRE>navbar` ORDER BY `order` ASC");
 		while($data2 = $db->fetch_array($navbar)) {
-			if(!$db->config("show_acp_menu") && $data2['name'] == "admin") {
+			if(!$db->config("show_acp_menu") && $data2['link'] == "admin") {
 				//Do something?
 			}
 			else {
