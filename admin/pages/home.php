@@ -38,9 +38,8 @@ class page {
 	}
 	
 	public function checkPerms($file){
-		$filechk = substr(sprintf('%o', fileperms($file)), -3);
-		if ($filechk != 644){
-			return "<div class='warn'><img src='../themes/icons/error.png' alt='' /> Warning: Configuration file (conf.inc.php) is still writable, please chmod it to 644!</div>";
+		if (is_writable($file)) {
+			return "<div class='warn'><img src='../themes/icons/error.png' alt='' /> Warning: Configuration file (conf.inc.php) is still writable, please chmod it to 444!</div>";
 		}
 		else{
 			return "";

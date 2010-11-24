@@ -1,4 +1,4 @@
-<strong>So who made this wonderful script?</strong><br />
+<strong>So who made this wonderful thing?</strong><br />
 TheHostingTool was originally developed and maintained by Jonny H, who wrote the wonderful core we all know and love. After 1.1.2 was released, the team responsible for developing and maintaining TheHostingTool grew quite a bit into what it is today:
 <br /><br /><strong>Here is our Current Team:</strong>
 <br /><br /><strong>The Management Team:</strong>
@@ -13,7 +13,7 @@ TheHostingTool was originally developed and maintained by Jonny H, who wrote the
       <tr>
         <td><strong>Lead Developer:</strong></td>
         <td width="30%">Kevin M</td>
-        <td><a href="mailto:kevinM@thehostingtool.com">kevinm@thehostingtool.com</a></td>
+        <td><a href="mailto:kevin@thehostingtool.com">kevin@thehostingtool.com</a></td>
       </tr>
       <tr>
         <td><strong>Staff Coordinator:</strong></td>
@@ -91,6 +91,6 @@ TheHostingTool was originally developed and maintained by Jonny H, who wrote the
     </table>
     </div>
 </div><br />
-The Hosting Tool is a free, powerful script released under the GNU-GPL license. A lot of hours (understatement) were spent making this script. Have some dignity and leave the credits in. If not, support won't be given and we won't like you. Bad times, Bad times.<br /><br />
+The Hosting Tool is a free, powerful script released under the GNU-GPLv3 license. Countless (understatement) were spent making THT. Have some dignity and leave the credits in. If not, support won't be given and we won't like you. Bad times, Bad times.<br /><br />
 Love this project and want to help out? We are always looking for willing volunteers to contribute to the project in a variety of ways. <a href="http://thehostingtool.com/forum/private.php?action=send&uid=37">Private Message Nick</a> on the THT Forums or <a href="mailto:nick@thehostingtool.com">send him an email</a>, and he will guide you through the process.<br /><br />
 <strong>THT Proudly Sponsored by:</strong> <a href="http://servercomplete.com">ServerComplete</a>
