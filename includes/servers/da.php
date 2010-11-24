@@ -6,7 +6,7 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-class da extends Panel {
+class da {
 	
 	# START THE MO TRUCKIN FUNCTIONS #
 	
@@ -14,7 +14,22 @@ class da extends Panel {
 	public $hash = false; # Password or Access Hash?
 	
 	private $server;
-		
+	
+	private function serverDetails($server) {
+		global $db;
+		global $main;
+		$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'");
+		if($db->num_rows($query) == 0) {
+			$array['Error'] = "That server doesn't exist!";
+			$array['Server ID'] = $id;
+			$main->error($array);
+			return;	
+		}
+		else {
+			return $db->fetch_array($query);
+		}
+	}
+	
 	private function remote($action, $url) {
 		$data = $this->serverDetails($this->server);
 		$ch = curl_init();
@@ -37,6 +52,26 @@ class da extends Panel {
 		//die(print_r($final));
 		return $final;
 	}
+
+	public function GenUsername() {
+		$t = rand(5,8);
+		for ($digit = 0; $digit < $t; $digit++) {
+			$r = rand(0,1);
+			$c = ($r==0)? rand(65,90) : rand(97,122);
+			$user .= chr($c);
+		}
+		return $user;
+	}
+	
+	public function GenPassword() {
+		for ($digit = 0; $digit < 5; $digit++) {
+			$r = rand(0,1);
+			$c = ($r==0)? rand(65,90) : rand(97,122);
+			$passwd .= chr($c);
+		}
+		return $passwd;
+	}
+	
 	public function signup($server, $reseller, $user = '', $email = '', $pass = '') {
 		global $main;
 		global $db;

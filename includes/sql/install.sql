@@ -33,9 +33,7 @@ INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES
 (14, 'Knowledge Base', 'folder.png', 'kb'),
 (15, 'Look & Feel', 'rainbow.png', 'lof'),
 (19, 'Invoice Management', 'script.png', 'invoices'),
-(20, 'Logs', 'report.png', 'logs'),
-(21, 'Billing Cycles', 'rainbow.png', 'billing'),
-(22, 'Addons', 'rainbow.png', 'addons');
+(20, 'Logs', 'report.png', 'logs');
 
 -- --------------------------------------------------------
 
@@ -151,8 +149,7 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('suspensiondays', '14'),
 ('tldonly', '0'),
 ('currency', 'USD'),
-('ui-theme', 'cupertino'),
-('paypal_mode', '0'); 
+('ui-theme', 'cupertino');
 
 -- --------------------------------------------------------
 
@@ -161,18 +158,15 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `%PRE%invoices` (
-  `id` int NOT NULL auto_increment,
-  `uid` int NOT NULL,
-  `amount` decimal(16,6) NOT NULL,
-  `is_paid` int NOT NULL default '0',
+  `id` int(255) NOT NULL auto_increment,
+  `uid` int(255) NOT NULL,
+  `amount` int(255) NOT NULL,
+  `is_paid` int(1) NOT NULL default '0',
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `due` text NOT NULL,
-  `is_suspended` int NOT NULL default '0',
+  `is_suspended` int(1) NOT NULL default '0',
   `notes` text NOT NULL,
   `uniqueid` varchar(255) NOT NULL,
-  `addon_fee` longtext NOT NULL,
-  `status` int NOT NULL,
-  `transaction_id` varchar(255) NOT NULL,  
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -520,7 +514,6 @@ CREATE TABLE IF NOT EXISTS `%PRE%user_packs_bak` (
   `signup` varchar(20) NOT NULL,
   `status` varchar(1) NOT NULL,
   `additional` text NOT NULL,
-  `billing_cycle_id` int NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -546,68 +539,3 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 --
 -- Dumping data for table `%PRE%user_packs_bak`
 --
-
-
-
--- Billing cycle structure
-
-CREATE TABLE `%PRE%billing_cycles` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `number_months` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `status` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cycle_month` (`number_months`,`name`)
-);
-
-
-INSERT INTO `%PRE%billing_cycles` (`number_months`, `name`, `status`) VALUES
-('12', 'Annually', '1'),
-('6', 'Semiannually', '1'),
-('1', 'Monthly', '1');
-
-
--- Relation of Addons || Packages with billing cycles
-
-CREATE TABLE  `%PRE%billing_products` (
-  `billing_id` int NOT NULL,
-  `product_id` int NOT NULL,
-  `amount` decimal(16,6) NOT NULL DEFAULT '0.000000',
-  `type` varchar(255) NOT NULL
-);
-
--- Table structure for addons
-
-CREATE TABLE  `%PRE%addons` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `setup_fee` decimal(16,6) NOT NULL DEFAULT '0.000000',
-  `description` varchar(255) NOT NULL,
-  `status` int NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
--- Relationship between package and addons
-
-CREATE TABLE  `%PRE%package_addons` (
-  `package_id` int NOT NULL DEFAULT '0',
-  `addon_id` int NOT NULL DEFAULT '0'
-);
-
--- Relationship between user_pack and addons
-CREATE TABLE `%PRE%user_pack_addons` (
-  `order_id` int NOT NULL,
-  `addon_id` int NOT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`)
-);
-
-
-
-CREATE TABLE `%PRE%order_invoices` (
-  `id` INT  NOT NULL AUTO_INCREMENT,
-  `order_id` INT  NOT NULL,
-  `invoice_id` INT  NOT NULL,
-  PRIMARY KEY (`id`)
-);
-

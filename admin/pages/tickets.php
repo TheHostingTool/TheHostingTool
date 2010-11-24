@@ -99,30 +99,24 @@ class page {
 				echo "<div style=\"display: none;\" id=\"nun-tickets\">You currently have no new tickets!</div>";
 				$num_rows = $db->num_rows($query);
 				echo $style->replaceVar("tpl/support/acpticketjs.tpl", array('NUM_TICKETS' => $num_rows));
-				$css = "font-weight: bold; font-style: italic;";
 				while($data = $db->fetch_array($query)) {
 					if($data['urgency'] == "Very High") {
-						$urg = " bgcolor=\"#ff5555\">";
-						$txt = "<span style=\"$css color: #660000;\">Very High</span>";
+						$urg = " bgcolor=\"#FF0000\">";
 					}
 					elseif($data['urgency'] == "High") {
-						$urg = " bgcolor=\"#eeff66\">";
-						$txt = "<span style=\"$css color: #ff6611;\">High</span>";
+						$urg = " bgcolor=\"#FFFF00\">";
 					}
 					elseif($data['urgency'] == "Medium") {
-						$urg = " bgcolor=\"#66bbff\">";
-						$txt = "<span style=\"$css color: blue;\">Medium</span>";
+						$urg = " bgcolor=\"#00FFFF\">";
 					}
 					else {
 						$urg = ">";
-						$txt = "<span style=\"$css\">Low</span>";
 					}
 					$array['TITLE'] = $data['title'];
 					$array['UPDATE'] = $this->lastUpdated($data['id']);
 					$array['STATUS'] = $data['status'];
 					$array['URGCOLOR'] = $urg;
 					$array['ID'] = $data['id'];
-					$array['URGENCYTEXT'] = $txt;
 					echo $style->replaceVar("tpl/support/acpticketviewbox.tpl", $array);
 				}
 				echo "<center><i><u><a href=\"?page=ticketsall\" title=\"View all tickets.\">View all tickets</a></u></i></center>";

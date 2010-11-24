@@ -47,22 +47,14 @@ class invoice {
 		$query = $db->query("SELECT * FROM `<PRE>invoices` WHERE `id` = '{$iid}'");
 		$array = $db->fetch_array($query);
 		if($_SESSION['cuser'] == $array['uid']) {
-			
-			if ($db->config('paypal_mode') == PAYPAL_STATUS_LIVE) {
-				$paypal->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';				
-			} else {
-				$paypal->paypal_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-			}
-			
-			$paypal->add_field('business', 			$db->config('paypalemail'));
-			
-			$paypal->add_field('return', 			urlencode($db->config('url')."client/index.php?page=invoices&sub=paid&invoiceID=".$iid));
-			$paypal->add_field('cancel_return', 	urlencode($db->config('url')."client/index.php?page=invoices&sub=paid&invoiceID=".$iid));
-			$paypal->add_field('notify_url',  		urlencode($db->config('url')."client/index.php?page=invoices&sub=paid&invoiceID=".$iid));
-			
-			$paypal->add_field('item_name', 		$db->config('name').' Order: '.$array['notes']);
-			$paypal->add_field('amount',			$array['amount']);
-			$paypal->add_field('currency_code', 	$db->config('currency'));
+			$paypal->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
+			$paypal->add_field('business', $db->config('paypalemail'));
+			$paypal->add_field('return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
+			$paypal->add_field('cancel_return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
+			$paypal->add_field('notify_url',  $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
+			$paypal->add_field('item_name', 'THT Order: '.$array['notes']);
+			$paypal->add_field('amount', $array['amount']);
+			$paypal->add_field('currency_code', $db->config("currency"));
 			$paypal->submit_paypal_post(); // submit the fields to paypal
 		}
 		else {

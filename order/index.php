@@ -2,7 +2,7 @@
 //////////////////////////////
 // The Hosting Tool
 // Order Form
-// By Jonny H, Julio Montoya
+// By Jonny H
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -24,22 +24,19 @@ if($main->getvar['do'] == "logout") {
 echo $style->get("header.tpl"); #Output Header
 $ip = $_SERVER['REMOTE_ADDR'];
 
-//Deleting check every time a user logs for the first time
-unset($_SESSION['check']);
-
 #Check stuff
 if($db->config("general") == 0) {
 	$maincontent = $main->table("Signups Closed", $db->config("message"));
-} elseif(!$main->checkIP($ip) && !$db->config("multiple")) {
+}
+elseif(!$main->checkIP($ip) && !$db->config("multiple")) {
 	$maincontent = $main->table("IP Already Exists!", "Your IP already exists in the database!");
-} elseif($_SESSION['clogged'] && $db->config('multiple') != 1) {
+}
+elseif($_SESSION['clogged']) {
 	$maincontent = $main->table("Unable to sign-up!", "One package per account!");
-} else {
+}
+else {
 	$_SESSION['orderform'] = true;	
 }
-
-
-global $billing; 
 
 echo '<div id="ajaxwrapper">'; #Ajax wrapper, for steps
 
@@ -52,16 +49,16 @@ $packages2 = $db->query("SELECT * FROM `<PRE>packages` WHERE `is_disabled` = 0 A
 }
 if($db->num_rows($packages2) == 0) {
 	echo $main->table("No packages", "Sorry there are no available packages!");
-} else {
+}
+else {
 	while($data = $db->fetch_array($packages2)) {
 		if(!$n) {
 			$array['PACKAGES'] .= "<tr>";	
 		}
-		$array2['NAME'] 		= $data['name'];
-		$array2['DESCRIPTION'] 	= $data['description'];
-		$array2['ID']			= $data['id'];
-		$array2['PACKAGE_TYPE']	= $data['type'];
-		$array['PACKAGES'] 	   .= $style->replaceVar("tpl/orderpackages.tpl", $array2);	
+		$array2['NAME'] = $data['name'];
+		$array2['DESCRIPTION'] = $data['description'];
+		$array2['ID'] = $data['id'];
+		$array['PACKAGES'] .= $style->replaceVar("tpl/orderpackages.tpl", $array2);	
 		$n++;
 		if($n == 1) {
 			$array['PACKAGES'] .= '<td width="2%"></td>';	
@@ -70,13 +67,6 @@ if($db->num_rows($packages2) == 0) {
 			$array['PACKAGES'] .= "</tr>";	
 			$n = 0;	
 		}
-		
-		//Selecting billing cycles
-		$billing_cycle_data = $billing->getAllBillingCycles();	
-		$array['BILLING_CYCLE'] = '';
-		foreach($billing_cycle_data as $billing_data) {
-			$array['BILLING_CYCLE'].= '<option value="'.$billing_data['id'].'">'.$billing_data['name'].'</option>';
-		}		
 	}
 	$array['TOS'] = $db->config("tos");
 	$array['USER'] = "";
@@ -84,7 +74,8 @@ if($db->num_rows($packages2) == 0) {
 	$sub = $db->query("SELECT * FROM `<PRE>subdomains`");
 	if($db->num_rows($sub) == 0) {
 		$array["CANHASSUBDOMAIN"] = "";
-	} else {
+	}
+	else {
 		$array["CANHASSUBDOMAIN"] = '<option value="sub">Subdomain</option>';
 	}
 	while($sub2 = $db->fetch_array($sub)) {
@@ -94,7 +85,8 @@ if($db->num_rows($packages2) == 0) {
 	//Determine what to show in Client box
 	if(!$_SESSION['clogged']) {
 		$content = $style->replaceVar("tpl/clogin.tpl");
-	} else {
+	}
+	else {
 		$clientdata = $db->client($_SESSION['cuser']);
 		$array['NAME'] = $clientdata['user'];
 		$content = $style->replaceVar("tpl/cdetails.tpl", $array);
@@ -109,6 +101,7 @@ if($db->num_rows($packages2) == 0) {
 
 }
 echo '</div>'; #End it
+
 echo $style->get("footer.tpl"); #Output Footer
 
 //Output

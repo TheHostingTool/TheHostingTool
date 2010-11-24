@@ -1,8 +1,8 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Database (MySQL) Class
-// By Jonny H, Julio Montoya
+// Database (mySQL) Class
+// By Jonny H
 // Released under the GNU-GPL
 //////////////////////////////
 
@@ -41,99 +41,23 @@ class db {
 		$main->error($error);
 	}
 	
-	/**
-	 * Returns the error number from the last operation done on the database server.
-	 * @param resource $connection (optional)	The database server connection, for detailed description see the method query().
-	 * @return int								Returns the error number from the last database (operation, or 0 (zero) if no error occurred.
-	 */
-	public static function errno($connection = null) {
-		return self::use_default_connection($connection) ? mysql_errno() : mysql_errno($connection);
-	}
-	
-	private static function use_default_connection($connection) {
-		return !is_resource($connection) && $connection !== false;
-	}
-	
-	/**
-	 * Returns the error text from the last operation done on the database server.
-	 * @param resource $connection (optional)	The database server connection, for detailed description see the method query().
-	 * @return string							Returns the error text from the last database operation, or '' (empty string) if no error occurred.
-	 */
-	public static function error_mysql($connection = null) {
-		return self::use_default_connection($connection) ? mysql_error() : mysql_error($connection);
-	}
-	
-	/** 
-	 * Runs any query and return the results 
-	 * @param 	string 		sql query
-	 * @return 	resource 	the mysql_query return 
-	 * @author 	Julio Montoya <gugli100@gmail.com> BeezNest 2010 - Added some nice error reporting
-	 */
-	public function query($sql) { 
-		$sql = preg_replace("/<PRE>/si", $this->prefix, $sql); #Replace prefix variable with right value		
-		$result = mysql_query($sql, $this->con);
-			
-		if(!$result) {	
-			//$this->error("mySQL Query Failed", mysql_error(), __FUNCTION__); # Call Error
-								
-			$backtrace = debug_backtrace(); // Retrieving information about the caller statement.
-			if (isset($backtrace[0])) {
-				$caller = & $backtrace[0];
-			} else {
-				$caller = array();
-			}
-			if (isset($backtrace[1])) {
-				$owner = & $backtrace[1];
-			} else {
-				$owner = array();
-			}
-			if (empty($file)) {
-				$file = $caller['file'];
-			}
-			if (empty($line) && $line !== false) {
-				$line = $caller['line'];
-			}
-			$type		= $owner['type'];
-			$function 	= $owner['function'];
-			$class 		= $owner['class'];			
-			
-			if (!empty($line)) {			
-				//echo $info;
-				$error['Database error number'] 	= self::errno($this->con);
-				$error['Database error message']	= self::error_mysql($this->con).'<br />';
-				
-				$error['Query'] = $sql;
-				$error['File'] 	= $file;
-				$error['Line'] 	= $line;
-				if (empty($type)) {
-					if (!empty($function)) {
-						$error['Function'] = '<br />' . $function;
-					}
-				} else {
-					if (!empty($class) && !empty($function)) {
-						$error['Class']  = $class;
-						$error['Method'] = $function;
-					}
-				}
-				global $main;
-				$main->error($error);
-			}	
+	public function query($sql) { # Run any query and return the results
+		$sql = preg_replace("/<PRE>/si", $this->prefix, $sql); #Replace prefix variable with right value
+		$sql = @mysql_query($sql, $this->con); # Run query
+		if(!$sql) {
+			$this->error("mySQL Query Failed", mysql_error(), __FUNCTION__); # Call Error
 		}
-		return $result; # Return mySQL result
+		return $sql; # Return SQL
 	}
 	
-	/**
-	 * Gets the number of rows from the last query result - help achieving database independence
-	 * @param resource		The result
-	 * @return integer		The number of rows contained in this result
-	 **/
-	public function num_rows($result) {		
-		return is_resource($result) ? mysql_num_rows($result) : false;
+	public function num_rows($sql) { # Runs a query and returns the rows
+		$sql = mysql_num_rows($sql); # Run query
+		return $sql; # Return SQL
 	}
 	
-	public function fetch_array($result, $option = 'BOTH') { # Gets a query and returns the rows/columns as array
-		//$sql = @mysql_fetch_array($result); # Fetch the SQL Array, all the data
-		return $option == 'ASSOC' ? mysql_fetch_array($result, MYSQL_ASSOC) : ($option == 'NUM' ? mysql_fetch_array($result, MYSQL_NUM) : mysql_fetch_array($result));		
+	public function fetch_array($sql) { # Gets a query and returns the rows/columns as array
+		$sql = @mysql_fetch_array($sql); # Fetch the SQL Array, all the data
+		return $sql; # Return SQL
 	}
 	
 	public function strip($value) { # Gets a string and returns a value without SQL Injection
@@ -157,7 +81,8 @@ class db {
 				}
 			}
 			return $array;
-		} else {
+		}
+		else {
 			if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
 				  $value = stripslashes($value); 
 			}
@@ -264,26 +189,6 @@ class db {
 			return $db->fetch_array($query);	
 		}
 	}
-	
-	/**
-	 * Gets the ID of the last item inserted into the database
-	 * @param resource $connection (optional)	The database server connection, for detailed description see the method query().
-	 * @return int								The last ID as returned by the DB function
-	 */
-	public static function insert_id($connection = null) {
-		return self::use_default_connection($connection) ? mysql_insert_id() : mysql_insert_id($connection);
-	}	
-	
-	public static function store_result($result, $option = 'ASSOC') {
-		$array = array();
-		if ($result !== false) { // For isolation from database engine's behaviour.
-			while ($row = self::fetch_array($result, $option)) {
-				$array[] = $row;
-			}
-		}
-		return $array;
-	}
-	
 }
 //End SQL
 ?>

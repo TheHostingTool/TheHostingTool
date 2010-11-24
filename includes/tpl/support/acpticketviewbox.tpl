@@ -2,7 +2,7 @@
 	<div class="sub">
     	<table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr%URGCOLOR%
-            <td style="padding:3px;"><a href="?page=tickets&sub=view&do=%ID%"><strong>%TITLE%</strong></a>&nbsp;%URGENCYTEXT%<br />Last Updated: %UPDATE%</td>
+            <td style="padding:3px;"><a href="?page=tickets&sub=view&do=%ID%"><strong>%TITLE%</strong></a><br />Last Updated: %UPDATE%</td>
 			<td width="30" align="right"><img alt="Ticket Status" src="<ICONDIR>%STATUS%.png"></td>
             <td class="rightbreak">&nbsp;</td>
             <td width="30" align="center" width="5%">

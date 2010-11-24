@@ -26,14 +26,6 @@
     <td><textarea name="description" id="description" cols="45" rows="5">%DESCRIPTION%</textarea></td>
   </tr>
   <tr>
-    <td valign="top">Type:</td>
-    <td>
-    %TYPE% <a title="The Server where the package is located at." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
-    </td>
-  </tr>
-  
-  
-  <tr>
     <td valign="top">Server:</td>
     <td>
     %SERVER% <a title="The Server where the package is located at." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
@@ -60,35 +52,11 @@
       <input name="disabled" type="checkbox" id="disabled" value="1" %CHECKED4% /> <a title="Are new orders disabled for this package?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   </tr>
-  
-  
-  
-  
-   <!-- Adding billing cycle 
- <tr> 
-   <td valign="top">Billing cycle:</td>
-    <td>
-	%BILLING_CYCLE%  
-  </td>
-  </tr> 
-  
-  -->
-  
     <tr>
     <td valign="top">Direct Link:</td>
     <td>
       <input name="direct" type="text" size="60" id="direct" value="%URL%order/index.php?id=%ID%" readonly /> <a title="A link to order the package directly without showing other packages. (Allows ordering hidden packages.)" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
-  
-     <tr>
-    <td valign="top">Addons</td>
-    <td>
-    %ADDON%
-    </td>
-  </tr>
-  
-  
-  
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>

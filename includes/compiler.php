@@ -8,25 +8,7 @@
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 #Define the main THT
-define('THT', 1);
-
-//Billing types
-define('BILLING_TYPE_ADDON', 					'addon');
-define('BILLING_TYPE_PACKAGE', 					'package');
-
-//Addong status
-define('ADDON_STATUS_ACTIVE', 					1);
-define('ADDON_STATUS_INACTIVE', 				0);
-
-//Billing cycle status
-define('BILLING_CYCLE_STATUS_ACTIVE', 			1);
-define('BILLING_CYCLE_STATUS_INACTIVE', 		0);
-
-//Used in admin/billing.php
-define('MAX_NUMBER_MONTHS',						48);
-
-define('PAYPAL_STATUS_LIVE', 					1);
-define('PAYPAL_STATUS_SANDBOX', 				0);
+define("THT", 1);
 
 #Page generated
 $starttime = explode(' ', microtime());
@@ -65,8 +47,6 @@ if($sql['install']) {
 }
 
 $folder = LINK;
-require_once LINK."/model.php"; # Get the file
-
 if ($handle = opendir($folder)) { # Open the folder
 	while (false !== ($file = readdir($handle))) { # Read the files
 		if($file != "." && $file != "..") { # Check aren't these names
@@ -84,40 +64,33 @@ if ($handle = opendir($folder)) { # Open the folder
 }
 closedir($handle); #Close the folder
 
-$token =  $main->getToken();
 if(INSTALL == 1) {
 	define("THEME", $db->config("theme")); # Set the default theme
 	define("URL", $db->config("url")); # Sets the URL THT is located at
 	define("NAME", $db->config("name")); # Sets the name of the website
 	//Converts all POSTS into variable - DB Friendly.
-	if($_POST) {		
+	if($_POST) {
 		foreach($_POST as $key => $value) {
 			$main->postvar[$key] = $db->strip($value);
-		}		
-		$main->postvar['_post_token'] =	$token;
+		}
 	}
 }
 //Converts all GET into variable - DB Friendly.
 foreach($_GET as $key => $value) {
 	if(INSTALL == 1) {
 		$main->getvar[$key] = $db->strip($value);
-	} else {
+	}
+	else {
 		$main->getvar[$key] = $value;	
-	}	
-	$main->getvar['_get_token'] = $token;
+	}
 }
 $path = dirname($_SERVER['PHP_SELF']);
 $position = strrpos($path,'/') + 1;
 define("FOLDER", substr($path,$position)); # Add current folder name to global
 if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we installing?	
-		// Old Method- Uncomment if having trouble installing
-	//$error['Error'] = "THT isn't Installed!";
-	//$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
-	//die($main->error($error));
-	
-		//Lets just redirect to the installer, shall we?
-	$installURL = LINK . "../install";
-	header("Location: $installURL");
+	$error['Error'] = "THT isn't Installed!";
+	$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
+	die($main->error($error));
 }
 
 //Resets the error.
