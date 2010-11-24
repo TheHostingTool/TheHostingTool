@@ -19,6 +19,7 @@ Management:
 	Nick (Staff Coordinator) <nick@thehostingtool.com>
 Developers:
 	KuJoe <kujoe@thehostingtool.com>
+	Jimmie <jimmie@thehostingtool.com>
 Support Team:
 	David
 	Matt <matt@thehostingtool.com>

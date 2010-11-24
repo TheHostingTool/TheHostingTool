@@ -1,9 +1,9 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Database (mySQL) Class
-// By Jonny H
-// Released under the GNU-GPL
+// Database (MySQL) Class
+// By Jonny H and Kevin M
+// Released under the GNU-GPLv3
 //////////////////////////////
 
 //Check if called by script
@@ -160,10 +160,16 @@ class db {
 	}
 	
 	public function updateConfig($name, $value) { # Updates a config value
+		// Who actually wrote this?!
+		$name = $this->strip($name);
+		$value = $this->strip($value);
 		$query = $this->query("UPDATE `<PRE>config` SET `value` = '{$value}' WHERE `name` = '{$name}'");
 	}
 	
 	public function updateResource($name, $value) { # Updates a config value
+		// Does not expect input to be safe so we sanitize it.
+		$name = $this->strip($name);
+		$value = $this->strip($value);
 		$query = $this->query("UPDATE `<PRE>resources` SET `resource_value` = '{$value}' WHERE `resource_name` = '{$name}'");
 	}
 	
