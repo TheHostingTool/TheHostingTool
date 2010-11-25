@@ -7,6 +7,9 @@
 //////////////////////////////
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
+// Helps prevent against CSRF attacks.
+require_once("csrf-magic.php");
+
 #Define the main THT
 define("THT", 1);
 
@@ -115,7 +118,7 @@ function checkForDependencies() {
 	//First things first:
 	$version = explode(".", phpversion());
 	if($version[0] < 5) {
-		die("PHP Version 5 or over is required! You're currently running: " . phpversion());
+		die("PHP Version 5 or greater is required! You're currently running: " . phpversion());
 	}
 	if(!function_exists("curl_init")) {
 		$needed[] = "cURL";

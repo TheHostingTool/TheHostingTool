@@ -98,8 +98,9 @@ class page {
 					$n++;
 				}
 			}
-			if(!$n) { 
-				foreach($main->postvar as $key => $value) {
+			if(!$n) {
+				foreach($_POST as $key => $value) {
+					// We can use $_POST here because updateResource cleans it.
 					$db->updateResource($key, $value);
 				}
 				$main->errors("Settings Updated!");
