@@ -155,7 +155,7 @@
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
           <td width="50%">Country:</td>
-          <td align="right"><img src="<URL>themes/flags/%COUNTRY%.gif" /></td>
+          <td align="right"><a title="%FULLCOUNTRY%" class="tooltip"><img src="<URL>themes/flags/%COUNTRY%.gif" /></a></td>
         </tr>
       </table>
     </div>
