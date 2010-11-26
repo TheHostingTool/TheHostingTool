@@ -582,10 +582,11 @@ class AJAX {
 				echo '<div class="errors">Your upgrade is now complete! You can use the script as normal.</div>';	
 			}
 			if($errors['n']) {
-				echo "<strong>SQL Queries (Broke):</strong><br />";
+				echo "<strong>SQL Queries (Broke):</strong><br /><pre>";
 				foreach($errors['errors'] as $value) {
-					echo $value."<br />";	
+					echo nl2br(htmlentities($value))."<br /><br />";
 				}
+				echo "</pre>";
 			}
 		}
 	}
