@@ -425,11 +425,11 @@ class AJAX {
 		global $main, $db, $type;
 		$pack = $main->getvar['pack'];
 		$server = $type->determineServer($pack);
-		$select = $db->query("SELECT * FROM `<PRE>subdomains` WHERE `server` = '{$server}'");
-		while($select = $db->fetch_array($select)) {
-			$values[] = array($select['subdomain'], $select['subdomain']);	
+		$select = $db->query("SELECT * FROM `<PRE>subdomains` WHERE `server` = '{$server}' ORDER BY `subdomain` ASC");
+		while($row = $db->fetch_array($select)) {
+			$values[] = array($row['subdomain'], $row['subdomain']);
 		}
-		echo $main->dropdown("csub2", $values);
+		echo $main->dropdown("csub2", $values, $values[0]['subdomain']);
 	}
 	
 	public function phpinfo() {
