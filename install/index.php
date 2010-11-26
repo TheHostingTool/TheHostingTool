@@ -6,30 +6,6 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-/*
- * This is a pretty bad attempt at being secure. If you're having
- * problems with it, feel free to comment it out. But it was
- * better than what we had before and should work.
-*/
-
-/*
- * __FILE__ is an absolute path and we need to make it relative to
- * the document root. This file must be called directly and
- * directly only.
-*/
-if(strtoupper(substr(PHP_OS, 0, 3)) === "WIN") {
-	$file = str_replace("\\", "/", __FILE__);
-	$prepend = "/";
-}
-else {
-	$file = __FILE__;
-	$prepend = "";
-}
-$compare = explode($_SERVER["DOCUMENT_ROOT"], $file);
-if($prepend . $compare[1] !== $_SERVER["PHP_SELF"]) {
-	die("You can only run the install from the <em>".__FILE__."</em> file.");
-}
-
 
 /*
  * Quick little function made to make generating a default site URL
@@ -44,8 +20,9 @@ function generateSiteUrl() {
 	else {
 		$url .= "http://";
 	}
-	$exploded = explode($_SERVER["DOCUMENT_ROOT"], realpath("../"));
-	$url .= $_SERVER["HTTP_HOST"] . $exploded[1] . "/";
+	$url .= $_SERVER["SERVER_NAME"];
+	$exploded = explode(basename($_SERVER["PHP_SELF"]), $_SERVER["PHP_SELF"]);
+	$url .= dirname($exploded[0]) . "/";
 	return $url;
 }
 
