@@ -13,6 +13,12 @@ require_once("csrf-magic.php");
 #Define the main THT
 define("THT", 1);
 
+// We don't want this to be called directly.
+$compile = explode("/", $_SERVER["SCRIPT_FILENAME"]);
+if($compile[count($compile)-1] == "compiler.php") {
+	die("Please do not call \"compiler.php\" directly.");
+}
+
 #Page generated
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
@@ -90,6 +96,15 @@ foreach($_GET as $key => $value) {
 $path = dirname($_SERVER['PHP_SELF']);
 $position = strrpos($path,'/') + 1;
 define("FOLDER", substr($path,$position)); # Add current folder name to global
+
+// Cheap. I know.
+if(!is_dir("../includes") && !is_dir("../themes") && !is_dir("../admin")) {
+	$check = explode("/", dirname($_SERVER["SCRIPT_NAME"]));
+	if($check[count($check)-1] == "install") {
+		die("Please change your THT directory's name from something else other than \"install\". Please?");
+	}
+}
+
 if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we installing?  
                 # Old Method- Uncomment if having trouble installing
         //$error['Error'] = "THT isn't Installed!";
