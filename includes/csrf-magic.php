@@ -45,7 +45,7 @@ $GLOBALS['csrf']['callback'] = 'csrf_callback';
  * with supported JavaScript libraries in Internet Explorer; see README.txt for
  * a list of supported libraries.
  */
-$GLOBALS['csrf']['rewrite-js'] = false;
+$GLOBALS['csrf']['rewrite-js'] = "javascript/csrf-magic.js";
 
 /**
  * A secret key used when hashing items. Please generate a random string and
@@ -106,7 +106,7 @@ $GLOBALS['csrf']['key'] = false;
  * The name of the magic CSRF token that will be placed in all forms, i.e.
  * the contents of <input type="hidden" name="$name" value="CSRF-TOKEN" />
  */
-$GLOBALS['csrf']['input-name'] = '__csrf_magic';
+$GLOBALS['csrf']['input-name'] = '__tht_csrf_magic';
 
 /**
  * Set this to false if your site must work inside of frame/iframe elements,
