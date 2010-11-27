@@ -53,7 +53,7 @@ class email {
 		$username = $this->details['smtp_user'];
 		$password = $this->details['smtp_password'];
 		
-		$headers = array ('From' => $from,
+		$headers = array ('Content-Type' => 'text/html', 'From' => $from, # We need to set the content-type as text/html or it won't be parsed.
 		  'To' => $this->email['to'],
 		  'Subject' => $this->email['subject']);
 		$smtp = Mail::factory('smtp',
@@ -61,7 +61,6 @@ class email {
 			'auth' => true,
 			'username' => $username,
 			'password' => $password));
-		
 		$mail = $smtp->send($to, $headers, $body);
 		
 		if (PEAR::isError($mail)) {
