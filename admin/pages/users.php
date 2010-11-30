@@ -157,7 +157,7 @@ class page {
 							$array2['CITY'] = $client['city'];
 							$array2['STATE'] = $client['state'];
 							$array2['ZIP'] = $client['zip'];
-							$array2['COUNTRY'] = $client['country'];
+							$array2['COUNTRY'] = strtolower($client['country']);
 							$array2['FULLCOUNTRY'] = $main->country_code_to_country($client['country']);
 							$array2['PHONE'] = $client['phone'];
 							$invoicesq = $db->query("SELECT * FROM `<PRE>invoices` WHERE `uid` = '{$db->strip($client['id'])}' AND `is_paid` = '0'");
