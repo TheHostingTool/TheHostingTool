@@ -719,10 +719,20 @@ class AJAX {
 			$subject = $main->getvar['subject'];
 			$msg = $main->getvar['msg'];
 			$query = $db->query("SELECT * FROM `<PRE>users`");
+			$error = false;
 			while($client = $db->fetch_array($query)) {
-				$email->send($client['email'], $subject, $msg);	
+			$result = $email->send($client['email'], $subject, $msg);
+				if(!$result) {
+					// Using output buffering may have actually been a good idea after all... Haha.
+					echo ob_get_clean();
+					$error = true;
+					// Break out of the loop and stop here.
+					break;
+				}
 			}
-			echo 1;
+			if(!$error) {
+				echo 1;
+			}
 		}
 	}
 	function porder() {

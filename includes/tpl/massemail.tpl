@@ -17,8 +17,8 @@ function sendemail() {
 	if(mydata == "1") {
 		document.getElementById("ajaxemail").innerHTML = "The email has been sent to all your clients!";
 	}
-	if(mydata == "0") {
-		document.getElementById("ajaxemail").innerHTML = "There was a problem sending this email!";
+	else {
+		document.getElementById("ajaxemail").innerHTML = "Houston, we have a problem.<hr>" + mydata;
 	}});	
 }
 </script>

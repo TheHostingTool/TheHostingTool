@@ -38,10 +38,26 @@ class email {
 				"MIME-Version: 1.0\r\n" .
 				"Content-Type: text/html; charset=utf-8\r\n" .
 				"Content-Transfer-Encoding: 8bit\r\n\r\n";
-		mail($this->email['to'],$this->email['subject'],$this->email['content'],$headers);
+		return mail($this->email['to'],$this->email['subject'],$this->email['content'],$headers);
 	}
 	
 	private function smtp() { # Sends the email using SMTP Auth PEAR
+		// Check for PEAR
+		$PEAR = false;
+		if(@include_once("System.php")) {
+			if(class_exists("System")) {
+				// Cool, it's installed.
+				$PEAR = true; 
+			}
+		}
+		if(!$PEAR) {
+			global $main;
+			$error['Error'] = "SMTP Failed!";
+			$error['Details'] = "You need PEAR installed to send email with SMTP. Please use the PHP method or install PEAR.";
+			$main->error($error);
+			return false;
+		}
+		
 		require_once LINK."pear/Mail.php";
 		
 		$from = $this->details['from'];
@@ -68,7 +84,9 @@ class email {
 			$array['Error'] = "SMTP Failed!";
 			$array['Details'] = $mail->getMessage();
 		 	$main->error($array);
+			return false;
 		 }
+		 return true;
 	}
 	
 	public function send($to, $subject, $content, $array = 0) { # Gets the content, edits the class vars and sends to right function
@@ -82,10 +100,10 @@ class email {
 		$this->email['subject'] = $subject;
 		$method = $this->method;
 		if($method == "php") {
-			$this->phpmail();	
+			return $this->phpmail();	
 		}
 		elseif($method == "smtp") {
-			$this->smtp();	
+			return $this->smtp();	
 		}
 		else {
 			global $main;
@@ -93,6 +111,7 @@ class email {
 			$array['What happened'] = "The script couldn't found what way the host wants to send the email";
 			$array['What to do'] = "Please report this to the host immediately!";
 			$main->error($array);
+			return false;
 		}
 	}
 	

@@ -202,8 +202,13 @@ class page {
 						case "email":
 							if($_POST) {
 								global $email;
-								$email->send($client['email'] ,$main->postvar['subject'], $main->postvar['content']);
-								$main->errors("Email sent!");
+								$result = $email->send($client['email'] ,$main->postvar['subject'], $main->postvar['content']);
+								if($result) {
+									$main->errors("Email sent!");
+								}
+								else {
+									$main->errors("Email was not sent out!");
+								}
 							}
 							$array['BOX'] = "";
 							$array['CONTENT'] = $style->replaceVar("tpl/emailclient.tpl");
