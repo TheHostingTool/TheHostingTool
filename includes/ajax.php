@@ -1,7 +1,7 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// AJAX Class
+// Ajax Class
 // By Jonny H and Kevin M
 // Released under the GNU-GPL
 //////////////////////////////
@@ -9,7 +9,7 @@
 define("LINK", "./");
 include("compiler.php");
 
-class AJAX {
+class Ajax {
 
 	public function orderIsUser()
 	{
@@ -1116,10 +1116,10 @@ class AJAX {
 		   }
 	   }
 }
-if(isset($_GET['function']) and $_GET['function'] != "") {
-	$ajax = new AJAX;
-	if(method_exists($ajax, $_GET['function'])) {
-		$ajax->{$_GET['function']}();
+if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
+	$Ajax = new Ajax();
+	if(method_exists($Ajax, $_REQUEST['function'])) {
+		$Ajax->{$_REQUEST['function']}();
 		include(LINK."output.php");
 	}
 }
