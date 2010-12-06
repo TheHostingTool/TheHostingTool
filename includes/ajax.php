@@ -1086,8 +1086,9 @@ class Ajax {
        function uiThemeChange() {
            global $main, $db;
            if($_SESSION['logged']) {
-               if(isset($_GET['theme'])) {
-                   $db->updateConfig('ui-theme', $main->getvar['theme']);
+               if(isset($_POST['theme'])) {
+                   $db->updateConfig('ui-theme', $main->postvar['theme']);
+				   echo "true";
                }
            }
        }

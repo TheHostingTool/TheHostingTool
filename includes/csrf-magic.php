@@ -1,5 +1,14 @@
 <?php
 
+// Check if called by script
+if(THT != 1){die();}
+
+/*
+ * We had to modified CSRF-Magic a bit to work properly with THT.
+ * We highly reccomend that you refrain from changing the contents
+ * of this file in any way unless you really know what you're doing.
+ */
+
 /**
  * @file
  *
@@ -45,14 +54,14 @@ $GLOBALS['csrf']['callback'] = 'csrf_callback';
  * with supported JavaScript libraries in Internet Explorer; see README.txt for
  * a list of supported libraries.
  */
-$GLOBALS['csrf']['rewrite-js'] = "javascript/csrf-magic.js";
+$GLOBALS['csrf']['rewrite-js'] = true;
 
 /**
  * A secret key used when hashing items. Please generate a random string and
  * place it here. If you change this value, all previously generated tokens
  * will become invalid.
  */
-$GLOBALS['csrf']['secret'] = 'EEA5DDF77421C3D276A5057F8786623AB6EF99E3';
+$GLOBALS['csrf']['secret'] = csrf_get_secret();
 
 /**
  * Set this to false to disable csrf-magic's output handler, and therefore,
@@ -74,7 +83,7 @@ $GLOBALS['csrf']['allow-ip'] = true;
  * whether or not to allow the request. This is a shortcut implementation
  * very similar to 'key', but we randomly set the cookie ourselves.
  */
-$GLOBALS['csrf']['cookie'] = '__csrf_cookie';
+$GLOBALS['csrf']['cookie'] = '__tht_csrf_cookie';
 
 /**
  * If this information is available, set this to a unique identifier (it
@@ -113,7 +122,7 @@ $GLOBALS['csrf']['input-name'] = '__tht_csrf_magic';
  * but do so at your own risk: this configuration protects you against CSS
  * overlay attacks that defeat tokens.
  */
-$GLOBALS['csrf']['frame-breaker'] = true;
+$GLOBALS['csrf']['frame-breaker'] = false;
 
 /**
  * Whether or not CSRF Magic should be allowed to start a new session in order
@@ -158,15 +167,12 @@ function csrf_ob_handler($buffer, $flags) {
     }
     if ($js = $GLOBALS['csrf']['rewrite-js']) {
         $buffer = str_ireplace(
-            '</head>',
-            '<script type="text/javascript">'.
+            '<head>',
+            '<head>'."\n".'<script type="text/javascript">'.
                 'var csrfMagicToken = "'.$tokens.'";'.
-                'var csrfMagicName = "'.$name.'";</script>'.
-            '<script src="'.$js.'" type="text/javascript"></script></head>',
+                'var csrfMagicName = "'.$name.'";</script>',
             $buffer
         );
-        $script = '<script type="text/javascript">CsrfMagic.end();</script>';
-        $buffer = str_ireplace('</body>', $script . '</body>', $buffer, $count);
         if (!$count) {
             $buffer .= $script;
         }
@@ -352,7 +358,7 @@ function csrf_generate_secret($len = 32) {
         $secret .= chr(mt_rand(0, 255));
     }
     $secret .= time() . microtime();
-    return sha1($secret);
+    return strtoupper(sha1($secret));
 }
 
 /**

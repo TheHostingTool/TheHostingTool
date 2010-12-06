@@ -103,4 +103,5 @@ $data = preg_replace("/<COPYRIGHT>/si", '<div id="footer">Powered by <a href="ht
 global $main;
 $data = preg_replace("/<ERRORS>/si", '<span class="errors">'.$main->errors().'</span>', $data);
 $data = preg_replace("/%INFO%/si", INFO, $data);
+$data = preg_replace("/<CSRF_NAME>/si", $GLOBALS['csrf']['input-name'], $data);
 ?>
