@@ -171,15 +171,10 @@ class page {
 					
 				case "ui-theme":
 					$folder = LINK ."./css/";
-					if($handle = opendir($folder)) { # Open the folder
-						while(false !== ($file = readdir($handle))) { # Read the files
-							if($file != "." && $file != ".." && $file != ".svn") { # Check aren't these names or a svn folder
-								$values[] = array($file, $file);
-							}
-						}
+					foreach($main->folderFiles($folder) as $file) {
+						$files[] = array($file, $file);
 					}
-					closedir($handle); #Close the folder
-					$array['THEME'] = $main->dropDown("ui-theme", $values, $db->config("ui-theme"));
+					$array['THEME'] = $main->dropDown("ui-theme", $files, $db->config("ui-theme"));
 					$array['NOTICE'] = $style->notice(true, "jQuery UI Theme Changed!");
 					echo $style->replaceVar('tpl/ui-theme/chooser.tpl', $array);
 					break;

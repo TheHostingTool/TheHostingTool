@@ -11,7 +11,7 @@ if(THT != 1){die();}
 
 class main {
 	
-	public $postvar = array(), $getvar = array(); # All post/get strings
+	public $postvar = array(), $getvar = array(), $requestvar = array(); # All post/get/request strings
 	
 	public function cleaninteger($var){ # Transforms an Integer Value (1/0) to a Friendly version (Yes/No)
 	     $patterns[0] = '/0/';
@@ -163,16 +163,16 @@ class main {
 		}
 	}
 	
-	public function folderFiles($link) { # Returns the filenames of a content in a folder
+	public function folderFiles($link, $ignored = array(".", "..", ".svn", "index.html")) { // Returns the filenames of a content in a folder
 		$folder = $link;
-		if ($handle = opendir($folder)) { # Open the folder
-			while (false !== ($file = readdir($handle))) { # Read the files
-				if($file != "." && $file != ".." && $file != ".svn" && $file != "index.html") { # Check aren't these names
+		if ($handle = opendir($folder)) { // Open the folder
+			while (false !== ($file = readdir($handle))) { // Read the files
+				if(!is_null($ignored) and !in_array($file, $ignored)) {
 					$values[] = $file;
 				}
 			}
 		}
-		closedir($handle); #Close the folder
+		closedir($handle); // Close the folder
 		return $values;
 	}
 	
