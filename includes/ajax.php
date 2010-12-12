@@ -811,19 +811,6 @@ class Ajax {
                 return $string;
         }
 
-        function genkey() {
-            global $main, $db;
-            if($_SESSION['logged'] and $main->getvar['do'] == "it") {
-                $random = $this->randomString();
-                $key = hash('sha512', $random);
-                $db->updateConfig('api-key', $key);
-                echo '<span style="color:green;">API Key Generated!</span>'."\n".
-                '<br /> To get your new key go to the Get API Key page.';
-                echo "\n<br />";
-                return true;
-            }
-        }
-
         function editcss() {
             global $main, $db, $style;
             if($_SESSION['logged']) {
