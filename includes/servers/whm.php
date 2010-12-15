@@ -54,9 +54,15 @@ class whm {
 		$data = curl_exec ($ch);
 		curl_close ($ch);
 		//END
-                if($term == true) {
-                    return true;
-                }
+        if($term == true) {
+			return true;
+		
+		}
+		elseif(strstr($data, "SSL encryption is required")) {
+			global $main;
+			$main->error(array("WHM Error" => "THT must connect via SSL!"));
+			return false;
+		}
 		elseif(!$xml) {
 			$xml = new SimpleXMLElement($data);
 		}
