@@ -75,7 +75,14 @@ closedir($handle); #Close the folder
 
 if(INSTALL == 1) {
 	define("THEME", $db->config("theme")); # Set the default theme
-	define("URL", $db->config("url")); # Sets the URL THT is located at
+	// Sets the URL THT is located at
+	if($_SERVER["HTTPS"]) {
+		// HTTPS support
+		define("URL", str_replace("http://", "https://", $db->config("url")));
+	}
+	else {
+		define("URL", $db->config("url"));
+	}
 	define("NAME", $db->config("name")); # Sets the name of the website
 }
 // Converts the $_POST global array into $main->postvar - DB Friendly.
