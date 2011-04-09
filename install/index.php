@@ -27,8 +27,8 @@ function generateSiteUrl() {
 }
 
 //INSTALL GLOBALS
-define("CVER", "1.2.2");
-define("NVER", "1.2.3");
+define("CVER", "1.2.3");
+define("NVER", "1.2.4");
 
 define("LINK", "../includes/"); # Set link
 include(LINK."compiler.php"); # Get compiler
@@ -70,15 +70,15 @@ if(INSTALL == 1) {
 		$disable = true;
 	}
 	else {
-		$array['ANYTHING'] = "Since you've already ran the install your config has been re-written to not installed. If you are upgrading, this is fine!";
+		$array['ANYTHING'] = "Since you've already ran the installer, your config has been re-written to the \"not installed\" state. If you are upgrading, this is normal!";
 	}
 }
 if(!file_exists($link)) {
-	$array["ANYTHING"] = "Your $link file doesn't exist! Please create it!";
+	$array["ANYTHING"] = "Your $link file doesn't exist! Please create it as a blank file and CHMOD it to 666!";
 	$disable = true;
 }
 elseif(!is_writable($link)) {
-	$array['ANYTHING'] = "Your $link isn't writeable! Please CHMOD it to 666!";
+	$array["ANYTHING"] = "Your $link isn't writeable! Please CHMOD it to 666!";
 	$disable = true;
 }
 echo $style->get("header.tpl");
