@@ -2,23 +2,18 @@
 function serverchange(value) {
 	$.get("<AJAX>?function=editserverhash&server=%ID%&type="+value, function(data) {
 		$("#passtext").slideUp(500);			
-		$("#passbox").slideUp(500, function(lol2) {
+		$("#passbox").slideUp(500, function() {
 			var result = data.split(";:;");
 			if(result[0] == "1") {
 				$("#passbox").html('<input name="hash" type="text" id="hash" value="'+result[1]+'" />');
+				$("#passtext").html('Password:');
 			}
 			else {
 				$("#passbox").html('<textarea name="hash" id="hash" cols="45" rows="5">'+result[1]+'</textarea>');
+				$("#passtext").html('Access Hash:');
 			}
 			$("#passtext").slideDown(500);		
-			$("#passbox").slideDown(500, function(lol) {
-				if(result[0] == "1") {
-					$("#passtext").html('Password:');
-				}
-				else {
-					$("#passtext").html('Access Hash:');
-				}
-												  });
+			$("#passbox").slideDown(500);
 		});
 	});
 }
