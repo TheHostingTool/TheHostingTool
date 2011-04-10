@@ -16,7 +16,8 @@ class page {
 							
 	public function __construct() {
 		$this->navtitle = "Servers Sub Menu";
-		$this->navlist[] = array("View Servers", "server_go.png", "view");
+		$this->navlist[] = array("View/Edit Servers", "server_go.png", "view");
+		$this->navlist[] = array("Test Servers", "server_connect.png", "test");
 		$this->navlist[] = array("Add Server", "server_add.png", "add");
 		$this->navlist[] = array("Delete Server", "server_delete.png", "delete");
 	}
@@ -132,6 +133,37 @@ class page {
 							echo "<br />";	
 						}
 						$n++;
+					}
+				}
+			break;
+			
+			case "test":
+				if(isset($_GET["do"])) {
+					$id = (int)$main->getvar["do"];
+					global $server, $style;
+					$result = $server->testConnection($id);
+					if($result === true) {
+						echo '<div style="text-align:center;padding-top:10px;">' . $style->notice(true, "Connected to the server successfully!") . "</div>";
+					}
+					else {
+						echo '<div style="text-align:center;">' . $style->notice(false, "Couldn't connect to the server...") . "</div>";
+						echo '<strong>Error:</strong><pre>' . (string)$result . '</pre>';
+					}
+				}
+				else {
+					$query = $db->query("SELECT * FROM `<PRE>servers`");
+					if($db->num_rows($query) == 0) {
+						echo "There are no servers to view!";	
+					}
+					else {
+						echo "<ERRORS>";
+						while($data = $db->fetch_array($query)) {
+							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=test&do='.$data['id'].'"><img src="'. URL .'themes/icons/server_chart.png"></a>');
+							if($n) {
+								echo "<br />";	
+							}
+							$n++;
+						}
 					}
 				}
 			break;

@@ -15,6 +15,12 @@ class whm {
 	
 	private $server;
 	
+	public function __construct($serverId = null) {
+		if(!is_null($serverId)) {
+			$this->server = (int)$serverId;
+		}
+	}
+	
 	private function serverDetails($server) {
 		global $db;
 		global $main;
@@ -30,35 +36,45 @@ class whm {
 		}
 	}
 	
-	private function remote($url, $xml = 0, $term = false) {
-                global $db;
+	private function remote($url, $xml = 0, $term = false, $returnErrors = false) {
+        global $db;
 		$data = $this->serverDetails($this->server);
-		//Curl Script done by Krakjoe and Kevin, Thanks.
 		$cleanaccesshash = preg_replace("'(\r|\n)'","",$data['accesshash']);
 		$authstr = $data['user'] . ":" . $cleanaccesshash;
 		$ch = curl_init();
-                if($db->config("whm-ssl") == 1) {
-                    $serverstuff = "https://" . $data['host'] . ":2087" . $url;
-                    curl_setopt($ch, CURLOPT_URL, $serverstuff);
-                    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                }
-                else {
-                    $serverstuff = "http://" . $data['host'] . ":2086" . $url;
-                    curl_setopt($ch, CURLOPT_URL, $serverstuff);
-                }
+		if($db->config("whm-ssl") == 1) {
+			$serverstuff = "https://" . $data['host'] . ":2087" . $url;
+			curl_setopt($ch, CURLOPT_URL, $serverstuff);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		}
+		else {
+			$serverstuff = "http://" . $data['host'] . ":2086" . $url;
+			curl_setopt($ch, CURLOPT_URL, $serverstuff);
+		}
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$curlheaders[0] = "Authorization: WHM $authstr";
 		curl_setopt($ch,CURLOPT_HTTPHEADER,$curlheaders);
-		$data = curl_exec ($ch);
-		curl_close ($ch);
+		$data = curl_exec($ch);
+		if($data === false) {
+			if($returnErrors) {
+				return curl_error($ch);
+			}
+			global $main;
+			$main->error(array("WHM Connection Error" => curl_error($ch)));
+			return false;
+		}
+		curl_close($ch);
 		//END
         if($term == true) {
 			return true;
 		
 		}
 		elseif(strstr($data, "SSL encryption is required")) {
+			if($returnErrors) {
+				return "THT must connect via SSL!";
+			}
 			global $main;
 			$main->error(array("WHM Error" => "THT must connect via SSL!"));
 			return false;
@@ -237,6 +253,30 @@ class whm {
 			else {
 				return false;
 			}
+		}
+	}
+	
+	public function testConnection($serverId = null) {
+		if(!is_null($serverId)) {
+			$this->server = (int)$serverId;
+		}
+		
+		$command = $this->remote("/xml-api/version", 0, false, true);
+		if((is_object($command)) and (get_class($command) == "SimpleXMLElement")) {
+			if(isset($command->version)) {
+				return true;
+			}
+			else {
+				if(isset($command->data->reason)) {
+					return $command->data->reason;
+				}
+				else {
+					return print_r($command, true);
+				}
+			}
+		}
+		else {
+			return $command;
 		}
 	}
 }

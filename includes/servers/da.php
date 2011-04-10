@@ -15,6 +15,12 @@ class da {
 	
 	private $server;
 	
+	public function __construct($serverId = null) {
+		if(!is_null($serverId)) {
+			$this->server = (int)$serverId;
+		}
+	}
+	
 	private function serverDetails($server) {
 		global $db;
 		global $main;
@@ -30,26 +36,37 @@ class da {
 		}
 	}
 	
-	private function remote($action, $url) {
+	private function remote($action, $url, $get = false, $returnErrors = false) {
 		$data = $this->serverDetails($this->server);
 		$ch = curl_init();
 		$ip = gethostbyname($data['host']);
 		$serverstuff = "http://".$data['user'].":".$data['accesshash']."@" . $data['host'] . ":2222/". $action;
-		//die($serverstuff.$url);
-		curl_setopt($ch, CURLOPT_URL, $serverstuff);
+		if($get) {
+			curl_setopt($ch, CURLOPT_URL, $serverstuff . $url);
+		}
+		else {
+			curl_setopt($ch, CURLOPT_URL, $serverstuff);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $url);
+		}
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		curl_setopt($ch, CURLOPT_POST,1);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS,$url);
-		$data = curl_exec ($ch);
-		curl_close ($ch);
+		$data = curl_exec($ch);
+		if($data === false) {
+			if($returnErrors) {
+				return curl_error($ch);
+			}
+			global $main;
+			$main->error(array("DA Connection Error" => curl_error($ch)));
+			return false;
+		}
+		curl_close($ch);
 		//Work with data
 		$split = explode("&", $data);
 		foreach($split as $value) {
 			$stuff = explode("=", $value);
 			$final[$stuff[0]] = $stuff[1];
 		}
-		//die(print_r($final));
 		return $final;
 	}
 
@@ -141,6 +158,18 @@ class da {
 		}
 		else {
 			return false;
+		}
+	}
+	
+	public function testConnection() {
+		if(!is_null($serverId)) {
+			$this->server = (int)$serverId;
+		}
+		
+		// No idea if this will work. Still need a DA testing server.
+		$command = $this->remote("CMD_API_ADMIN_STATS", "", true, true);
+		if($command["error"] == "1") {
+			return "D";
 		}
 	}
 }
