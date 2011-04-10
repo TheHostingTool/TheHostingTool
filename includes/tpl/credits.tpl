@@ -1,18 +1,18 @@
 <strong>So who made this wonderful thing?</strong><br />
-TheHostingTool was originally developed and maintained by Jonny H, who wrote the wonderful core we all know and love. After 1.1.2 was released, the team responsible for developing and maintaining TheHostingTool grew quite a bit into what it is today:
-<br /><br /><strong>Here is our Current Team:</strong>
+TheHostingTool was originally developed and maintained by Jonny H. After 1.1.2 was released, development was handed over to the current THT Dev Team.
+<br /><br /><strong>People Who Make TheHostingTool Possible:</strong>
 <br /><br /><strong>The Management Team:</strong>
 <div class="subborder">
 	<div class="sub">
     <table width="100%" border="0" cellspacing="2" cellpadding="0">
       <tr>
-        <td width="20%"><strong>Founder & Owner:</strong></td>
+        <td width="20%"><strong>Founder &amp; Owner:</strong></td>
         <td width="30%">Jonny H</td>
         <td><a href="mailto:jonny@thehostingtool.com">jonny@thehostingtool.com</a></td>
       </tr>
       <tr>
         <td><strong>Lead Developer:</strong></td>
-        <td width="30%">Kevin M</td>
+        <td width="30%">Kevin Mark</td>
         <td><a href="mailto:kevin@thehostingtool.com">kevin@thehostingtool.com</a></td>
       </tr>
       <tr>
@@ -27,7 +27,7 @@ TheHostingTool was originally developed and maintained by Jonny H, who wrote the
       </tr>
     </table>
     </div>
-</div><br />
+</div>
 <br /><strong>The Team:</strong>
 <div class="subborder">
 	<div class="sub">
@@ -63,7 +63,7 @@ TheHostingTool was originally developed and maintained by Jonny H, who wrote the
       <tr>
         <td width="20%"></td>
         <td width="30%">mghq2</td>
-	`<td><a href="mailto:mghq2@thehostingtool.com">mghq2@thehostingtool.com</a></td>
+	<td><a href="mailto:mghq2@thehostingtool.com">mghq2@thehostingtool.com</a></td>
       </tr>
       <tr>
         <td width="20%"></td>
@@ -91,6 +91,6 @@ TheHostingTool was originally developed and maintained by Jonny H, who wrote the
     </table>
     </div>
 </div><br />
-The Hosting Tool is a free, powerful script released under the GNU-GPLv3 license. Countless (understatement) were spent making THT. Have some dignity and leave the credits in. If not, support won't be given and we won't like you. Bad times, Bad times.<br /><br />
-Love this project and want to help out? We are always looking for willing volunteers to contribute to the project in a variety of ways. <a href="http://thehostingtool.com/forum/private.php?action=send&uid=37">Private Message Nick</a> on the THT Forums or <a href="mailto:nick@thehostingtool.com">send him an email</a>, and he will guide you through the process.<br /><br />
-<strong>THT Proudly Sponsored by:</strong> <a href="http://servercomplete.com">ServerComplete</a>
+TheHostingTool is a free, open-source, and powerful script released under the GNU-GPLv3 license. Innumerable hours were spent by our team members to bring you the THT you're using today. Although our license doesn't require it, we would really appreciate it if you would please leave our "Powered by:" message intact. Thanks! :)<br /><br />
+Love this project and want to help out? We are always looking for willing volunteers to contribute to the project in a variety of ways. <a href="http://thehostingtool.com/forum/private.php?action=send&uid=37">Private Message Nick</a> on our forums or <a href="mailto:nick@thehostingtool.com">send him an email</a>, and he will guide you through the process.<br /><br />
+TheHostingTool.com's nimble and reliable server was donated by the awesome guys over at <a href="http://servercomplete.com">ServerComplete</a>. Thanks!
