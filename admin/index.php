@@ -28,7 +28,13 @@ function acp() {
 	}
 	$query = $db->query("SELECT * FROM `<PRE>acpnav` WHERE `link` = '{$main->getvar['page']}'");
 	$page = $db->fetch_array($query);
-	$header = $page['visual'];
+	// "Hack" to get the credits page looking nicer
+	if($main->getvar["page"] == "credits") {
+		$header = "Credits";
+	}
+	else {
+		$header = $page['visual'];
+	}
 	$link = "pages/". $main->getvar['page'] .".php";
 	if(!file_exists($link)) {
 		$html = "<strong>THT Fatal Error:</strong> Seems like the .php is non existant. Is it deleted?";	
