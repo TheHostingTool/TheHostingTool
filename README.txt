@@ -58,6 +58,6 @@ We have our own IRC channel, #tht on freenode. It rarely gets used but try poppi
 COPYRIGHT INFORMATION
 -----------------------------------
 
-Copyright © 2008-2010 TheHostingTool.
+Copyright © 2008-2011 TheHostingTool Dev Team.
 
 TheHostingTool is licensed under the GNU-GPLv3. See COPYING.txt for license details.
