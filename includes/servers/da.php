@@ -161,7 +161,7 @@ class da {
 		}
 	}
 	
-	public function testConnection() {
+	public function testConnection($serverId = null) {
 		if(!is_null($serverId)) {
 			$this->server = (int)$serverId;
 		}
