@@ -447,7 +447,7 @@ class main {
 	}
 	
 	/*
-	 * Returns the IP address of this server the way external divices will see it. If $detailed == true then 
+	 * Returns the IP address of this server the way external devices will see it. If $detailed == true then 
 	 * it'll return a SimpleXMLElement with much more information. Returns false on failure.
 	 */
 	public function getWanIp($detailed = false) {
@@ -467,5 +467,11 @@ class main {
 		return $xml->ip_address;
 	}
 	
+	/*
+	 * Returns true if it's safe to run a function, false otherwise.
+	 */
+	public function canRun($function) {
+		return (function_exists($function) and stripos(ini_get('disable_functions'), $function) === false);
+	}
 }
 ?>

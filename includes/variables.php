@@ -14,30 +14,43 @@ if(INSTALL == 1) {
 	 * THT Page Generation Time
 	 * By Jimmie Lin + Jonny H
 	 */
-	global $db, $starttime, $style; #Define global, as we are going to pull up things from db
+	global $db, $starttime, $style, $main; #Define global, as we are going to pull up things from db
 	if($db->config("show_page_gentime") == 1){
 		$mtime = explode(' ', microtime());
 		$totaltime = $mtime[0] + $mtime[1] - $starttime;
 		$gentime = substr($totaltime, 0, 5);
 		$array['PAGEGEN'] = $gentime;
 		$array['IP'] = getenv('REMOTE_ADDR');
-		global $style;
 		$pagegen .= $style->replaceVar('tpl/footergen.tpl', $array);
 		if($db->config("show_footer")) {
-			if(ini_get('safe_mode') or
-			strpos(ini_get('disable_functions'), 'shell_exec') != false or
-			stristr(PHP_OS, 'Win')) {
-				$version[0] = "N/A";
+			$array2['EXTRA'] = '';
+			if(!$main->canRun('shell_exec')) {
+				$array2['EXTRA'] = 'Some statistics could not be provided because shell_exec has been disabled.';
 			}
-			else {
-				$output = shell_exec('mysql -V');
-				preg_match('@[0-9]+\.[0-9]+\.[0-9]+@', $output, $version);
+			$array2['OS'] = php_uname();
+			$array2['DISTRO'] = '';
+			if(php_uname('s') == 'Linux') {
+				$distro = false;
+				if($main->canRun("shell_exec")) {
+					$result = shell_exec("cat /etc/*-release");
+					if(preg_match('/DISTRIB_DESCRIPTION="(.*)"/', $result, $match)) {
+						$distro = $match[1];
+					}
+					else {
+						$distro = $result;
+					}
+				}
+				if($distro) {
+					$array2['DISTRO'] = '<tr><td><strong>Linux Distro:</strong></td><td> '.$distro.' </td></tr>';
+				}
 			}
-			global $style;
-			$array2['OS'] = PHP_OS;
 			$array2['SOFTWARE'] = $_SERVER["SERVER_SOFTWARE"];
 			$array2['PHP_VERSION'] = phpversion();
-			$array2['MYSQL_VERSION'] = $version[0];
+			$array2['MYSQL_VERSION'] = '';
+			$versionResult = $db->fetch_array($db->query("SELECT Version()"));
+			if($versionResult[0]) {
+				$array2['MYSQL_VERSION'] = '<tr><td><strong>MySQL Version:</strong></td><td> '.$versionResult[0].' </td></tr>';
+			}
 			$array2["SERVER"] = $_SERVER["HTTP_HOST"];
 			$array['TITLE'] = $style->replaceVar('tpl/aserverstatus.tpl',$array2);
 			$pagegen .= $style->replaceVar('tpl/footerdebug.tpl',$array);

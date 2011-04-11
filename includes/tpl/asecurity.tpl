@@ -24,7 +24,7 @@
   <tr>
     <td><strong>Show Footer Server Information?</strong></td>
     <td>%SHOW_FOOTER%
-     <a title="Show more advanced information like server free space, php info, apache modules." class="tooltip">
+     <a title="Show system information in the footer. We highly reccomend you turn this off on production servers." class="tooltip">
      <img src="<URL>themes/icons/information.png" /></a>
     </td>
     </tr>

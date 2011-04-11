@@ -1,16 +1,10 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Admin Area - Home
+// Admin Area - Server Status
 // By Jonny H
 // Released under the GNU-GPL
 //////////////////////////////
-/*
- * Server Status for AdminCP
- * By Jimmie Lin
- * THT Community
- * Listening to: The Proclaimers - What makes you cry :p
- */
 
 //Check if called by script
 if(THT != 1){die();}
@@ -31,23 +25,50 @@ class page {
 		Welcome to the server status system. Here you can see your server information, php information and more.";	
 	}
 	
-	public function mysqlversion() { #Thanks to tharis20 at p@p to solve this problem
-	   $output = shell_exec('mysql -V');
-	   preg_match('@[0-9]+\.[0-9]+\.[0-9]+@', $output, $version);
-	   return $version[0];
-	} 
+	public function mysqlVersion() {
+		global $db;
+		$result = $db->fetch_array($db->query("SELECT Version()"));
+		return $result[0];
+	}
 	
-	public function server_status(){
-		$diskfreespace = disk_free_space('/') / 1073741824;
-		$disktotalspace = disk_total_space('/') / 1073741824;
+	public function getLinuxDistro($raw = false) {
+		global $main;
+		if($main->canRun("shell_exec")) {
+			$result = shell_exec("cat /etc/*-release");
+			if($raw) {
+				return $result;
+			}
+			if(preg_match('/DISTRIB_DESCRIPTION="(.*)"/', $result, $match)) {
+				return $match[1];
+			}
+			return $result;
+		}
+		return false;
+	}
+	
+	public function server_status() {
+		global $main;
+		$array['EXTRA'] = '';
+		if(!$main->canRun('shell_exec')) {
+			$array['EXTRA'] = 'Some statistics could not be provided because shell_exec has been disabled.';
+		}
 		$server = $_SERVER['HTTP_HOST'];
 		global $style;
-		$array['OS'] = PHP_OS;
+		$array['OS'] = php_uname();
+		$array['DISTRO'] = '';
+		if(php_uname('s') == 'Linux') {
+			$distro = $this->getLinuxDistro();
+			if($distro) {
+				$array['DISTRO'] = '<tr><td><strong>Linux Distro:</strong></td><td> '.$distro.' </td></tr>';
+			}
+		}
 		$array['SOFTWARE'] = getenv('SERVER_SOFTWARE');
 		$array['PHP_VERSION'] = phpversion();
-		$array['MYSQL_VERSION'] = $this->mysqlversion();
-		$array['DISK_FREE_SPACE'] = substr($diskfreespace,0,4);
-		$array['DISK_TOTAL_SPACE'] = substr($disktotalspace,0,4);
+		$array['MYSQL_VERSION'] = '';
+		$mysqlVersion = $this->mysqlVersion();
+		if($mysqlVersion) {
+			$array['MYSQL_VERSION'] = '<tr><td><strong>MySQL Version:</strong></td><td> '.$mysqlVersion.' </td></tr>';
+		}
 		$array['SERVER'] = $server;
 		echo $style->replaceVar('tpl/aserverstatus.tpl',$array);
 	}

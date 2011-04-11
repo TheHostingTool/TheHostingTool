@@ -156,7 +156,7 @@ class page {
 						echo "There are no servers to view!";	
 					}
 					else {
-						echo "<ERRORS>";
+						echo "Caution: Some servers are set to automatically ban the IP address of this server (".$main->getWanIp().") after a certain number of failed logins.<br />";
 						while($data = $db->fetch_array($query)) {
 							echo $main->sub("<strong>".$data['name']."</strong>", '<a href="?page=servers&sub=test&do='.$data['id'].'"><img src="'. URL .'themes/icons/server_chart.png"></a>');
 							if($n) {
