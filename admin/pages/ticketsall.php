@@ -43,7 +43,7 @@ class page {
 		return $username;
 	}
 	
-	public function content($status) { # Displays the page 
+	public function content() { # Displays the page 
 		global $main;
 		global $style;
 		global $db;

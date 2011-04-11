@@ -28,12 +28,19 @@ function acp() {
 	}
 	$query = $db->query("SELECT * FROM `<PRE>acpnav` WHERE `link` = '{$main->getvar['page']}'");
 	$page = $db->fetch_array($query);
-	// "Hack" to get the credits page looking nicer
-	if($main->getvar["page"] == "credits") {
-		$header = "Credits";
-	}
-	else {
-		$header = $page['visual'];
+	// "Hack" to get the credits and tickets page looking nicer
+	switch($main->getvar["page"]) {
+		case "credits":
+			$header = "Credits";
+			break;
+		
+		case "ticketsall":
+			$header = "All Tickets";
+			break;
+		
+		default:
+			$header = $page['visual'];
+			break;
 	}
 	$link = "pages/". $main->getvar['page'] .".php";
 	if(!file_exists($link)) {

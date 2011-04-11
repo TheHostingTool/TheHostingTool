@@ -85,7 +85,7 @@ class page {
 		return $style->replaceVar("tpl/support/replybox.tpl", $array);
 	}
 	
-	public function content($status) { # Displays the page 
+	public function content() { # Displays the page 
 		global $main;
 		global $style;
 		global $db;
