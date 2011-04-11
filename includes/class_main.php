@@ -428,12 +428,12 @@ class main {
 	}
 	
         /*
-        * Converts two-letter country codes to their full names.
-        * This will probably come in handy considering we use the two-letter
-        * country code format to store countries in the database.
-        * I had to compress this code a bit so it wouldn't be too lengthy.
-        * Original Snippet: http://snipplr.com/view/36868/php-country-code--to-country-name-list/
-        */
+         * Converts two-letter country codes to their full names.
+         * This will probably come in handy considering we use the two-letter
+         * country code format to store countries in the database.
+         * I had to compress this code a bit so it wouldn't be too lengthy.
+         * Original Snippet: http://snipplr.com/view/36868/php-country-code--to-country-name-list/
+         */
 	public function country_code_to_country($code) {
 		$country = '';
 		if($code=='AF')$country='Afghanistan';if($code=='AX')$country='Aland Islands';if($code=='AL')$country='Albania';if($code=='DZ')$country='Algeria';if($code=='AS')$country='American Samoa';if($code=='AD')$country='Andorra';if($code=='AO')$country='Angola';if($code=='AI')$country='Anguilla';if($code=='AQ')$country='Antarctica';if($code=='AG')$country='Antigua and Barbuda';if($code=='AR')$country='Argentina';if($code=='AM')$country='Armenia';if($code=='AW')$country='Aruba';if($code=='AU')$country='Australia';if($code=='AT')$country='Austria';if($code=='AZ')$country='Azerbaijan';if($code=='BS')$country='Bahamas the';if($code=='BH')$country='Bahrain';if($code=='BD')$country='Bangladesh';if($code=='BB')$country='Barbados';if($code=='BY')$country='Belarus';if($code=='BE')$country='Belgium';if($code=='BZ')$country='Belize';if($code=='BJ')$country='Benin';if($code=='BM')$country='Bermuda';if($code=='BT')$country='Bhutan';if($code=='BO')$country='Bolivia';if($code=='BA')$country='Bosnia and Herzegovina';if($code=='BW')$country='Botswana';if($code=='BV')$country='Bouvet Island (Bouvetoya)';if($code=='BR')$country='Brazil';if($code=='IO')$country='British Indian Ocean Territory (Chagos Archipelago)';if($code=='VG')$country='British Virgin Islands';if($code=='BN')$country='Brunei Darussalam';if($code=='BG')$country='Bulgaria';if($code=='BF')$country='Burkina Faso';if($code=='BI')$country='Burundi';if($code=='KH')$country='Cambodia';if($code=='CM')$country='Cameroon';if($code=='CA')$country='Canada';
@@ -445,5 +445,27 @@ class main {
 		if($code=='VU')$country='Vanuatu';if($code=='VE')$country='Venezuela';if($code=='VN')$country='Vietnam';if($code=='WF')$country='Wallis and Futuna';if($code=='EH')$country='Western Sahara';if($code=='YE')$country='Yemen';if($code=='ZM')$country='Zambia';if($code=='ZW')$country='Zimbabwe';if( $country == '') $country = $code;
 		return $country;
 	}
+	
+	/*
+	 * Returns the IP address of this server the way external divices will see it. If $detailed == true then 
+	 * it'll return a SimpleXMLElement with much more information. Returns false on failure.
+	 */
+	public function getWanIp($detailed = false) {
+		$ch = curl_init("http://www.domaintools.com/research/my-ip/myip.xml/");
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$data = curl_exec($ch);
+		if($data === false) {
+			$this->error(array('$main->getWanIp() Failed' => curl_error($ch)));
+			return false;
+		}
+		curl_close($ch);
+		$xml = new SimpleXMLElement($data);
+		if($detailed) {
+			return $xml;
+		}
+		return $xml->ip_address;
+	}
+	
 }
 ?>
