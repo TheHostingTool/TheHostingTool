@@ -451,7 +451,7 @@ class main {
 	 * it'll return a SimpleXMLElement with much more information. Returns false on failure.
 	 */
 	public function getWanIp($detailed = false) {
-		$ch = curl_init("http://www.domaintools.com/research/my-ip/myip.xml/");
+		$ch = curl_init("http://www.domaintools.com/research/my-ip/myip.xml");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$data = curl_exec($ch);
@@ -460,7 +460,14 @@ class main {
 			return false;
 		}
 		curl_close($ch);
-		$xml = new SimpleXMLElement($data);
+		try {
+			$xml = @new SimpleXMLElement($data);
+		}
+		catch (Exception $ex) {
+			echo 'Something went wrong when running $main->getWanIp()... $data dump follows:' . "<br />\n";
+			var_dump($data);
+			die();
+		}
 		if($detailed) {
 			return $xml;
 		}
