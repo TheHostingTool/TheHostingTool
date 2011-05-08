@@ -32,7 +32,7 @@ function change() {
 			case 2:
 				document.getElementById("button3").disabled = true;
 				document.getElementById("button3").value = "Working...";
-				$.get("<AJAX>?function=sqlcheck&host="+document.getElementById("hostname").value+"&user="+document.getElementById("username").value+"&pass="+document.getElementById("password").value+"&db="+document.getElementById("database").value+"&pre="+document.getElementById("prefix").value, function(mydata) {
+				$.get("<AJAX>?function=sqlcheck&host="+encodeURIComponent(document.getElementById("hostname").value)+"&user="+encodeURIComponent(document.getElementById("username").value)+"&pass="+encodeURIComponent(document.getElementById("password").value)+"&db="+encodeURIComponent(document.getElementById("database").value)+"&pre="+encodeURIComponent(document.getElementById("prefix").value), function(mydata) {
 				document.getElementById("button3").disabled = false;
 				document.getElementById("button3").value = "Next Step";
 				//This if statement isn't really a big deal, but it adds some polish.
@@ -69,7 +69,7 @@ function change() {
 			case 4:
 				document.getElementById("button5").disabled = true;
 				document.getElementById("button5").value = "Working...";
-				$.get("<AJAX>?function=installfinal&user="+document.getElementById("staffusername").value+"&pass="+document.getElementById("staffpassword").value+"&email="+document.getElementById("email").value+"&name="+document.getElementById("name").value+"&url="+document.getElementById("url").value,
+				$.get("<AJAX>?function=installfinal&user="+encodeURIComponent(document.getElementById("staffusername").value)+"&pass="+encodeURIComponent(document.getElementById("staffpassword").value)+"&email="+encodeURIComponent(document.getElementById("email").value)+"&name="+encodeURIComponent(document.getElementById("name").value)+"&url="+encodeURIComponent(document.getElementById("url").value),
 					  function(finisheddata) {
 							document.getElementById("button5").disabled = false;
 							document.getElementById("button5").value = "Next Step";
@@ -119,7 +119,7 @@ function installstuff() {
 	else {
 		etc = "&type=install";	
 	}
-	$.get("<AJAX>?function=install&version=%VERSION%"+etc, function(myinstall) {
+	$.get("<AJAX>?function=install&version="+encodeURIComponent('%VERSION%')+etc, function(myinstall) {
 		document.getElementById("step3").innerHTML = myinstall;
 	});	
 }
