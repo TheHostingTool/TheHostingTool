@@ -593,7 +593,6 @@ class Ajax {
 	private function installsql($data, $pre, $con = 0) {
 		global $style, $db;
 		$array['PRE'] = $pre;
-                $array['API-KEY'] = hash('sha512', $this->randomString());
 		$sContents = $style->replaceVar($data, $array);
 		// replace slash quotes so they don't get in the way during parse
 		// tried a replacement array for this but it didn't work
@@ -1108,7 +1107,7 @@ if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
 	$Ajax = new Ajax();
 	if(method_exists($Ajax, $_REQUEST['function'])) {
 		$Ajax->{$_REQUEST['function']}();
-		include(LINK."output.php");
+		require(LINK."output.php");
 	}
 }
 

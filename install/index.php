@@ -35,12 +35,12 @@ include(LINK."compiler.php"); # Get compiler
 
 function writeconfig($host, $user, $pass, $db, $pre, $true) {
 	global $style;
-	$array['HOST'] =  $host;
-	$array['USER'] =  $user;
-	$array['PASS'] =  $pass;
-	$array['DB'] =  $db;
-	$array['PRE'] =  $pre;
-	$array['TRUE'] = $true;
+	$array['HOST']	=  addcslashes($host, '\\\'');
+	$array['USER']	=  addcslashes($user, '\\\'');
+	$array['PASS']	=  addcslashes($pass, '\\\'');
+	$array['DB']	=  addcslashes($db, '\\\'');
+	$array['PRE']	=  addcslashes($pre, '\\\'');
+	$array['TRUE']	=  $true;
 	$tpl = $style->replaceVar("tpl/install/conftemp.tpl", $array);
 	$link = LINK."conf.inc.php";
 	if(is_writable($link)) {
