@@ -1,4 +1,0 @@
-</div>
-<COPYRIGHT>
-</body>
-</html>
