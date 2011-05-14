@@ -44,7 +44,7 @@ $(document).ready(function() {
 <strong>Editing your Footer Template</strong><br />
 <p>Want to edit your style in an web based interface? Here it is!<br /><br />
 <em>Variables:</em><br /> &lt;PAGEGEN&gt; tag shows the debug stuff.<br />
-&lt;COPYRIGHT&gt; shows the THT Copyright. <strong>Don't even attempt to remove it.</strong><br />
+&lt;COPYRIGHT&gt; the "Powered by" notice.
 <textarea cols="75" style="width:99%; height:300px;" id="tplCode" rows="25" wrap="no" name="edit"%READONLY%>%CSSCONTENT%</textarea>
 <div id="belowDynamic">
     <div id="spaceForButton">

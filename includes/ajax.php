@@ -837,24 +837,8 @@ class Ajax {
                     //We have to do some special stuff for the footer.
                     //This gets complex. But it works. I might simplify it sometime.
                     if($file == "footer") {
-                        $foundcopy = false;
-                        $diemsg = 'Trying to remove the copyright? No thanks.';
-                        if(!strstr($contents, '<COPYRIGHT>')) {
-                            $slash = str_replace("&lt;COPYRIGHT&gt;", "<COPYRIGHT>", $slash);
-                            if(!strstr($slash, '<COPYRIGHT>')) {
-                                die($diemsg);
-                            }
-                            else {
-                                $foundcopy = true;
-                            }
-                        }
-                        else {
-                            $foundcopy = true;
-                        }
-                        if($foundcopy == true) {
-                            $slash = stripslashes(str_replace("&lt;PAGEGEN&gt;", "<PAGEGEN>", $slash)); # Yay, strip it
-                            //$slash = str_replace("&lt;COPYRIGHT&gt;", "<COPYRIGHT>", $slash);
-                        }
+						$slash = str_replace("&lt;COPYRIGHT&gt;", "<COPYRIGHT>", $slash);
+						$slash = stripslashes(str_replace("&lt;PAGEGEN&gt;", "<PAGEGEN>", $slash));
                     }
                     $slash = stripslashes(str_replace("&lt;THT TITLE&gt;", "<THT TITLE>", $slash)); # Yay, strip it
                     $slash = str_replace("&lt;JAVASCRIPT&gt;", "<JAVASCRIPT>", $slash); #jav
