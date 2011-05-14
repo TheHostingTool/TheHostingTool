@@ -1,10 +1,21 @@
+<link type="text/css" href="<URL>includes/codemirror/codemirror.css" rel="stylesheet"/>
+<script type="text/javascript" src="<URL>includes/codemirror/codemirror.js"></script>
+<link type="text/css" href="<URL>includes/codemirror/xml/xml.css" rel="stylesheet"/>
+<script type="text/javascript" src="<URL>includes/codemirror/xml/xml.js"></script>
+<link type="text/css" href="<URL>includes/codemirror/javascript/javascript.css" rel="stylesheet"/>
+<script type="text/javascript" src="<URL>includes/codemirror/javascript/javascript.js"></script>
+<link type="text/css" href="<URL>includes/codemirror/css/css.css" rel="stylesheet"/>
+<script type="text/javascript" src="<URL>includes/codemirror/css/css.js"></script>
+<script type="text/javascript" src="<URL>includes/codemirror/htmlmixed/htmlmixed.js"></script>
+<style>.CodeMirror {background: #f8f8f8;}</style> 
 <script>
 $(document).ready(function() {
+	%COMMENTHACK%var editor = CodeMirror.fromTextArea(document.getElementById("tplCode"), {mode: "htmlmixed"});
     $("#editTheTplNao").click(function() {
         $("#" + this.id).blur();
         $("#" + this.id).attr("disabled", "disabled");
         var code = $("#tplCode").val();
-        $.post("<AJAX>?function=edittpl", { file: "header", contents: code }, function(data){
+		$.post("<AJAX>?function=edittpl", { file: "header", contents: editor.getValue(), __tht_csrf_magic: csrfMagicToken }, function(data){
             $.get("<AJAX>?function=notice", { status: "good", message: data }, function(data2){
                 $("#belowDynamic").slideUp(500, function() {
                     $("#spaceForNotice").html(data2);

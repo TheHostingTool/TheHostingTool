@@ -88,13 +88,13 @@ class page {
 					if($this->checkWritable($filetochange)) {
 						$css['DISABLED'] = '';
 						$css['READONLY'] = '';
-						$css['CODEPRESS'] = 'codepress ';
+						$css['COMMENTHACK'] = '';
 						$css['NOTICE'] = '';
 					}
 					else {
 						$css['DISABLED'] = ' disabled="disabled"';
 						$css['READONLY'] = ' readonly="readonly"';
-						$css['CODEPRESS'] = '';
+						$css['COMMENTHACK'] = '//';
 						$css['NOTICE'] = $style->notice(false, "In order to make changes to this file, please CHMOD it to 666.");
 					}
 					
@@ -124,47 +124,42 @@ class page {
 					// anyway. Something is crashing
 					unset($css);
 					unset($conheader);
-					unset($filetochange);
+					unset($filetochange);	
 					unset($filetochangeOpen);
 					unset($slash);
 					$filetochange = LINK."../themes/".$db->config('theme')."/header.tpl";
-					$contheader = str_replace("<THT TITLE>", "&lt;THT TITLE&gt;", file_get_contents($filetochange));
-					$contheader = str_replace("<JAVASCRIPT>", "&lt;JAVASCRIPT&gt;", $contheader);
-					$contheader = str_replace("<CSS>", "&lt;CSS&gt;", $contheader);
-					$contheader = str_replace("<IMG>", "&lt;IMG&gt;", $contheader);
-					$contheader = str_replace("%INFO%", "&#37;INFO%", $contheader);
-					$contheader = str_replace("<MENU>", "&lt;MENU&gt;", $contheader);
-					$contheader = str_replace("<ICONDIR>", "&lt;ICONDIR&gt;", $contheader); #Alrighty, what to do next(y)?
-					$css['CSSCONTENT'] = $contheader;
+					$css['CSSCONTENT'] = htmlentities(file_get_contents($filetochange));
 					if(!$this->checkWritable($filetochange)) {
 						$css['READONLY'] = ' readonly="readonly"';
 						$css['DISABLED'] = ' disabled="disabled"';
 						$css['NOTICE'] = $style->notice(false, "In order to make changes to this file, please CHMOD it to 666.");
+						$css['COMMENTHACK'] = '//';
 					}
 					else {
 						$css['READONLY'] = '';
 						$css['DISABLED'] = '';
 						$css['NOTICE'] = '';
+						$css['COMMENTHACK'] = '';
 					}
 					echo $style->replaceVar('tpl/headedit.tpl', $css);
 					break;
 					
 				case "editfooter":
 					$filetochange = LINK."../themes/".$db->config('theme')."/footer.tpl";
-					$contheader = str_replace("<PAGEGEN>", "&lt;PAGEGEN&gt;", file_get_contents($filetochange));
-					$contheader = str_replace("<COPYRIGHT>", "&lt;COPYRIGHT&gt;", $contheader); #Alrighty, what to do next(y)?
-					$css['CSSCONTENT'] = $contheader;
+					$css['CSSCONTENT'] = htmlentities(file_get_contents($filetochange));
 					$css['EDITED'] = "Editing your footer template!";
 					$css['BUTTON'] = $this->checkWritable($filetochange);
 					if(!$this->checkWritable($filetochange)) {
 						$css['READONLY'] = ' readonly="readonly"';
 						$css['DISABLED'] = ' disabled="disabled"';
 						$css['NOTICE'] = $style->notice(false, "In order to make changes to this file, please CHMOD it to 666.");
+						$css['COMMENTHACK'] = '//';
 					}
 					else {
 						$css['READONLY'] = '';
 						$css['DISABLED'] = '';
 						$css['NOTICE'] = '';
+						$css['COMMENTHACK'] = '';
 					}
 					echo $style->replaceVar('tpl/footedit.tpl', $css);
 					break;
