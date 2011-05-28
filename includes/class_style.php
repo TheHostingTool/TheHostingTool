@@ -113,6 +113,32 @@ class style {
             $notice .= '</em></strong>';
             return $notice;
         }
+        
+        // Returns a form input element according to the parameters given
+        public function createInput($type, $name, $value = "", $extra = array(), $options = array()) {
+			$type = strtolower(trim($type));
+			$extraHtml = "";
+			foreach($extra as $k => $v) {
+				$extraHtml .= $k.'="'.$v.'" ';
+			}
+			switch($type) {
+				case "textarea":
+					return '<textarea name="'.$name.'" '.$extraHtml.'>'.htmlspecialchars($value).'</textarea>';
+					break;
+				case "select":
+					$return = '<select name="'.$name.'" '.$extraHtml.'>';
+					foreach($options as $o) {
+						if(array_key_exists("disabled", $o) && $o["disabled"]) { $d = " disabled"; } else { $d = ""; }
+						$return .= '<option value="'.$o["value"].'"'.$d.'>'.$o["text"].'</option>';
+					}
+					$return .= '</select>';
+					return $return;
+					break;
+				default:
+					return '<input type="'.$type.'" name="'.$name.'" value="'.$value.'" '.$extraHtml.'/>';
+					break;
+			}
+		}
 
 	//Obsolete Functions...
 
