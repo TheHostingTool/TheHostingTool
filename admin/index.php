@@ -241,7 +241,11 @@ if(!$_SESSION['logged']) {
 		define("INFO", " ");
 		if($_POST) { # If user submitts form
 		if($main->staffLogin($main->postvar['user'], $main->postvar['pass'])) {
-			$main->redirect("?page=home");	
+			$queryString = $_SERVER["QUERY_STRING"];
+			if($queryString == "") {
+				$queryString = "page=home";
+			}
+			$main->redirect(URL . "admin/?" . $queryString);	
 		}
 		else {
 			$main->errors("Incorrect username or password!");
