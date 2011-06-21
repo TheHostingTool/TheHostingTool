@@ -39,16 +39,12 @@ Management:
 	Nick (Staff Coordinator) <nick@thehostingtool.com> @thtnick
 Developers:
 	KuJoe <kujoe@thehostingtool.com> @zkujoe
-	Jimmie <jimmie@thehostingtool.com>
 Support Team:
 	David
+	TheBingsta
 	Matt <matt@thehostingtool.com>
 Wiki Team:
-	asiansaga <asiansaga@thehostingtool.com>
-	mghq2 <mghq2@thehostingtool.com> @itsdylanb
-	Oloty
 	zzbomb <zzbomb@thehostingtool.com> @zzbomb
-
 Quality Assurance:
 	If you're interested in QA, give Nick an email or PM on the forums.
 
