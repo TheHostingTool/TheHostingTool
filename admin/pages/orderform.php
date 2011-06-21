@@ -52,33 +52,59 @@ class page {
 		while($arr = mysql_fetch_assoc($query)) {
 			if(isset($pass)) { unset($pass); }
 			$pass["ID"] = $arr["id"];
-			$pass["TITLE"] = $arr["title"];
-			$pass["DESCRIPTION"] = $arr["description"];
+			$pass["TITLE"] = htmlspecialchars($arr["title"]);
+			$pass["DESCRIPTION"] = htmlspecialchars($arr["description"]);
 			if($arr["required"] == 1) {
 				$pass["REQ"] = "<span style=\"color: red;\">*</span>";
+				$pass["REQC"] = " checked=\"yes\"";
 			}
 			else {
 				$pass["REQ"] = "";
 			}
-			$pass["TYPELIST"] = $style->createInput('select', 'typelist-'.$arr["id"], '', array('id' => 'typelist-'.$arr["id"]),
+			// A lame solution but I don't feel like solving this problem at 5 AM...
+			$selected = array(false, false, false, false, false, false, false);
+			switch($arr["type"]) {
+				case "text":
+					$selected[0] = true;
+					break;
+				case "password":
+					$selected[1] = true;
+					break;
+				case "checkbox":
+					$selected[2] = true;
+					break;
+				case "select":
+					$selected[3] = true;
+					break;
+				case "tel":
+					$selected[4] = true;
+					break;
+				case "url":
+					$selected[5] = true;
+					break;
+				case "email":
+					$selected[6] = true;
+					break;
+				case "range":
+					$selected[7] = true;
+					break;
+			}
+			$pass["TYPELIST"] = $style->createInput('select', 'cfield-field-typelist-'.$arr["id"], '', array('id' => 'cfield-field-typelist-'.$arr["id"], 'class' => 'cfield-field cfield-field-'.$arr["id"].' cfield-field-typelist'),
 				array(
-					array('text' => 'Text', 'value' => 'text'),
-					array('text' => 'Password', 'value' => 'password'),
-					array('text' => 'Checkbox', 'value' => 'checkbox'),
-					array('text' => 'Select Box', 'value' => 'select'),
+					array('text' => '--- Standard ---', 'value' => 'standard', 'disabled' => true),
+					array('text' => 'Text', 'value' => 'text', 'selected' => $selected[0]),
+					array('text' => 'Password', 'value' => 'password', 'selected' => $selected[1]),
+					array('text' => 'Checkbox', 'value' => 'checkbox', 'selected' => $selected[2]),
+					array('text' => 'Select Box', 'value' => 'select', 'selected' => $selected[3]),
 					array('text' => '--- HTML5 ---', 'value' => 'html5', 'disabled' => true),
-					array('text' => 'Telephone', 'value' => 'tel'),
-					array('text' => 'URL', 'value' => 'url'),
-					array('text' => 'Email', 'value' => 'email'),
-					array('text' => 'DateTime', 'value' => 'datetime'),
-					array('text' => 'Date', 'value' => 'date'),
-					array('text' => 'Month', 'value' => 'month'),
-					array('text' => 'Week', 'value' => 'week'),
-					array('text' => 'Number', 'value' => 'number'),
-					array('text' => 'Range', 'value' => 'range')
+					array('text' => 'Telephone #', 'value' => 'tel', 'selected' => $selected[4]),
+					array('text' => 'URL', 'value' => 'url', 'selected' => $selected[5]),
+					array('text' => 'Email', 'value' => 'email', 'selected' => $selected[6]),
+					array('text' => 'Range', 'value' => 'range', 'selected' => $selected[7])
 				)
 			);
-			$pass["DEFAULTVALUE"] = $arr["default"];
+			$pass["DEFAULTVALUE"] = htmlspecialchars($arr["default"]);
+			$pass["REGEX"] = htmlspecialchars($arr["regex"]);
 			echo $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
 		}
 		echo '</div>';

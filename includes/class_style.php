@@ -129,7 +129,8 @@ class style {
 					$return = '<select name="'.$name.'" '.$extraHtml.'>';
 					foreach($options as $o) {
 						if(array_key_exists("disabled", $o) && $o["disabled"]) { $d = " disabled"; } else { $d = ""; }
-						$return .= '<option value="'.$o["value"].'"'.$d.'>'.$o["text"].'</option>';
+						if(array_key_exists("selected", $o) && $o["selected"]) { $s = " selected"; } else { $s = ""; }
+						$return .= '<option value="'.$o["value"].'"'.$d.$s.'>'.$o["text"].'</option>';
 					}
 					$return .= '</select>';
 					return $return;
