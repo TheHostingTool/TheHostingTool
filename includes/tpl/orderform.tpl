@@ -111,7 +111,9 @@ function nextstep() {
 			  document.getElementById("back").disabled = true;
 			  $.get("<AJAX>"+url, function(data) {
 				document.getElementById("finished").innerHTML = data;
-				document.getElementById("back").disabled = false;
+				if(data.indexOf("Your account has been completed!") == -1) {
+					document.getElementById("back").disabled = false;
+				}
 				document.getElementById("verify").innerHTML = "";
 				$.get("<AJAX>?function=ispaid&pid="+ document.getElementById("package").value +"&uname="+ document.getElementById("username").value, function(data2) {							
 																																							 //document.getElementById("finished").innerHTML = data2;
