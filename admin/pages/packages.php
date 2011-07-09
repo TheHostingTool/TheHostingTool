@@ -42,7 +42,7 @@ class page {
 					}
 					if(!$n) {
 						foreach($main->postvar as $key => $value) {
-							if($key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin") {
+							if($key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin" && $key != $GLOBALS['csrf']['input-name']) {
 								if($n) {
 									$additional .= ",";	
 								}
