@@ -9,13 +9,14 @@
 //Check if called by script
 if(THT != 1){die();}
 
-//Create the class
+// Create the class
 class free {
 	
-	public $signup = false; # Does this type have a signup function?
-        public $name = "Free"; # Human readable name of the package.
+	public $signup = false; // Does this type have a signup function?
+    public $name = "Free"; // Human readable name of the package.
+    public $cron = false; // No cron.
 	
-	# LOL is there any functions to this? I don't think so. Oh Im so pro..
+	// LOL is there any functions to this? I don't think so. Oh Im so pro..
 
 }
 //End Type

@@ -1,29 +1,30 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Free - THT Type
-// By Jonny H
+// Post2Host - THT Type
+// By Jonny H and Kevin M
 // Released under the GNU-GPL
 //////////////////////////////
 
 //Check if called by script
 if(THT != 1){die();}
 
-//Create the class
+// Create the class
 class p2h {
 
-	public $acpForm = array(), $orderForm = array(), $acpNav = array(), $acpSubNav = array(); # The HTML Forms arrays
-	public $signup = true; # Does this type have a signup function?
-	public $cron = true; # Do we have a cron?
-	public $acpBox = true; # Want to show a box thing?
-	public $clientBox = true; # Show a box in client cp?
-        public $name = "Post2Host"; # Human readable name of the package.
+	public $acpForm = array(), $orderForm = array(), $acpNav = array(), $acpSubNav = array(); // The HTML Forms arrays
+	public $signup = true; // Does this type have a signup function?
+	public $cron = true; // Do we have a cron?
+	public $acpBox = true; // Want to show a box thing?
+	public $clientBox = true; // Show a box in client cp?
+    public $name = "Post2Host"; // Human readable name of the package.
+    public $warnDate = 20; // The day of the month to warn users about posting.
 
-	private $con; # Forum SQL
+	private $con; // Forum SQL
 
-	# Start the functions #
+	// Start the functions //
 
-	public function __construct() { # Assign stuff to variables on creation
+	public function __construct() { // Assign stuff to variables on creation
 		global $main, $db;
 		$this->acpForm[] = array("Signup Posts", '<input name="signup" type="text" id="signup" size="5" onkeypress="return onlyNumbers();" />', 'signup');
 		$this->acpForm[] = array("Monthly Posts", '<input name="monthly" type="text" id="monthly" size="5" onkeypress="return onlyNumbers();" />', 'monthly');
@@ -56,19 +57,24 @@ class p2h {
 						}
 					}
 					if(!$n) {
+						if(strpos($main->postvar['name'], ';:;') !== false) {
+							$main->errors("You cannot have <code>;:;</code> in your database name! Sorry!");
+							$array['CONTENT'] = $style->replaceVar("tpl/addforum.tpl");
+							break;
+						}
 						$forumcon = @mysql_connect($main->postvar['hostname'], $main->postvar['username'], $main->postvar['password'], true);
 						if(!$forumcon) {
-							$main->errors("mySQL Details incorrect!");
+							$main->errors("Couldn't connect to the MySQL server...");
 						}
 						else {
 							$select = @mysql_select_db($main->postvar['database'], $forumcon);
 							if(!$select) {
-								$main->errors("Couldn't select database!");
+								$main->errors("Couldn't select the database. Does the provided user have access to that database? Does it even exist?");
 							}
 							else {
 								$query = $this->queryForums($main->postvar['name']);
 								if($db->num_rows($query) != 0) {
-									$main->errors("Forum name exists!");
+									$main->errors("This forum name has already been used! Please choose a new one.");
 								}
 								else {
 									$db->query("INSERT INTO `<PRE>config` (name, value) VALUES('p2hforum;:;username;:;{$main->postvar['name']}', '{$main->postvar['username']}')");
@@ -77,7 +83,7 @@ class p2h {
 									$db->query("INSERT INTO `<PRE>config` (name, value) VALUES('p2hforum;:;hostname;:;{$main->postvar['name']}', '{$main->postvar['hostname']}')");
 									$db->query("INSERT INTO `<PRE>config` (name, value) VALUES('p2hforum;:;prefix;:;{$main->postvar['name']}', '{$main->postvar['prefix']}')");
 									$db->query("INSERT INTO `<PRE>config` (name, value) VALUES('p2hforum;:;type;:;{$main->postvar['name']}', '{$main->postvar['forum']}')");
-									$main->errors("Forum Added!");
+									$main->errors("Your forum has been added!");
 								}
 							}
 						}
@@ -177,15 +183,20 @@ class p2h {
 					break;
 
 				case 0:
-					return "You haven't got enough posts for this package!<br />The required amount is: ". $this->getSignup($main->getvar['package']);
+					$neededPosts = (int)$this->getSignup($main->getvar['package']);
+					$s = "s";
+					if($neededPosts === 1) {
+						$s = "";
+					}
+					return "You haven't posted enough to be eligible for this package. You'll need at least $neededPosts post$s.";
 					break;
 
 				case 3:
-					return "Forum username is incorrect!";
+					return "The provided username <em>".$fuser."</em> does not exist.";
 					break;
 
 				case 4:
-					return "Forum password is incorrect!";
+					return "The provided password does not match the username.";
 					break;
 			}
 		}
@@ -196,70 +207,89 @@ class p2h {
 
 	public function cron() {
 		global $db, $main, $type, $server, $email;
-		$query = $db->query("SELECT * FROM `<PRE>user_packs`");
+		// Time to deal with possible bad values
+		if($db->config("p2hcheck") == "") {
+			// Probably a new install. Cron has never run before.
+			$db->updateConfig("p2hcheck", "0:0");
+		}
 		$checkdate = explode(":", $db->config("p2hcheck"));
-		while($data = $db->fetch_array($query)) {
-			$ptype = $type->determineType($data['pid']);
-			if($ptype == "p2h") {
-				$fuser = $type->userAdditional($data['id']);
-				$forum = $this->determineForum($data['pid']);
-				$fdetails = $this->forumData($forum);
-				$this->con = $this->forumCon($forum);
-				$posts = $this->checkMonthly($fdetails['type'], $fuser['fuser'], $fdetails['prefix']);
-				$mposts = $this->getMonthly($data['pid']);
-				if($checkdate[0] < date("m")) {
-					if(date("d") == date("t")) {
-						if($posts < $mposts) {
-							$user = $db->client($data['userid']);
-							$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
-							$data2 = $db->fetch_array($query2);
-							$sd1 = strftime("%m", $data2['signup']);
-							$sd2 = strftime("%Y", $data2['signup']);
-							$sdate = "$sd1$sd2";
-							$cd1 = date("m");
-							$cd2 = date("Y");							
-							$chkdate = "$cd1$cd2";
-							if($sdate != $chkdate) {
-								$server->suspend($data['id'], "Only posted $posts out of $mposts!");
-								echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Suspended for not posting monthly amount! ($posts out of $mposts)<br />";
-							}
-							$dbcheck = 1;
-						}
-					}
-					if(date("d") == "20" && $checkdate[1] != "1") {
-						if($posts < $mposts) {
-							$user = $db->client($data['userid']);
-							$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
-							$data2 = $db->fetch_array($query2);
-							$sd1 = strftime("%m", $data2['signup']);
-							$sd2 = strftime("%Y", $data2['signup']);
-							$sdate = "$sd1$sd2";
-							$cd1 = date("m");
-							$cd2 = date("Y");							
-							$chkdate = "$cd1$cd2";
-							if($sdate != $chkdate) {
-								$emaildata = $db->emailTemplate("p2hwarning");
-								$array['USERPOSTS'] = $posts;
-								$array['MONTHLY'] = $mposts;
-								$email->send($user['email'], $emaildata['subject'], $emaildata['content'], $array);
-								echo "<b>". $user['user'] ." (".$fuser['fuser'].")</b>: Has been warned about monthly posting!<br />";
-							}
-							$dbcheck = 2;
+		if($checkdate === array($db->config("p2hcheck"))) {
+			// ":" wasn't found anywhere! Oh noes! Gonna' append it.
+			$db->updateConfig("p2hcheck", $db->config("p2hcheck") . ":0");
+			$checkdate = explode(":", $db->config("p2hcheck"));
+		}
+		elseif(array_key_exists(1, $checkdate)) {
+			if($checkdate[1] == "") {
+				// Probably nothing after the colon. Append 0.
+				$db->updateConfig("p2hcheck", $checkdate[0] . ":0");
+				$checkdate = explode(":", $db->config("p2hcheck"));
+			}
+		}
+		// If today is the last day of the month (and hasn't been run yet)
+		if(date("d") == date("t") && (int)$checkdate[0] < (int)date("m")) {
+			$query = $db->query("SELECT * FROM `<PRE>user_packs`");
+			while($data = $db->fetch_array($query)) {
+				$ptype = $type->determineType($data['pid']);
+				if($ptype == "p2h") {
+					$fuser = $type->userAdditional($data['id']);
+					$forum = $this->determineForum($data['pid']);
+					$fdetails = $this->forumData($forum);
+					$this->con = $this->forumCon($forum);
+					$posts = $this->checkMonthly($fdetails['type'], $fuser['fuser'], $fdetails['prefix']);
+					$mposts = $this->getMonthly($data['pid']);
+					if($posts < $mposts) {
+						// If the user haven't posted enough...
+						$user = $db->client($data['userid']);
+						$userPack = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
+						// Redeclaration should free the memory used by the query...
+						$userPack = $db->fetch_array($userPack);
+						// If the user just signed up today, don't punish them.
+						if(date("mdY") != date("mdY", $userPack['signup'])) {
+							// Suspend the user.
+							$server->suspend($data['id'], "Only posted $posts out of $mposts");
+							// Output to the cron.
+							echo "<strong>".$user['user']." (".$fuser['fuser']."):</strong> Suspended for not posting the required amount. ($posts out of $mposts)<br />";
 						}
 					}
 				}
 			}
-		}
-		if($dbcheck == 1) {
+			// We're done for this month. Prepare for the next.
 			if(date("m") == 12) {
 				$checkmonth = "0";
 			}
 			else {
 				$checkmonth = date("m");
 			}
-			$db->updateConfig("p2hcheck", $checkmonth);
+			$db->updateConfig("p2hcheck", $checkmonth.":0");
 		}
-		elseif($dbcheck == 2) {
+		// If today is the warn day (and hasn't been run yet)
+		elseif((int)date("d") == $this->warnDate && (int)$checkdate[1] != 1) {
+			$query = $db->query("SELECT * FROM `<PRE>user_packs`");
+			while($data = $db->fetch_array($query)) {
+				$ptype = $type->determineType($data['pid']);
+				if($ptype == "p2h") {
+					$fuser = $type->userAdditional($data['id']);
+					$forum = $this->determineForum($data['pid']);
+					$fdetails = $this->forumData($forum);
+					$this->con = $this->forumCon($forum);
+					$posts = $this->checkMonthly($fdetails['type'], $fuser['fuser'], $fdetails['prefix']);
+					$mposts = $this->getMonthly($data['pid']);
+					// If the user hasn't posted enough yet
+					if($posts < $mposts) {
+						$user = $db->client($data['userid']);
+						$userPack = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
+						$userPack = $db->fetch_array($userPack);
+						$emaildata = $db->emailTemplate("p2hwarning");
+						$array['USERPOSTS'] = $posts;
+						$array['MONTHLY'] = $mposts;
+						// Warn the user that they still have some more posting to do!
+						$email->send($user['email'], $emaildata['subject'], $emaildata['content'], $array);
+						// Output to the cron.
+						echo "<strong>".$user['user']." (".$fuser['fuser']."):</strong> Warned for not yet posting the required monthly amount. ($posts out of $mposts)<br />";
+					}
+				}
+			}
+			// This prevents the post warnings from being sent again today/this month.
 			$db->updateConfig("p2hcheck", $checkdate[0].":1");
 		}
 	}
@@ -510,75 +540,77 @@ class p2h {
 		return $n;
 	}
 
+	// This function is used to check a forum user when they signup.
 	private function checkSignup($forum, $prefix) {
 		global $db, $main;
-
+		// The provided forum name.
 		$fuser = $main->getvar['type_fuser'];
+		// The provided forum password.
 		$fpass = $main->getvar['type_fpass'];
+		// Gets the number of posts the user needs to signup
 		$signup = $this->getSignup($main->getvar['package']);
-		file_put_contents("log.log", $forum . "HELLO", FILE_APPEND);
 
 		switch($forum) {
 			case "ipb":
-			// Look up member
-			$result = mysql_query("SELECT * FROM `{$prefix}members` WHERE name = '{$fuser}'", $this->con);
-			$member = $db->fetch_array($result);
-			$memail = $member['email'];
+				// Look up member
+				$result = mysql_query("SELECT * FROM `{$prefix}members` WHERE name = '{$fuser}'", $this->con);
+				$member = $db->fetch_array($result);
+				$memail = $member['email'];
 
-			//Get Salt
-			$select = mysql_query("SELECT * FROM `{$prefix}members_converge` WHERE `converge_email` = '{$memail}'", $this->con);
-			$hash = mysql_fetch_array($select);
+				//Get Salt
+				$select = mysql_query("SELECT * FROM `{$prefix}members_converge` WHERE `converge_email` = '{$memail}'", $this->con);
+				$hash = mysql_fetch_array($select);
 
-			if(md5(md5($hash['converge_pass_salt']) . md5($fpass)) == $hash['converge_pass_hash']) {
-				if(mysql_num_rows($result) == "1") {
-					//Check Posts
-					if(stripslashes($signup) <= $member['posts']) {
-						return 1;
+				if(md5(md5($hash['converge_pass_salt']) . md5($fpass)) == $hash['converge_pass_hash']) {
+					if(mysql_num_rows($result) == "1") {
+						//Check Posts
+						if(stripslashes($signup) <= $member['posts']) {
+							return 1;
+						}
+						//That shit below looks complicated doesn't it lol. I thought the same. To many brackets for my mind.
+						else {
+							return 0;
+						}
 					}
-					//That shit below looks complicated doesn't it lol. I thought the same. To many brackets for my mind.
 					else {
-						return 0;
+						return 3;
 					}
 				}
 				else {
-					return 3;
+					return 4;
 				}
-			}
-			else {
-				return 4;
-			}
-			break;
+				break;
 
-                        case "ipb3":
-			// Look up member
-			$result = mysql_query("SELECT * FROM `{$prefix}members` WHERE name = '{$fuser}'", $this->con);
-			$member = $db->fetch_array($result);
-			$memail = $member['email'];
+            case "ipb3":
+				// Look up member
+				$result = mysql_query("SELECT * FROM `{$prefix}members` WHERE name = '{$fuser}'", $this->con);
+				$member = $db->fetch_array($result);
+				$memail = $member['email'];
 
-			//Get Salt
-			//$select = mysql_query("SELECT * FROM `{$prefix}members_converge` WHERE `converge_email` = '{$memail}'", $this->con);
-			$select = mysql_query("SELECT * FROM `{$prefix}members` WHERE `email` = '{$memail}'", $this->con);
-			$hash = mysql_fetch_array($select);
+				//Get Salt
+				//$select = mysql_query("SELECT * FROM `{$prefix}members_converge` WHERE `converge_email` = '{$memail}'", $this->con);
+				$select = mysql_query("SELECT * FROM `{$prefix}members` WHERE `email` = '{$memail}'", $this->con);
+				$hash = mysql_fetch_array($select);
 
-			if(md5(md5($hash['members_pass_salt']) . md5($fpass)) == $hash['members_pass_hash']) {
-				if(mysql_num_rows($result) == "1") {
-					//Check Posts
-					if(stripslashes($signup) <= $member['posts']) {
-						return 1;
+				if(md5(md5($hash['members_pass_salt']) . md5($fpass)) == $hash['members_pass_hash']) {
+					if(mysql_num_rows($result) == "1") {
+						//Check Posts
+						if(stripslashes($signup) <= $member['posts']) {
+							return 1;
+						}
+						//That shit below looks complicated doesn't it lol. I thought the same. To many brackets for my mind.
+						else {
+							return 0;
+						}
 					}
-					//That shit below looks complicated doesn't it lol. I thought the same. To many brackets for my mind.
 					else {
-						return 0;
+						return 3;
 					}
 				}
 				else {
-					return 3;
+					return 4;
 				}
-			}
-			else {
-				return 4;
-			}
-			break;
+				break;
 
 			case "mybb":
 				// Look up member
