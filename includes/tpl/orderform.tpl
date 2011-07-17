@@ -111,7 +111,7 @@ function nextstep() {
 			  document.getElementById("back").disabled = true;
 			  $.get("<AJAX>"+url, function(data) {
 				document.getElementById("finished").innerHTML = data;
-				if(data.indexOf("Your account has been completed!") == -1) {
+				if((data.indexOf("Your account has been completed!") == -1) && (data.indexOf("Your account is awaiting admin validation!") == -1)) {
 					document.getElementById("back").disabled = false;
 				}
 				document.getElementById("verify").innerHTML = "";
