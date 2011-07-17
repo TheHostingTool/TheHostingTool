@@ -1,47 +1,54 @@
 <script type="text/javascript">
-        var text = "%TEXT";
-	function clientsearch(type, value, page) {
-		var num = document.getElementById('num').value;
-		ajaxSlide("clientsajax", "<AJAX>?function=search&type="+type+"&value="+value+"&page="+page+"&num="+num);
-                //the following code is h4xx
-                setTimeout('kthx()', 1000);
-	}
-	function page(num) {
-		clientsearch(document.getElementById('type').value, document.getElementById('value').value, num);
-	}
+var text = "%TEXT";
 
-        function kthx() {
-            $(".suspendIcon").click(function(){
-                var id = this.id;
-                var accountId = id.split("-")[1];
-                //Dang. Look at this split. :P
-                var status = $("#" + id)[0].className.split(" ")[2].split("-")[1];
-                if(status == "Suspend") {
-                    var reason = prompt('Please state your reason for suspending. Leave blank for none.');
-                    if(reason != null && reason != "") {
-                        var query = window.location + "&do=" + accountId + "&func=sus&reason=" + reason;
-                    }
-                    else {
-                        var query = window.location + "&do=" + accountId + "&func=sus";
-                    }
-                    window.location = query;
-                }
-                else if(status == "Unsuspend") {
-                    window.location = window.location + "&do=" + accountId + "&func=unsus";
-                }
-                else if(status == "<a href='?page=users&sub=validate'>Validate</a>") {
-                    window.location = "%URL%/admin/?page=users&sub=validate";
-                }
-				else if(status == "Cancelled") {
-					window.location = "%URL%/admin/none.php";
-				}
-                else {
-                    window.location = "%URL%/admin/?page=users&sub=validate";
-                }
-            });
-        }
+var kthx = function() {
+	$(".suspendIcon").unbind('click');
+	$(".suspendIcon").click(function(){
+		var id = this.id;
+		var accountId = id.split("-")[1];
+		// Dang. Look at this split. :P
+		var status = $("#" + id)[0].className.split(" ")[2].split("-")[1];
+		if(status == "Suspend") {
+			var reason = prompt('Please state your reason for suspending. Leave blank for none.');
+			if(reason != null && reason != "") {
+				var query = window.location + "&do=" + accountId + "&func=sus&reason=" + reason;
+			}
+			else if(reason == null) {
+				alert("No action taken.");
+				return;
+			}
+			else {
+				var query = window.location + "&do=" + accountId + "&func=sus";
+			}
+			window.location = query;
+		}
+		else if(status == "Unsuspend") {
+			window.location = window.location + "&do=" + accountId + "&func=unsus";
+		}
+		else if(status == "<a href='?page=users&sub=validate'>Validate</a>") {
+			window.location = "%URL%/admin/?page=users&sub=validate";
+		}
+		else if(status == "Cancelled") {
+			window.location = "%URL%/admin/none.php";
+		}
+		else {
+			window.location = "%URL%/admin/?page=users&sub=validate";
+		}
+	});
+}
 
-$(window).load(function () {
+function clientsearch(type, value, page) {
+	var num = document.getElementById('num').value;
+	ajaxSlide("clientsajax", "<AJAX>?function=search&type="+type+"&value="+value+"&page="+page+"&num="+num, function() {
+		kthx();
+		doTooltip();
+	});
+}
+function page(num) {
+	clientsearch(document.getElementById('type').value, document.getElementById('value').value, num);
+}
+
+$(document).ready(function () {
 	clientsearch("user", "", 1);
 });
 

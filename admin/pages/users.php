@@ -53,7 +53,7 @@ class page {
                             else {
 								$command = $server->suspend($pack['id']);
                             }
-							if($command == true) {
+							if($command === true) {
 								$main->errors("User has been suspended!");	
 							}
 							else {
@@ -234,7 +234,8 @@ class page {
 							$array['CONTENT'] = $style->replaceVar("tpl/clientpwd.tpl");
 							break;
 					}
-                                        $array["URL"] = URL;
+					$array["URL"] = URL;
+					$array['USER'] = $client['user'];
 					echo $style->replaceVar("tpl/clientview.tpl", $array);
 				}
 				else {
