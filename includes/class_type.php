@@ -11,18 +11,18 @@ if(THT != 1){die();}
 
 //Create the class
 class type {
-	
+
 	public $classes = array(); # All the classes here when createAll called
-	
+
 	# Start the functions #
-	
+
 	public function acpPadd($type) { # Returns the html of a custom form
 		global $style;
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
 		}
 		else {
-			$type = $this->classes[$type];	
+			$type = $this->classes[$type];
 		}
 		if($type->acpForm) {
                         $html .= $style->javascript();
@@ -40,7 +40,7 @@ class type {
                                         info = info + "," + this.name + "="  + $("#" + this.id).val();
                                     }
 
-                                    
+
                                     gi++;
                                 });
                                 $("select").each(function(i) {
@@ -68,14 +68,14 @@ class type {
 			return $html;
 		}
 	}
-	
+
 	public function orderForm($type) { # Returns the html of a custom form
 		global $style;
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
 		}
 		else {
-			$type = $this->classes[$type];	
+			$type = $this->classes[$type];
 		}
 		if($type->orderForm) {
 			foreach($type->orderForm as $key => $value) {
@@ -86,14 +86,14 @@ class type {
 			return $html;
 		}
 	}
-	
+
 	public function signupForm($type) { # Returns the html of a custom form
 		global $style;
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
 		}
 		else {
-			$type = $this->classes[$type];	
+			$type = $this->classes[$type];
 		}
 		if($type->acpForm) {
 			foreach($type->acpForm as $key => $value) {
@@ -104,11 +104,11 @@ class type {
 			return $html;
 		}
 	}
-	
+
 	public function createType($type) { # Creates a class and then returns it
 		$file = LINK . "types/". $type .".php";
 		if(!file_exists($file)) {
-			echo "Type doesn't exist!";	
+			echo "Type doesn't exist!";
 		}
 		else {
 			include($file);
@@ -116,7 +116,7 @@ class type {
 			return $type;
 		}
 	}
-	
+
 	public function createAll() { # Creates all types and returns them
 		global $main;
 		$files = $main->folderFiles(LINK ."types/");
@@ -128,7 +128,7 @@ class type {
 		}
 		$this->classes = $classes;
 	}
-	
+
 	public function determineType($id) { # Returns type of a package
 		global $db;
 		global $main;
@@ -152,7 +152,7 @@ class type {
 			$array['Error'] = "That package doesn't exist!";
 			$array['Package ID'] = $id;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -167,14 +167,14 @@ class type {
 			$array['Error'] = "That server doesn't exist!";
 			$array['Server ID'] = $id;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			$data = $db->fetch_array($query);
 			return $data['type'];
 		}
 	}
-	public function determineBackend($id) { # Returns server of a package
+	public function determineBackend($id) { // Returns server of a package
 		global $db;
 		global $main;
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'");
@@ -182,35 +182,38 @@ class type {
 			$array['Error'] = "That package doesn't exist!";
 			$array['Package ID'] = $id;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			$data = $db->fetch_array($query);
 			return $data['backend'];
 		}
 	}
-	
-	public function acpPedit($type, $values) { # Returns the
+
+	public function acpPedit($type, $values) { // Returns the type's acpForm[] content
 		global $style;
 		if(!$this->classes[$type]) {
 			$type = $this->createType($type);
 		}
 		else {
-			$type = $this->classes[$type];	
+			$type = $this->classes[$type];
 		}
 		if($type->acpForm) {
-			foreach($type->acpForm as $key => $value) {
+			foreach($type->acpForm as $value) {
 				$array['NAME'] = $value[0] .":";
-				$shit = explode("/>", $value[1]);
-				$default = ' value="'.$values[$value[2]].'" />'; 
-				$array['FORM'] = $shit[0]. $default;
+				$hit = explode("/>", $value[1]); // haha... $hit
+				$default = "";
+				if(stripos($value[1], "</select>") === false) {
+					$default = ' value="'.$values[$value[2]].'" />';
+				}
+				$array['FORM'] = $hit[0]. $default;
 				$html .= $style->replaceVar("tpl/acptypeform.tpl", $array);
 			}
 			return $html;
 		}
 	}
-	
-	public function additional($id) { # Returns the additonal values on a package
+
+	public function additional($id) { // Returns the additonal values on a package
 		global $db;
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'");
 		$data = $db->fetch_array($query);
@@ -221,15 +224,15 @@ class type {
 		}
 		return $values;
 	}
-	
-	public function userAdditional($id) { # Returns the additional info of a PID
+
+	public function userAdditional($id) { // Returns the additional info of a PID
 		global $db, $main;
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That user pack doesn't exist!";
 			$array['PID'] = $id;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
