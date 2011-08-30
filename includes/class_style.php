@@ -88,7 +88,7 @@ class style {
 			while (false !== ($file = readdir($handle))) { # Read the files
 				if($file != "." && $file != ".." && $file != "jquery.js" && $file != "simpletip.js") { # Check aren't these names
 					$base = explode(".", $file); # Explode the file name, for checking
-					if($base[1] == "js") { # Is it a JS?
+					if($base[count($base)-1] == "js") { # Is it a JS?
 						$html .= "<script type=\"text/javascript\" src='".URL."includes/javascript/{$file}'></script>\n"; # Creates the HTML
 					}
 				}
