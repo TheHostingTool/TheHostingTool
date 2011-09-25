@@ -120,7 +120,7 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('version', '1.2.4'),
 ('smtp_user', 'user'),
 ('senabled', '1'),
-('whm-ssl', '0'),
+('whm-ssl', '1'),
 ('paypalemail', 'your@email.com'),
 ('default', 'order'),
 ('theme', 'Reloaded2'),
