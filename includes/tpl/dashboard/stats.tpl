@@ -9,9 +9,9 @@
 	        <div class="sub">
 	            <strong>At a glance....</strong>
 	            <div class='break'></div>
-                <strong>THT Version:</strong> %VERSION% (%UPDATE%)<br />
-                <strong>THT Theme:</strong> %THEME%<br />
-                <strong>THT Client Area Enabled:</strong> %CENABLED%<br />
+                <strong>Version:</strong> %VERSION% (%UPDATE%)<br />
+                <strong>Theme:</strong> %THEME%<br />
+                <strong>Client Area Enabled:</strong> %CENABLED%<br />
                 <strong>Show THT Version in footer:</strong> %SVID%<br />
                 <strong>THT Support Area Enabled:</strong> %SENABLED%<br />
                 <strong>Signups Enabled:</strong> %SIGNENABLE%<br />

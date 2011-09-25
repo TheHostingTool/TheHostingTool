@@ -105,6 +105,8 @@ class main {
 	
 	public function done() { # Redirects the user to the right part
 		global $main;
+        $url = "";
+        $i = false;
 		foreach($main->getvar as $key => $value) {
 			if($key != "do") {
 				if($i) {
@@ -129,6 +131,7 @@ class main {
 	}
 	
 	public function dropDown($name, $values, $default = 0, $top = 1, $class = "") { # Returns HTML for a drop down menu with all values and selected
+        $html = "";
 		if($top) {
 			$html .= '<select name="'.$name.'" id="'.$name.'" class="'.$class.'">';
 		}
@@ -469,5 +472,35 @@ class main {
 	public function canRun($function) {
 		return (function_exists($function) and stripos(ini_get('disable_functions'), $function) === false);
 	}
+	
+	/*
+	 * Checks the current version against the version returned from the update server to determine update availability.
+	 */
+	public function checkVersion() {
+        global $db;
+		$ch = curl_init("http://thehostingtool.com/updates/check.php");
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$data = curl_exec($ch);
+		if($data === false) {
+			$this->error(array('$main->checkVersion() Failed' => curl_error($ch)));
+			return false;
+		}
+		curl_close($ch);
+		$nv = json_decode($data);
+		$cv = array('name' => $db->config("vname"), 'code' => (int)$db->config("vcode"));
+        $return = array('nv' => (array)$nv, 'cv' => $cv);
+        $return['updateAvailable'] = ($nv->code > $cv['code']);
+        $return["devTime"] = ($cv['code'] > $nv->code);
+        return $return;
+	}
+
+    public function getSubversionRevision() {
+        if(file_exists("../.svn/entries")) {
+            $svn = File("../.svn/entries");
+            return (int)$svn[3];
+        }
+        return false;
+    }
 }
 ?>

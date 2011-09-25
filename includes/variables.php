@@ -66,7 +66,7 @@ if(INSTALL == 1) {
 	 */
 	
 	 if($db->config("show_version_id") == 1){
-	 $version = $db->config("version");
+	 $version = $db->config("vname");
 	}
 	else{
 		$version = '';

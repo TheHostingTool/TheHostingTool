@@ -106,9 +106,10 @@ INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`) VALUES
 -- Table structure for table `%PRE%config`
 --
 
-CREATE TABLE IF NOT EXISTS `%PRE%config` (
+CREATE TABLE IF NOT EXISTS `tht_config` (
   `name` varchar(50) NOT NULL,
-  `value` text NOT NULL
+  `value` text NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -117,9 +118,8 @@ CREATE TABLE IF NOT EXISTS `%PRE%config` (
 
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('url', 'http://thehostingtool.com/'),
-('version', '1.2.4'),
-('smtp_user', 'user'),
-('senabled', '1'),
+('vname', '1.2.4'),
+('vcode', '102040')
 ('whm-ssl', '1'),
 ('paypalemail', 'your@email.com'),
 ('default', 'order'),
@@ -546,3 +546,4 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 
 ALTER TABLE `%PRE%user_packs` CHANGE `id` `id` MEDIUMINT( 9 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
 CHANGE `userid` `userid` MEDIUMINT( 9 ) UNSIGNED NOT NULL;
+

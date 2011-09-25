@@ -10,23 +10,6 @@
 if(THT != 1){die();}
 
 class page {
-	
-	public function curl_get_content($url="http://thehostingtool.com/updates/version.txt"){  
-         $ch = curl_init();
-         curl_setopt($ch,CURLOPT_URL, $url);
-         curl_setopt($ch,CURLOPT_FRESH_CONNECT,TRUE);
-         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
-         curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);
-         curl_setopt($ch,CURLOPT_REFERER,'TheHostingTool Admin Area');
-         curl_setopt($ch,CURLOPT_TIMEOUT,10);
-         $html=curl_exec($ch);
-         if($html==false){
-            $m=curl_error(($ch));
-            error_log($m);
-         }
-         curl_close($ch);
-         return $html;
-    }  
     
     public function checkDir($dir){
     	if (is_dir($dir)) { 
@@ -50,33 +33,22 @@ class page {
 		global $db;
 		global $main;
 		global $style;
-		global $page;
-		/*
-		 * Updates System by Jimmie Lin
-		 */
-		$current_version = rtrim($this->curl_get_content('http://thehostingtool.com/updates/version.txt')); #Clears the end whitespace. ARGHHH
-		$running_version = $main->cleanwip($db->config('version')); 
 		$install_check = $this->checkDir(LINK ."../install/");
 		$conf_check = $this->checkPerms(LINK ."conf.inc.php");
-		if($current_version == $running_version){
+        $updateInfo = $main->checkVersion();
+        $upgrademsg = "";
+        if($updateInfo['devTime']) {
+            $r = $main->getSubversionRevision();
+            $updatemsg = "<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>";
+        }
+        elseif($updateInfo['updateAvailable']) {
+            $updatemsg = "<span style='color:red'>Upgrade Available</span>";
+            $upgrademsg = "<div class='warn'><img src='../themes/icons/error.png' alt='' /> v".$updateInfo["nv"]["name"]." is now available! Please upgrade!</div>";
+        }
+        else {
 			$updatemsg = "<span style='color:green'>Up-To-Date</span>";
-			$upgrademsg = "";
 		}
-		elseif($current_version > $running_version){
-			$updatemsg = "<span style='color:red'>Upgrade Avaliable</span>";
-		    $upgrademsg = "<div class='warn'><img src='../themes/icons/error.png' alt='' /> There is a new version (v$current_version) avaliable! Please download and upgrade!</div>";
-		}
-		elseif($current_version < $running_version){
-			$updatemsg = "<span style='color:green'>Dev Area Mode</span>";
-			$upgrademsg = "";
-		}
-		else{
-			$updatemsg = "<span style='color:green'>Up-To-Date</span>";
-			$upgrademsg = "";
-		}
-		unset($current_version);
-		unset($running_version);
-		$stats['VERSION'] = $db->config('version');
+		$stats['VERSION'] = "v".$updateInfo["cv"]["name"];
 		$stats['THEME'] = $db->config('theme');
 		$stats['CENABLED'] = $main->cleaninteger($db->config('cenabled'));
 		$stats['SVID'] = $main->cleaninteger($db->config('show_version_id'));
@@ -117,10 +89,17 @@ class page {
 		$news = $main->sub("<strong>Add the THT RSS Feed!</strong>", '<a href="http://thehostingtool.com/forum/syndication.php?fid=2" target="_blank" class="tooltip" title="Add the THT RSS Feed!"><img src="<URL>themes/icons/feed.png" /></a>');
 		foreach ($rss->items as $item) {
 			$array['title'] = $item['title'];
-			$array['author'] = $item['author'];
 			$array['link'] = $item['link'];
-			$array['TIME'] = strftime("%D", $item['date_timestamp']);
-			$array['SUMMARY'] = $item['summary'];
+			$array['TIME'] = $item["pubdate"];
+            // By some merical, this works perfectly for correcting MyBB's stupid relative URLs in its feeds
+            preg_match_all('/(<(?:a|img) (?:href|src)=(?:"|\'))([-A-Z0-9+&@#\/%?=~_|!:,.;]*[A-Z0-9+&@#\/%=~_|])((?:"|\')[a-z0-9]*[^<>]*\/?>)/si', $item['summary'], &$matches, PREG_SET_ORDER);
+            for($matchi = 0; $matchi < count($matches); $matchi++) {
+                if(stripos($matches[$matchi][2], 'http') === false) {
+                    $item['summary'] = str_replace($matches[$matchi][0], $matches[$matchi][1].'http://thehostingtool.com/forum/'.$matches[$matchi][2].$matches[$matchi][3], $item['summary']);
+                }
+            }
+            $array['SUMMARY'] = $item['summary'];
+            
 			$news .= $style->replaceVar('tpl/newsitem.tpl', $array);
 		}
 		echo "<br />";

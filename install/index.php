@@ -6,10 +6,9 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-
 /*
  * Quick little function made to make generating a default site URL
- * easy. Hopefully this will assist alot of support topics regarding
+ * easy. Hopefully this will assist a lot of support topics regarding
  * bad site URLs, as the automatically generated ones should be correct.
 */
 function generateSiteUrl() {
@@ -26,12 +25,17 @@ function generateSiteUrl() {
 	return $url;
 }
 
-//INSTALL GLOBALS
-define("CVER", "1.2.3");
+// The new version of THT we're installing
 define("NVER", "1.2.4");
 
 define("LINK", "../includes/"); # Set link
 include(LINK."compiler.php"); # Get compiler
+
+// If we still have a configuration, database should be ok.
+if(!NOCONFIG) {
+    $db = new db();
+    define("CVER", $db->config("vname"));
+}
 
 function writeconfig($host, $user, $pass, $db, $pre, $true) {
 	global $style;

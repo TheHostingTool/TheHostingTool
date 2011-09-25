@@ -7,7 +7,7 @@
 //////////////////////////////
 
 //Are we being called by the script?
-if(THT != 1){die("FATAL: Trying to hack?");}
+if(THT != 1){die();}
 
 //MAIN SQL CONFIG - Change values accordingly
 $sql['host'] = '%HOST%'; #The mySQL Host, usually default - localhost
