@@ -447,11 +447,10 @@ class main {
 	}
 	
 	/*
-	 * Returns the IP address of this server the way external devices will see it. If $detailed == true then 
-	 * it'll return a SimpleXMLElement with much more information. Returns false on failure.
+	 * Returns the IP address of this server the way external devices will see it.
 	 */
-	public function getWanIp($detailed = false) {
-		$ch = curl_init("http://www.domaintools.com/research/my-ip/myip.xml");
+	public function getWanIp() {
+		$ch = curl_init("http://checkip.dyndns.org/");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$data = curl_exec($ch);
@@ -460,18 +459,8 @@ class main {
 			return false;
 		}
 		curl_close($ch);
-		try {
-			$xml = @new SimpleXMLElement($data);
-		}
-		catch (Exception $ex) {
-			echo 'Something went wrong when running $main->getWanIp()... $data dump follows:' . "<br />\n";
-			var_dump($data);
-			die();
-		}
-		if($detailed) {
-			return $xml;
-		}
-		return $xml->ip_address;
+		$edata = explode('ss: ', $data);
+		return trim($edata[1]);
 	}
 	
 	/*
