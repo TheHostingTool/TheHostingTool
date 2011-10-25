@@ -64,6 +64,12 @@ class page {
 		}
 		$array['SOFTWARE'] = getenv('SERVER_SOFTWARE');
 		$array['PHP_VERSION'] = phpversion();
+        $curlVersion = curl_version();
+        $array['CURL_TITLE'] = "Version Number: " . $curlVersion["version_number"] . "<br />Version: " . $curlVersion["version"]
+        . "<br />SSL Version Number: " . $curlVersion["ssl_version_number"] . "<br />SSL Version: " . $curlVersion["ssl_version"]
+        . "<br />zlib Version: " . $curlVersion["libz_version"] . "<br />Host: " . $curlVersion["host"] . "<br />Age: " . $curlVersion["age"]
+        . "<br />Protocols: " . implode($curlVersion["protocols"], " ");
+        $array['CURL_VERSION'] = $curlVersion["version"];
 		$array['MYSQL_VERSION'] = '';
 		$mysqlVersion = $this->mysqlVersion();
 		if($mysqlVersion) {

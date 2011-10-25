@@ -75,7 +75,7 @@ class page {
 					while($data = $db->fetch_array($query2)) {
 						$array['USER'] = $data['loguser'];
 						$array['DATE'] = strftime("%m/%d/%Y", $data['logtime']);
-						$array['TIME'] = strftime("%T", $data['logtime']);
+						$array['TIME'] = date("h:i A", $data['logtime']);
 						$array['MESSAGE'] = $data['message'];
 					echo $style->replaceVar("tpl/adminlogs.tpl", $array);
 					}
@@ -84,7 +84,7 @@ class page {
 		echo "<center>";
 		if ($p != 0) {
 			$back_page = $p - $l;
-			echo("<a href=\"$PHP_SELF?page=logs&show=$show&p=$back_page&l=$l\">BACK</a>    \n");
+			echo("<a href=\"?page=logs&show=$show&p=$back_page&l=$l\">BACK</a>    \n");
 		}
 
 		for ($i=1; $i <= $pages; $i++) {
@@ -93,13 +93,13 @@ class page {
 				echo("<b>$i</b>\n");
 			}
 			else{
-				echo("<a href=\"$PHP_SELF?page=logs&show=$show&p=$ppage&l=$l\">$i</a> \n");
+				echo("<a href=\"?page=logs&show=$show&p=$ppage&l=$l\">$i</a> \n");
 			}
 		}
 
 		if (!((($p+$l) / $l) >= $pages) && $pages != 1) {
 			$next_page = $p + $l;
-			echo("    <a href=\"$PHP_SELF?page=logs&show=$show&p=$next_page&l=$l\">NEXT</a>");
+			echo("    <a href=\"?page=logs&show=$show&p=$next_page&l=$l\">NEXT</a>");
 		}
 		echo "</center>";
 	}

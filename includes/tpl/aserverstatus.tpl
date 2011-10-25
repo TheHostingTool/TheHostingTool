@@ -13,6 +13,10 @@
 <td><strong>PHP Version:</strong></td>
 <td> %PHP_VERSION% (<a href="?page=status&sub=phpinfo">PHPInfo</a>)</td>
 </tr>
+<tr>
+    <td><strong>cURL Version:</strong></td>
+    <td><a title="%CURL_TITLE%" class="tooltip">%CURL_VERSION%</a></td>
+</tr>
 %MYSQL_VERSION%
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">

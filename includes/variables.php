@@ -46,6 +46,12 @@ if(INSTALL == 1) {
 			}
 			$array2['SOFTWARE'] = $_SERVER["SERVER_SOFTWARE"];
 			$array2['PHP_VERSION'] = phpversion();
+            $curlVersion = curl_version();
+            $array2['CURL_TITLE'] = "Version Number: " . $curlVersion["version_number"] . "<br />Version: " . $curlVersion["version"]
+            . "<br />SSL Version Number: " . $curlVersion["ssl_version_number"] . "<br />SSL Version: " . $curlVersion["ssl_version"]
+            . "<br />zlib Version: " . $curlVersion["libz_version"] . "<br />Host: " . $curlVersion["host"] . "<br />Age: " . $curlVersion["age"]
+            . "<br />Protocols: " . implode($curlVersion["protocols"], " ");
+            $array2['CURL_VERSION'] = $curlVersion["version"];
 			$array2['MYSQL_VERSION'] = '';
 			$versionResult = $db->fetch_array($db->query("SELECT Version()"));
 			if($versionResult[0]) {
