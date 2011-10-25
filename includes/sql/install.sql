@@ -138,7 +138,7 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('smtp_user', 'user'),
 ('smtp_password', 'password'),
 ('show_version_id', '1'),
-('show_acp_menu', '1'),
+('show_acp_menu', '0'),
 ('show_page_gentime', '1'),
 ('alerts', '<p>&nbsp;</p>\r\n<p><em></em></p>'),
 ('p2hcheck', ''),
