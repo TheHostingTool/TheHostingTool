@@ -2,7 +2,7 @@
 Upload Your Theme (themename.zip): <input name="zip" type="file" /><input type="submit" value="Upload" />
 </form>
 
-<?
+<?php
 /*
 * THT Theme Uploader
 * By: TheRaptor -> http://ismyforum.info 

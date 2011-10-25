@@ -75,8 +75,13 @@ class page {
 					break;
 					
 				case "tupload": # Theme Uploader
-					echo "Here you can upload a theme of your choice to the installer. Please be sure that the theme is in .zip format.";
-					include LINK."upload.php"; 
+                    if(!extension_loaded("zip")) {
+                        echo "Oh dear. The Zip extension for PHP isn't loaded. Please install and load this extension
+                        to use the theme uploader.";
+                        return;
+                    }
+                    $mainVars = array('MAXSIZE' => ini_get('upload_max_filesize'));
+                    echo $style->replaceVar("tpl/theme-uploader/main.tpl", $mainVars);
 					break;
 					
 				case "cssedit": #CSS Editor - Thanks Jimmie & Kevin!
