@@ -546,4 +546,4 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 
 ALTER TABLE `%PRE%user_packs` CHANGE `id` `id` MEDIUMINT( 9 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
 CHANGE `userid` `userid` MEDIUMINT( 9 ) UNSIGNED NOT NULL;
-
+INSERT INTO `%PRE%config` (`name`, `value`) VALUES ('timezone', 'UTC');

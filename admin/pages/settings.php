@@ -47,8 +47,8 @@ class page {
 				foreach($main->postvar as $key => $value) {
 					$db->updateConfig($key, $value);
 				}
+
 				$main->errors("Settings Updated!");
-				$main->done();
 			}
 		}
 		switch($main->getvar['sub']) {
@@ -60,6 +60,11 @@ class page {
 				$values[] = array("Order Form", "order");
 				$values[] = array("Client Area", "client");
 				$array['DROPDOWN'] = $main->dropDown("default", $values, $db->config("default"));
+                $timezoneList = array();
+                foreach(DateTimeZone::listIdentifiers() as $tz) {
+                    $timezoneList[] = array($tz, $tz);
+                }
+                $array['TZDROPDOWN'] = $main->dropDown("timezone", $timezoneList, $db->config("timezone"));
 				echo $style->replaceVar("tpl/pathsettings.tpl", $array);
 				break;
 				

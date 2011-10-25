@@ -74,7 +74,8 @@ if ($handle = opendir($folder)) { # Open the folder
 closedir($handle); #Close the folder
 
 if(INSTALL == 1) {
-	define("THEME", $db->config("theme")); # Set the default theme
+    date_default_timezone_set($db->config("timezone")); // Sets the default timezone
+	define("THEME", $db->config("theme")); // Set the default theme
 	// Sets the URL THT is located at
 	if($_SERVER["HTTPS"]) {
 		// HTTPS support
@@ -83,7 +84,7 @@ if(INSTALL == 1) {
 	else {
 		define("URL", $db->config("url"));
 	}
-	define("NAME", $db->config("name")); # Sets the name of the website
+	define("NAME", $db->config("name")); // Sets the name of the website
 }
 // Converts the $_POST global array into $main->postvar - DB Friendly.
 if(isset($_POST)) {
@@ -157,8 +158,7 @@ function checkForDependencies() {
 	// Here, we're going to see if we have the functions that we need. :D
 	$needed = array();
 	// First things first:
-	$version = explode(".", phpversion());
-	if($version[0] < 5) {
+	if(version_compare(PHP_VERSION, '5.0.0', '<')) {
 		die("PHP Version 5 or greater is required! You're currently running: " . phpversion());
 	}
 	if(!function_exists("curl_init")) {
