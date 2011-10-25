@@ -57,13 +57,13 @@
                                 var link = $("#inputLink-" + id).val();
                                 if(id == "new") {
                                     $.post("<AJAX>?function=navbar", { action: "add", "name": name,
-                                        "icon": icon, "link": link }, function(data) {
+                                        "icon": icon, "link": link, __tht_csrf_magic: csrfMagicToken }, function(data) {
                                             window.location.reload();
                                         });
                                 }
                                 else {
                                     $.post("<AJAX>?function=navbar", { action: "edit", "name": name,
-                                        "icon": icon, "link": link, "id": id }, function(data) {
+                                        "icon": icon, "link": link, "id": id, __tht_csrf_magic: csrfMagicToken }, function(data) {
                                         $("#saveChangesDiv-" + id).slideDown(500);
                                         });
                                 }
@@ -94,7 +94,7 @@
                                         submit = submit + "-" + array2[i];
                                     }
                                 }
-                                $.post(url, { action: "order", order: submit }, function(data) {
+                                $.post(url, { action: "order", order: submit, __tht_csrf_magic: csrfMagicToken }, function(data) {
                                     $("#buttonSpace").slideDown(500);
                                     $("#noticeChanges").slideDown(500);
                                 });
