@@ -45,12 +45,16 @@ class page {
 		global $style;
 		global $db;
 		if($_POST) {
-				foreach($main->postvar as $key => $value) {
-					if($value == "" && !$n) {
-						$main->errors("Please fill in all the fields!");
-						$n++;
-					}
+            if($main->getvar['sub'] == 'tupload') {
+                $this->uploadPost();
+                return;
+            }
+			foreach($main->postvar as $key => $value) {
+				if($value == "" && !$n) {
+					$main->errors("Please fill in all the fields!");
+					$n++;
 				}
+	        }
 			if(!$n) {
 				foreach($main->postvar as $key => $value) {
 					$db->updateConfig($key, $value);
@@ -75,13 +79,7 @@ class page {
 					break;
 					
 				case "tupload": # Theme Uploader
-                    if(!extension_loaded("zip")) {
-                        echo "Oh dear. The Zip extension for PHP isn't loaded. Please install and load this extension
-                        to use the theme uploader.";
-                        return;
-                    }
-                    $mainVars = array('MAXSIZE' => ini_get('upload_max_filesize'));
-                    echo $style->replaceVar("tpl/theme-uploader/main.tpl", $mainVars);
+                    $this->upload();
 					break;
 					
 				case "cssedit": #CSS Editor - Thanks Jimmie & Kevin!
@@ -180,5 +178,148 @@ class page {
 					break;
 			}
 		}
+
+        private function uploadChecks() {
+            if(!extension_loaded("zip")) {
+                echo "Oh dear. The Zip extension for PHP isn't loaded. Please install and load this extension
+                to use the theme uploader.";
+                return false;
+            }
+            if(!is_writable('../themes')) {
+                echo "Shoot. Your themes directory isn't writable. Please fix this if you wish to continue.";
+                return false;
+            }
+            return true;
+        }
+
+        private function upload() {
+            global $style;
+            if(!$this->uploadChecks()) {
+                return;
+            }
+            $mainVars = array('MAXSIZE' => ini_get('upload_max_filesize'), 'MAXEXEC' => ini_get('max_execution_time'));
+            echo $style->replaceVar("tpl/theme-uploader/main.tpl", $mainVars);
+        }
+
+        private function uploadPost() {
+            global $main;
+            if(!$this->uploadChecks()) {
+                return;
+            }
+            $file = $_FILES['uploadedTheme'];
+            $errors = array();
+            if($file['error'] != UPLOAD_ERR_OK) {
+                switch($file['error']) {
+                    case UPLOAD_ERR_SIZE:
+                        $errors[] = "Your uploaded file exceeded " . ini_get('upload_max_filesize');
+                        break;
+                    case UPLOAD_ERR_PARTIAL:
+                        $errors[] = "Your file was only partially uploaded.";
+                        break;
+                    case UPLOAD_ERR_NO_FILE:
+                        $errors[] = "No file was uploaded.";
+                        break;
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                        $errors[] = "A temporary directory is missing.";
+                        break;
+                    case UPLOAD_ERR_CANT_WRITE:
+                        $errors[] = "Failed to write to disk.";
+                        break;
+                    default:
+                        $errors[] = "An unknown error occurred: " . $file['error'];
+                        break;
+                }
+            }
+            if(preg_match('/^([a-zA-Z0-9]+).zip$/i', $file['name'], $regs)) {
+                $themeName = $regs[1];
+                $zip = new ZipArchive();
+                if($zip->open($file['tmp_name']) === true) {
+                    $insecureZip = false;
+                    for($i = 0; $i < $zip->numFiles; $i++) {
+                        $stat = $zip->statIndex($i);
+                        // "Protection" against uploaded server-side script files. Just in case.
+                        if(preg_match('/^.+\.((?:php[3-5]?)|(?:cgi)|(?:pl)|(?:phtml))$/i', basename($stat['name']), $regs2)) {
+                            $errors[] = strtoupper($regs2[1]) . ' is not a valid file type in a theme zip.';
+                            $insecureZip = true;
+                            break;
+                        }
+                    }
+                    if(!$insecureZip) {
+                        if(is_dir('../themes/'.$themeName) && isset($_POST['overwrite']) && $_POST['overwrite'] == 'overwrite') {
+                            $this->recursiveRemoveDirectory('../themes/'.$themeName);
+                        }
+                        if(is_dir('../themes/'.$themeName)) {
+                            $errors[] = "A theme named <code>".$themeName."</code> already exists and was not overwritten.";
+                        }
+                        else {
+                            if(mkdir('../themes/'.$themeName)) {
+                                if($zip->extractTo(realpath('../themes/').'/'.$themeName)) {
+                                    $errors[] = '<code>'.$themeName.'</code> successfully uploaded!';
+                                }
+                                else {
+                                    $errors[] = 'Could not extract the contents of the zip file to the new theme directory.';
+                                }
+                            }
+                            else {
+                                $errors[] = 'Could not create a new directory for your theme.';
+                            }
+                        }
+                    }
+                    $zip->close();
+                }
+                else {
+                    $errors[] = "Couldn't open <code>".$file['tmp_name']." as a zip file.</code>";
+                }
+            }
+            else {
+                $errors[] = "<code>".$file['name']."</code> is not a valid theme name.";
+            }
+
+            if(count($errors) > 0) {
+                foreach($errors as $error) {
+                    $main->errors($error . "<br />");
+                }
+                $this->upload();
+                return;
+            }
+        }
+
+        // Source: http://lixlpixel.org/recursive_function/php/recursive_directory_delete/
+        private function recursiveRemoveDirectory($directory, $empty=FALSE)
+        {
+            if(substr($directory,-1) == '/')
+            {
+                $directory = substr($directory,0,-1);
+            }
+            if(!file_exists($directory) || !is_dir($directory))
+            {
+                return FALSE;
+            }elseif(is_readable($directory))
+            {
+                $handle = opendir($directory);
+                while (FALSE !== ($item = readdir($handle)))
+                {
+                    if($item != '.' && $item != '..')
+                    {
+                        $path = $directory.'/'.$item;
+                        if(is_dir($path))
+                        {
+                            $this->recursiveRemoveDirectory($path);
+                        }else{
+                            unlink($path);
+                        }
+                    }
+                }
+                closedir($handle);
+                if($empty == FALSE)
+                {
+                    if(!rmdir($directory))
+                    {
+                        return FALSE;
+                    }
+                }
+            }
+            return TRUE;
+        }
 	}
 ?>
