@@ -52,11 +52,13 @@ class main {
 	public function errors($error = 0) { # Shows error default, sets error if $error set
 		if(!$error) {
 			if($_SESSION['errors']) {
-				return $_SESSION['errors'];
+                return implode(unserialize($_SESSION['errors']));
 			}
 		}
 		else {
-			$_SESSION['errors'] = $error;
+            $errors = unserialize($_SESSION['errors']);
+            $errors[] = $error;
+			$_SESSION['errors'] = serialize($errors);
 		}
 	}
 	
