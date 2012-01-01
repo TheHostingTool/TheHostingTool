@@ -130,7 +130,7 @@ class whm {
 			return true;	
 		}
 		else {
-			echo "Error: ". $command->result->statusmsg;	
+			echo "Error: ". (isset($command->result->statusmsg) ? $command->result->statusmsg : $command->statusmsg);
 		}
 	}
 	
