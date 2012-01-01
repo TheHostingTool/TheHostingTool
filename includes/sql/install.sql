@@ -253,9 +253,9 @@ INSERT INTO `%PRE%resources` (`resource_name`, `resource_value`) VALUES
 
 CREATE TABLE IF NOT EXISTS `%PRE%servers` (
   `id` mediumint(9) NOT NULL auto_increment,
-  `name` varchar(20) NOT NULL,
-  `host` varchar(50) NOT NULL,
-  `user` varchar(20) NOT NULL,
+  `name` varchar(75) NOT NULL,
+  `host` varchar(75) NOT NULL,
+  `user` varchar(75) NOT NULL,
   `accesshash` text NOT NULL,
   `type` varchar(10) NOT NULL,
   PRIMARY KEY  (`id`)

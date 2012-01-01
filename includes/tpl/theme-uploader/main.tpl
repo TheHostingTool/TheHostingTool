@@ -18,6 +18,6 @@ So now that you have a good idea of how this works, go ahead and upload your the
 <strong>The max upload size is %MAXSIZE%B, and the max page execution time is %MAXEXEC% seconds as determined by your PHP configuration.</strong>
 <form action="" method="POST" enctype="multipart/form-data">
     <input type="file" name="uploadedTheme" accept="application/zip">
-    <label for="overwrite">Replace Theme of the Same Name</label><input id="overwrite" type="checkbox" name="overwrite" value="overwrite" />
+    <label for="overwrite">Replace Theme of the Same Name</label>&nbsp;<input id="overwrite" type="checkbox" name="overwrite" value="overwrite" />
     <input type="submit" value="Upload" />
 </form>

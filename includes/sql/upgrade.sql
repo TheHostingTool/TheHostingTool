@@ -5,3 +5,4 @@ ALTER TABLE `%PRE%config` ADD PRIMARY KEY(`name`);
 UPDATE `%PRE%config` SET `name` = 'vname' WHERE `name` = 'version' LIMIT 1;
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES ('vcode', '102040');
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES ('timezone', 'UTC');
+ALTER TABLE `%PRE%servers` CHANGE `name` `name` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `host` `host` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `user` `user` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
