@@ -389,7 +389,6 @@ class Ajax {
 							$array['IMG'] = "exclamation.png";
 						}
 						elseif($client['status'] == "3") {
-							//Fixes caption added by J.Montoya
 							$array['TEXT'] = "Validate";
 							$array['FUNC'] = "none";	
 							$array['IMG'] = "user_suit.png";

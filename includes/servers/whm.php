@@ -27,7 +27,7 @@ class whm {
 		$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That server doesn't exist!";
-			$array['Server ID'] = $id;
+			$array['Server ID'] = $server;
 			$main->error($array);
 			return;	
 		}
@@ -89,6 +89,7 @@ class whm {
 	}
 
 	public function GenUsername() {
+        $user = "";
 		$t = rand(5,8);
 		for ($digit = 0; $digit < $t; $digit++) {
 			$r = rand(0,1);
@@ -99,6 +100,7 @@ class whm {
 	}
 	
 	public function GenPassword() {
+        $passwd = "";
 		for ($digit = 0; $digit < 5; $digit++) {
 			$r = rand(0,1);
 			$c = ($r==0)? rand(65,90) : rand(97,122);
@@ -243,7 +245,7 @@ class whm {
 		$this->server = $server;
 		$action = '/xml-api/passwd?user=' . $acct . '&pass=' . $newpwd;
 		$command = $this->remote($action);
-		if($command->passwd->status == 1) {
+		if($command->passwd->status == '1') {
 			return true;
 		}
 		else {
