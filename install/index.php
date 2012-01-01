@@ -20,6 +20,9 @@ function generateSiteUrl() {
 		$url .= "http://";
 	}
 	$url .= $_SERVER["SERVER_NAME"];
+    if($_SERVER["SERVER_PORT"] != 80 && $_SERVER["SERVER_PORT"] != 443) {
+        $url .= ":" . $_SERVER["SERVER_PORT"];
+    }
 	$exploded = explode(basename($_SERVER["PHP_SELF"]), $_SERVER["PHP_SELF"]);
 	$url .= dirname($exploded[0]) . "/";
 	return $url;
