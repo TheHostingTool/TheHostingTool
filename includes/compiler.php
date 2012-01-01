@@ -50,9 +50,12 @@ else {
 	define("NOCONFIG", true);
 }
 if($sql['install']) {
-	define("INSTALL", 1);
+	define("INSTALL", true);
 	$db = new db; # Create the class
 	global $db; # Globalise it
+}
+else {
+    define("INSTALL", false);
 }
 
 $folder = LINK;

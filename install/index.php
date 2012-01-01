@@ -32,7 +32,7 @@ define("LINK", "../includes/"); # Set link
 include(LINK."compiler.php"); # Get compiler
 
 // If we still have a configuration, database should be ok.
-if(!NOCONFIG) {
+if(INSTALL) {
     $db = new db();
     define("CVER", $db->config("vname"));
 }
@@ -70,11 +70,11 @@ $disable = false;
 if(INSTALL == 1) {
 	include(LINK."conf.inc.php");
 	if(!writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "false")) {
-		$array['ANYTHING'] = "Your $link isn't writeable or does not exist! Please CHMOD it to 666 and make sure it exists!!";
+		$array['ANYTHING'] = "Your $link isn't writeable or does not exist! Please CHMOD it to 666 and make sure it exists!";
 		$disable = true;
 	}
 	else {
-		$array['ANYTHING'] = "Since you've already ran the installer, your config has been re-written to the \"not installed\" state. If you are upgrading, this is normal!";
+		$array['ANYTHING'] = "Since you've already ran the installer, your config has been re-written to the \"not installed\" state. If you are upgrading, this is normal.";
 	}
 }
 if(!file_exists($link)) {
