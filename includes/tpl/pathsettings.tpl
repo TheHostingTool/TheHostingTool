@@ -26,6 +26,11 @@
       <td><a title="Select the timezone you wish your THT installation to function in." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   <tr>
+      <td>Current Date & Time:</td>
+      <td>%DATETIME%</td>
+      <td><a title="This is the current date & time on your server in your selected timezone. Presented in RFC 2822 format." class="tooltip"><img src="<URL>themes/icons/information.png"/></a></td>
+  </tr>
+  <tr>
     <td></td>
     <td><input type="submit" name="add" id="add" value="Edit Settings" /></td>
   </tr>
