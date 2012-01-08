@@ -11,7 +11,7 @@ var pid;
 $(document).ready(function(){
    $("#username").change(function(event) {
 	   this.value = this.value.toLowerCase();
-	   check('user', this.value);
+	   check('username', this.value);
    });
 });
 
@@ -36,7 +36,7 @@ function check(name, value) {
 			}													
 			document.getElementById("next").disabled = false;
 		});
-	},500);
+	},300);
 }
 
 function orderstepme(id) {
@@ -67,33 +67,34 @@ function nextstep() {
 			if(document.getElementById("agree").checked == true) {
 				$.get("<AJAX>?function=orderIsUser", function(data) {
 					if (data == "1") {
-						showhide(step, step + 2)
-						step = step + 2
+						showhide(step, step + 2);
+						step = step + 2;
 					}
 					else {
-						showhide(step, step + 1)
-						step = step + 1
+						showhide(step, ++step);
 					}
 				});
 			}
 			else {
-				document.getElementById("verify").innerHTML = wrong
+				document.getElementById("verify").innerHTML = wrong;
 			}
 			break;
 			
 		case 3:
-			$.get("<AJAX>?function=clientcheck", function(data) {
-			if(data == "1") {
-				document.getElementById("verify").innerHTML = right;
-				showhide(step, step + 1)
-				step = step + 1
-			}
-			else {
-				document.getElementById("verify").innerHTML = wrong;
-			}													
-																		});
+            var goodToGo = true;
+            $('.step3Input').each(function(i) {
+                var html = $("#" + this.id + "check").html();
+                if(html != right) {
+                    $("#verify").html(wrong);
+                    goodToGo = false;
+                    return;
+                }
+            });
+            if(goodToGo) {
+                $("#verify").html(right);
+                showhide(step, ++step);
+            }
 			break;
-			
 		case 4:
 			  final(step, step + 1)
 			  step = step + 1
@@ -115,20 +116,19 @@ function nextstep() {
 					document.getElementById("back").disabled = false;
 				}
 				document.getElementById("verify").innerHTML = "";
-				$.get("<AJAX>?function=ispaid&pid="+ document.getElementById("package").value +"&uname="+ document.getElementById("username").value, function(data2) {							
-																																							 //document.getElementById("finished").innerHTML = data2;
-				if(data2 != "") {
-					window.location = "../client/?page=invoices&iid="+data2;	
-				}
+				$.get("<AJAX>?function=ispaid&pid="+ document.getElementById("package").value +"&uname="+ document.getElementById("username").value, function(data2) {
+                    if(data2 != "") {
+                        window.location = "../client/?page=invoices&iid="+data2;
+                    }
 				});
-																			});
+              });
 			break;
 	}
 }
 function showhide(hide, show) {
 	document.getElementById("next").disabled = true;
 	document.getElementById("back").disabled = true;
-	document.getElementById("verify").innerHTML = ""
+	document.getElementById("verify").innerHTML = "";
 	$("#"+hide).fadeOut(1000, function() {
 		$("#steps").fadeIn(1000);
 		$("#"+show).fadeIn(1000, function() {
@@ -140,7 +140,7 @@ function showhide(hide, show) {
 function final(hide, show) {
 	document.getElementById("next").disabled = true;
 	document.getElementById("back").disabled = true;
-	document.getElementById("verify").innerHTML = ""
+	document.getElementById("verify").innerHTML = "";
 	$("#"+hide).fadeOut(1000, function() {
 		document.getElementById("verify").innerHTML = "<strong>Don't close or browse away from this page!</strong>";
 		$("#"+show).fadeIn(1000);
@@ -150,13 +150,13 @@ function previousstep() {
 	if(step != 1) {
 		document.getElementById("next").disabled = true;
 		document.getElementById("back").disabled = true;
-		document.getElementById("verify").innerHTML = ""
+		document.getElementById("verify").innerHTML = "";
 		
 		var newstep = step - 1;
 		if (newstep == 3) {
 			$.get("<AJAX>?function=orderIsUser", function(data) {
 				if (data == "1") {
-					newstep = 2
+					newstep = 2;
 				}
 			});
 		}
@@ -212,8 +212,8 @@ function previousstep() {
                     </div></td>
               </tr>
               <tr>
-                <td width="330"><input name="agree" id="agree" type="checkbox" value="1" /> Do you agree to the <NAME> Terms of Service?</td>
-                <td><a title="The Terms of Service is the set of rules you abide by. These must be agreed to." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+                <td width="330"><input name="agree" id="agree" type="checkbox" value="1" /> <label for="agree">I agree to the <NAME> Terms of Service.</label></td>
+                <td><a title="The Terms of Service is the set of rules you abide by. These must be agreed to if you wish to create an account." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
               </tr>
             </table>
         </div>
@@ -224,59 +224,59 @@ function previousstep() {
         	<table border="0" cellspacing="2" cellpadding="0" align="center" style="width: 100%;">
               <tr>
                 <td>Username:</td>
-                <td><input type="text" name="username" id="username" /></td>
-                <td align="left"><a title="The username is your unique identity to your account. This is both your client account and control panel username. Please keep it under 8 characters." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
-                <td align="left" id="usercheck">&nbsp;</td>
+                <td><input type="text" name="username" id="username" class="step3Input" /></td>
+                <td align="left"><a title="The username is your unique identity to your account. This is both your client account and control panel username. Please keep it 4-8 characters long. Only alphanumeric characters can be used. Cannot begin with a number." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+                <td align="left" width="32" id="usernamecheck">&nbsp;</td>
               </tr>
               <tr>
                 <td>Password:</td>
-                <td><input type="password" name="password" id="password" onchange="check('pass', this.value+':'+document.getElementById('confirmp').value)"/></td>
+                <td><input type="password" name="password" id="password" class="step3Input" onchange="check('password', this.value+':'+document.getElementById('confirmp').value)"/></td>
                 <td rowspan="2" align="left" valign="middle"><a title="Your password is your own personal key that allows only you to log you into your account." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
-                <td rowspan="2" align="left" valign="middle" id="passcheck">&nbsp;</td>
+                <td rowspan="2" align="left" valign="middle" id="passwordcheck">&nbsp;</td>
               </tr>
               <tr>
                 <td>Confirm Password:</td>
-                <td><input type="password" name="confirmp" id="confirmp" onchange="check('pass', this.value+':'+document.getElementById('password').value)"/></td>
+                <td><input type="password" name="confirmp" id="confirmp" onchange="check('password', this.value+':'+document.getElementById('password').value)"/></td>
               </tr>
               <tr>
                 <td>Email:</td>
-                <td><input type="text" name="email" id="email" onchange="check('email', this.value)" /></td>
+                <td><input type="text" name="email" id="email" class="step3Input" onchange="check('email', this.value)" /></td>
                 <td align="left"><a title="Your email is your own address where all <NAME> emails will be sent to. Make sure this is valid." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="emailcheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>First Name:</td>
-                <td><input type="text" name="firstname" id="firstname" onchange="check('firstname', this.value)" /></td>
+                <td><input type="text" name="firstname" id="firstname" class="step3Input" onchange="check('firstname', this.value)" /></td>
                 <td align="left"><a title="Your first name." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="firstnamecheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>Last Name:</td>
-                <td><input type="text" name="lastname" id="lastname" onchange="check('lastname', this.value)" /></td>
+                <td><input type="text" name="lastname" id="lastname" class="step3Input" onchange="check('lastname', this.value)" /></td>
                 <td align="left"><a title="Your last name." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="lastnamecheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>Address:</td>
-                <td><input type="text" name="address" id="address" onchange="check('address', this.value)" /></td>
+                <td><input type="text" name="address" id="address" class="step3Input" onchange="check('address', this.value)" /></td>
                 <td align="left"><a title="Your personal address." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="addresscheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>City:</td>
-                <td><input type="text" name="city" id="city" onchange="check('city', this.value)" /></td>
+                <td><input type="text" name="city" id="city" class="step3Input" onchange="check('city', this.value)" /></td>
                 <td align="left"><a title="Your city. Letters only." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="citycheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>State:</td>
-                <td><input type="text" name="state" id="state" onchange="check('state', this.value)" /></td>
+                <td><input type="text" name="state" id="state" class="step3Input" onchange="check('state', this.value)" /></td>
                 <td align="left"><a title="Your state. Letters only." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="statecheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td>Zip Code:</td>
-                <td><input type="text" name="zip" id="zip" onchange="check('zip', this.value)" /></td>
+                <td><input type="text" name="zip" id="zip" class="step3Input" onchange="check('zip', this.value)" /></td>
                 <td align="left"><a title="Your zip/postal code. Numbers only." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="zipcheck" align="left">&nbsp;</td>
               </tr>
@@ -288,14 +288,14 @@ function previousstep() {
               </tr>
               <tr>
                 <td>Phone Number:</td>
-                <td><input type="text" name="phone" id="phone" onchange="check('phone', this.value)" /></td>
+                <td><input type="text" name="phone" id="phone" class="step3Input" onchange="check('phone', this.value)" /></td>
                 <td align="left"><a title="Your personal phone number. Numbers and dashes only." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="phonecheck" align="left">&nbsp;</td>
               </tr>
               <tr>
                 <td><img src="<URL>includes/captcha_image.php"></td>
-                <td><input type="text" name="human" id="human" onchange="check('human', this.value)" /></td>
-                <td align="left"><a title="Answer the question to prove you are not a bot." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+                <td><input type="text" name="human" id="human" class="step3Input" onchange="check('human', this.value)" /></td>
+                <td align="left"><a title="Type in the characters you see in the textbox exactly as you see them in the image." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
                 <td id="humancheck" align="left">&nbsp;</td>
               </tr>
             </table>
