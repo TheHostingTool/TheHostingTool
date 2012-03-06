@@ -89,6 +89,9 @@ if(INSTALL == 1) {
 	}
 	define("NAME", $db->config("name")); // Sets the name of the website
 }
+else {
+	define("THEME", "Reloaded2");
+}
 // Converts the $_POST global array into $main->postvar - DB Friendly.
 if(isset($_POST)) {
 	foreach($_POST as $key => $value) {
