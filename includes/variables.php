@@ -12,7 +12,6 @@ if(THT != 1){die();}
 if(INSTALL == 1) {
 	/*
 	 * THT Page Generation Time
-	 * By Jimmie Lin + Jonny H
 	 */
 	global $db, $starttime, $style, $main; #Define global, as we are going to pull up things from db
 	if($db->config("show_page_gentime") == 1){
@@ -65,21 +64,18 @@ if(INSTALL == 1) {
 	else{
 		$pagegen = '';
 	}
-	 
-	/*
-	 * THT Version Function
-	 * By Jimmie Lin
-	 */
 	
-	 if($db->config("show_version_id") == 1){
-	 $version = $db->config("vname");
+	 if($db->config("show_version_id") == 1) {
+		$version = $main->checkVersion();
+		$version = $version["cv"]["name"];
+		$r = $main->getSubversionRevision();
+		if($r !== false) { $version .= " (<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
 	}
 	else{
 		$version = '';
 	}
 	/*
 	 * THT Navigation
-	 * By Jonny H - Original Idea: Jimmie
 	*/
 	if(FOLDER != "install") {
 		$navbar = $db->query("SELECT * FROM `<PRE>navbar` ORDER BY `order` ASC");

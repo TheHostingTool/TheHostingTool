@@ -39,7 +39,8 @@ class page {
         $upgrademsg = "";
         if($updateInfo['devTime']) {
             $r = $main->getSubversionRevision();
-            $updatemsg = "<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>";
+			$updatemsg = "<span style='color:green'>DevTime&trade;</span>";
+			if($r !== false) { $updatemsg = "<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
         }
         elseif($updateInfo['updateAvailable']) {
             $updatemsg = "<span style='color:red'>Upgrade Available</span>";
