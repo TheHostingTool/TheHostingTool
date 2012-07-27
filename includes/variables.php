@@ -69,7 +69,7 @@ if(INSTALL == 1) {
 		$version = $main->checkVersion();
 		$version = $version["cv"]["name"];
 		$r = $main->getSubversionRevision();
-		if($r !== false) { $version .= " (<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
+		if($r !== false) { $version .= " (<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
 	}
 	else{
 		$version = '';

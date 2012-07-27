@@ -9,7 +9,7 @@
 	        <div class="sub">
 	            <strong>At a glance....</strong>
 	            <div class='break'></div>
-                <strong>Version:</strong> %VERSION% (%UPDATE%)<br />
+                <strong>Version:</strong> <acronym title="%VCODE%">%VERSION%</acronym> (%UPDATE%)<br />
                 <strong>Theme:</strong> %THEME%<br />
                 <strong>Client Area Enabled:</strong> %CENABLED%<br />
                 <strong>Show THT Version in footer:</strong> %SVID%<br />

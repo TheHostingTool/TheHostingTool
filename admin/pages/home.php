@@ -40,7 +40,7 @@ class page {
         if($updateInfo['devTime']) {
             $r = $main->getSubversionRevision();
 			$updatemsg = "<span style='color:green'>DevTime&trade;</span>";
-			if($r !== false) { $updatemsg = "<a href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
+			if($r !== false) { $updatemsg = "<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
         }
         elseif($updateInfo['updateAvailable']) {
             $updatemsg = "<span style='color:red'>Upgrade Available</span>";
@@ -50,6 +50,7 @@ class page {
 			$updatemsg = "<span style='color:green'>Up-To-Date</span>";
 		}
 		$stats['VERSION'] = "v".$updateInfo["cv"]["name"];
+        $stats['VCODE'] = $updateInfo["cv"]["code"];
 		$stats['THEME'] = $db->config('theme');
 		$stats['CENABLED'] = $main->cleaninteger($db->config('cenabled'));
 		$stats['SVID'] = $main->cleaninteger($db->config('show_version_id'));
@@ -92,7 +93,7 @@ class page {
 			$array['title'] = $item['title'];
 			$array['link'] = $item['link'];
 			$array['TIME'] = $item["pubdate"];
-            // By some merical, this works perfectly for correcting MyBB's stupid relative URLs in its feeds
+            // By some miracle, this works perfectly for correcting MyBB's stupid relative URLs in its feeds
             preg_match_all('/(<(?:a|img) (?:href|src)=(?:"|\'))([-A-Z0-9+&@#\/%?=~_|!:,.;]*[A-Z0-9+&@#\/%=~_|])((?:"|\')[a-z0-9]*[^<>]*\/?>)/si', $item['summary'], &$matches, PREG_SET_ORDER);
             for($matchi = 0; $matchi < count($matches); $matchi++) {
                 if(stripos($matches[$matchi][2], 'http') === false) {
