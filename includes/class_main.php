@@ -428,6 +428,12 @@ class main {
             $svn = File("../.svn/entries");
             return (int)$svn[3];
         }
+        if($this->canRun('exec')) {
+        	exec('svnversion ' . realpath('..'), $out, $return);
+        	if($return === 0) {
+        		return (int)$out[0];
+        	}
+        }
         return false;
     }
 }
