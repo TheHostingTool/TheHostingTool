@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%resources` (
 --
 
 INSERT INTO `%PRE%resources` (`resource_name`, `resource_value`) VALUES
-('admin_notes', '<p><strong>Welcome to your TheHostingTool v1.2 Installation!</strong></p>\r\n<p>We hope that you like TheHostingTool and you have a good time with our script. If you need any help, you can ask at the THT Community, or contact us directly. Thanks for using TheHostingTool, and good luck on your hosting service!</p>\r\n<p>- The THT Team</p>');
+('admin_notes', '<p><strong>Welcome to TheHostingTool!</strong></p><p>Enjoy this free, open-source web hosting client mangement project! Check out the Credits page on the sidebar menu if you\'re interested in becoming involved in the continued development of TheHostingTool. If you need some help, be sure to check out the THT forums and Google Code project page!</p><p>~ The THT Team</p>');
 
 -- --------------------------------------------------------
 
