@@ -430,7 +430,8 @@ class main {
         }
         if($this->canRun('exec')) {
         	exec('svnversion ' . realpath('..'), $out, $return);
-        	if($return === 0) {
+        	// For this to work, svnversion must be in your PHP's PATH enviroment variable
+        	if($return === 0 && $out[0] != "Unversioned directory") {
         		return (int)$out[0];
         	}
         }
