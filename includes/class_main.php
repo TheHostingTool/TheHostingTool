@@ -12,6 +12,7 @@ if(THT != 1){die();}
 class main {
 	
 	public $postvar = array(), $getvar = array(), $requestvar = array(); # All post/get/request strings
+	public $cache = array(); // A place to cache the results (in memory) of time-consuming functions
 	
 	public function cleaninteger($var){ # Transforms an Integer Value (1/0) to a Friendly version (Yes/No)
 	     $patterns[0] = '/0/';
@@ -380,61 +381,84 @@ class main {
 	/*
 	 * Returns the IP address of this server the way external devices will see it.
 	 */
-	public function getWanIp() {
+	public function getWanIp($cache = true) {
+		if($cache && isset($this->cache['getWanIp'])) {
+			return $this->cache['getWanIp'];
+		}
 		$ch = curl_init("http://checkip.dyndns.org/");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$data = curl_exec($ch);
 		if($data === false) {
 			$this->error(array('$main->getWanIp() Failed' => curl_error($ch)));
+			$this->cache['getWanIp'] = false;
 			return false;
 		}
 		curl_close($ch);
 		$edata = explode('ss: ', $data);
-		return trim($edata[1]);
+		$this->cache['getWanIp'] = substr(trim($edata[1]), 0, -14);
+		return $this->cache['getWanIp'];
 	}
 	
 	/*
 	 * Returns true if it's safe to run a function, false otherwise.
 	 */
-	public function canRun($function) {
-		return (function_exists($function) and stripos(ini_get('disable_functions'), $function) === false);
+	public function canRun($function, $cache = true) {
+		if($cache && isset($this->cache['canRun'][$function])) {
+			return $this->cache['canRun'][$function];
+		}
+		$this->cache['canRun'][$function] = (function_exists($function) and stripos(ini_get('disable_functions'), $function) === false);
+		return $this->cache['canRun'][$function];
 	}
 	
 	/*
 	 * Checks the current version against the version returned from the update server to determine update availability.
 	 */
-	public function checkVersion() {
+	public function checkVersion($cache = true) {
+		if($cache && isset($this->cache['checkVersion'])) {
+			return $this->cache['checkVersion'];
+		}
         global $db;
+        $cv = array('name' => $db->config("vname"), 'code' => (int)$db->config("vcode"));
 		$ch = curl_init("http://thehostingtool.com/updates/check.php");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$svn = $this->getSubversionRevision();
+		$cv['rev'] = $svn?$svn:null;
+		curl_setopt($ch, CURLOPT_USERAGENT, 'TheHostingTool/'.$cv['name'].' ('.$cv['code'].($svn?",$svn":'').')');
 		$data = curl_exec($ch);
 		if($data === false) {
 			$this->error(array('$main->checkVersion() Failed' => curl_error($ch)));
+			$this->cache['checkVersion'] = false;
 			return false;
 		}
 		curl_close($ch);
 		$nv = json_decode($data);
-		$cv = array('name' => $db->config("vname"), 'code' => (int)$db->config("vcode"));
         $return = array('nv' => (array)$nv, 'cv' => $cv);
         $return['updateAvailable'] = ($nv->code > $cv['code']);
         $return["devTime"] = ($cv['code'] > $nv->code);
+        $this->cache['checkVersion'] = $return;
         return $return;
 	}
 
-    public function getSubversionRevision() {
+    public function getSubversionRevision($cache = true) {
+    	if($cache && isset($this->cache['getSubversionRevision'])) {
+    		return $this->cache['getSubversionRevision'];
+    	}
         if(file_exists("../.svn/entries")) {
             $svn = File("../.svn/entries");
-            return (int)$svn[3];
+            $this->cache['getSubversionRevision'] = (int)$svn[3];
+            return $this->cache['getSubversionRevision'];
         }
         if($this->canRun('exec')) {
         	exec('svnversion ' . realpath('..'), $out, $return);
         	// For this to work, svnversion must be in your PHP's PATH enviroment variable
         	if($return === 0 && $out[0] != "Unversioned directory") {
-        		return (int)$out[0];
+        		$this->cache['getSubversionRevision'] = (int)$out[0];
+        		return $this->cache['getSubversionRevision'];
         	}
         }
+        $this->cache['getSubversionRevision'] = false;
         return false;
     }
 }

@@ -61,17 +61,16 @@ if(INSTALL == 1) {
 			$pagegen .= $style->replaceVar('tpl/footerdebug.tpl',$array);
 		}
 	}
-	else{
+	else {
 		$pagegen = '';
 	}
 	
 	 if($db->config("show_version_id") == 1) {
-		$version = $main->checkVersion();
-		$version = $version["cv"]["name"];
+		$version = $db->config('vname');
 		$r = $main->getSubversionRevision();
-		if($r !== false) { $version .= " (<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
+		if($r) { $version .= " (<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
 	}
-	else{
+	else {
 		$version = '';
 	}
 	/*

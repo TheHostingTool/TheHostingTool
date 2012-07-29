@@ -38,13 +38,13 @@ class page {
         $updateInfo = $main->checkVersion();
         $upgrademsg = "";
         if($updateInfo['devTime']) {
-            $r = $main->getSubversionRevision();
+            $r = $updateInfo['cv']['rev'];
 			$updatemsg = "<span style='color:green'>DevTime&trade;</span>";
-			if($r !== false) { $updatemsg = "<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
+			if(isset($r)) { $updatemsg = "<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
         }
         elseif($updateInfo['updateAvailable']) {
             $updatemsg = "<span style='color:red'>Upgrade Available</span>";
-            $upgrademsg = "<div class='warn'><img src='../themes/icons/error.png' alt='' /> v".$updateInfo["nv"]["name"]." is now available! Please upgrade!</div>";
+            $upgrademsg = "<div class='warn'><img src='../themes/icons/error.png' alt='' /> <acronym title=\"".$updateInfo['nv']['code']."\">v".$updateInfo["nv"]["name"]."</acronym> is now available!</div>";
         }
         else {
 			$updatemsg = "<span style='color:green'>Up-To-Date</span>";
