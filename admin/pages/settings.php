@@ -88,7 +88,7 @@ class page {
 
             case "tos": // Change the Terms of Service
                 global $db;
-                $array['TOS'] = $db->config("tos");
+                $array['TOS'] = str_replace('\r\n', "\r\n", $db->config("tos"));
                 echo $style->replaceVar("tpl/tos.tpl", $array);
                 break;
 
