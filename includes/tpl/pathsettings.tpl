@@ -13,7 +13,13 @@
     <td>
       <input name="url" type="text" id="host" value="%URL%" />
     </td>
-    <td><a title="Your THT Website's URL. (Recommended: http://%RECURL%/)" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+    <td><a title="This should be the primary URL your THT installation can be accessed at." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+  </tr>
+    <td>WWW Subdomain:</td>
+    <td>
+      %WWWDROPDOWN%
+    </td>
+    <td><a title="<b>Force WWW:</b> Redirect requests without www. to www. <br><b>Force No WWW</b>: Redirect requests using www. to no www.<br><b>Both:</b> Do not redirect any requests." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   <tr>
     <td>Default Page:</td>

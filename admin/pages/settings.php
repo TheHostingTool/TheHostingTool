@@ -58,7 +58,7 @@ class page {
             default: // General options
                 $array['NAME'] = $db->config("name");
                 $array['URL'] = $db->config("url");
-                $array['RECURL'] = $_SERVER['HTTP_HOST'];
+                $array['WWWDROPDOWN'] = $main->dropDown("wwwsubdomain", array(array('Force WWW', 'www'), array('Force No WWW', 'nowww'), array('Both', 'both')), $db->config('wwwsubdomain'));
                 $values[] = array("Admin Area", "admin");
                 $values[] = array("Order Form", "order");
                 $values[] = array("Client Area", "client");

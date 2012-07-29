@@ -80,13 +80,45 @@ if(INSTALL == 1) {
     date_default_timezone_set($db->config("timezone")); // Sets the default timezone
 	define("THEME", $db->config("theme")); // Set the default theme
 	// Sets the URL THT is located at
-	if($_SERVER["HTTPS"]) {
+	$url = $db->config("url");
+	$wwwInUrl = preg_match('%^(http(?:s)?://)(www\.)?(.*)%', $url, $urlregout);
+	$wwwInUrl = ($urlregout[2]=='www.'?true:false);
+	$wwwInCurrent = preg_match('%^(www\.)?(.+)%', $_SERVER['HTTP_HOST'], $currentregout);
+	$wwwInCurrent = ($currentregout[1]=='www.'?true:false);
+	switch ($db->config("wwwsubdomain")) {
+		case 'both':
+			if($wwwInUrl && !$wwwInCurrent) {
+				// Remove WWW
+				$url = $urlregout[1] . $urlregout[3];
+			}
+			elseif(!$wwwInUrl && $wwwInCurrent) {
+				// Add WWW
+				$url = $urlregout[1] . 'www.' . $urlregout[3];
+			}
+			break;
+		case 'nowww':
+			if($wwwInCurrent) {
+				// Remove WWW
+				header('Location: http'.($_SERVER['HTTPS']?'s':'').'://'.$currentregout[2].$_SERVER['REQUEST_URI']);
+				exit();
+			}
+			break;
+		case 'www':
+			if(!$wwwInCurrent) {
+				header('Location: http'.($_SERVER['HTTPS']?'s':'').'://www.'.$currentregout[2].$_SERVER['REQUEST_URI']);
+				exit();
+			}
+			break;
+	}
+	if($_SERVER["HTTPS"] && ($urlregout[1] != "https://")) {
 		// HTTPS support
-		define("URL", str_replace("http://", "https://", $db->config("url")));
+		$url = str_replace("http://", "https://", $url);
 	}
-	else {
-		define("URL", $db->config("url"));
+	elseif(!$_SERVER["HTTPS"] && ($urlregout[1] != "http://")) {
+		// HTTP support (if URL is using HTTPS)
+		$url = str_replace("https://", "http://", $url);
 	}
+	define('URL', $url);
 	define("NAME", $db->config("name")); // Sets the name of the website
 }
 else {
