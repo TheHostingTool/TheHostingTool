@@ -40,7 +40,7 @@ class page {
         if($updateInfo['devTime']) {
             $r = $updateInfo['cv']['rev'];
 			$updatemsg = "<span style='color:green'>DevTime&trade;</span>";
-			if(isset($r)) { $updatemsg = "<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
+			if(isset($r)) { $updatemsg = "<a target=\"_blank\" style=\"text-decoration:none;\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\"><span style='color:green'>r$r</span></a>"; }
         }
         elseif($updateInfo['updateAvailable']) {
             $updatemsg = "<span style='color:red'>Upgrade Available</span>";

@@ -445,11 +445,28 @@ class main {
     	if($cache && isset($this->cache['getSubversionRevision'])) {
     		return $this->cache['getSubversionRevision'];
     	}
+    	// This will work for Subverson 1.6 clients and below
         if(file_exists("../.svn/entries")) {
             $svn = File("../.svn/entries");
             $this->cache['getSubversionRevision'] = (int)$svn[3];
             return $this->cache['getSubversionRevision'];
         }
+		// Check the previous directories recursively looking for wc.db (Subversion 1.7)
+		$searchDepth = 3; // Max search depth. 3 should handle 99% of checkouts.
+		// Do we have PDO? And do we have the SQLite PDO driver?
+		if(!extension_loaded('PDO') || !extension_loaded('pdo_sqlite')) {
+			$searchDepth = 0; // Don't even bother...
+		}
+		for($i = 1; $i <= $searchDepth; $i++) {
+			$dotdot .= '../';
+			if(!file_exists("$dotdot.svn/wc.db")) {
+				continue;
+			}
+			$wcdb = new PDO("sqlite:$dotdot.svn/wc.db");
+			$result = $wcdb->query('SELECT "revision" FROM "NODES" WHERE "repos_path" = "'.basename(realpath('..')).'"');
+			$this->cache['getSubversionRevision'] = (int)$result->fetchColumn();
+		    return $this->cache['getSubversionRevision'];
+		}
         if($this->canRun('exec')) {
         	exec('svnversion ' . realpath('..'), $out, $return);
         	// For this to work, svnversion must be in your PHP's PATH enviroment variable
