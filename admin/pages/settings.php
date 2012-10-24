@@ -44,7 +44,8 @@ class page {
                     return;
 				}
 			}
-			foreach($main->postvar as $key => $value) {
+			foreach($_POST as $key => $value) {
+                // It's safe to use $_POST here because updateConfig doesn't assume $value is friendly.
 				$db->updateConfig($key, $value);
 			}
 			$main->errors("Settings Updated!");
