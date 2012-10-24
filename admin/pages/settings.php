@@ -129,6 +129,8 @@ class page {
                 $array['SMTP_HOST'] = $db->config("smtp_host");
                 $array['SMTP_USER'] = $db->config("smtp_user");
                 $array['SMTP_PASS'] = $db->config("smtp_password");
+                $array['SMTP_SECURE'] = (bool)$db->config("smtp_secure")?'checked="checked"':'';
+                $array['SMTP_PORT'] = $db->config("smtp_port");
                 echo $style->replaceVar("tpl/emailsettings.tpl", $array);
                 break;
         }

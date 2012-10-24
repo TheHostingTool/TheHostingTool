@@ -66,6 +66,8 @@ class email {
 		$body = $this->email['content'];
 		
 		$host = $this->details['smtp_host'];
+		$secure = (bool)$this->details['smtp_secure'];
+		$port = $this->details['smtp_port'];
 		$username = $this->details['smtp_user'];
 		$password = $this->details['smtp_password'];
 		
@@ -73,9 +75,10 @@ class email {
 		  'To' => $this->email['to'],
 		  'Subject' => $this->email['subject']);
 		$smtp = Mail::factory('smtp',
-		  array ('host' => $host,
+		  array ('host' => ($secure?'ssl://':'').$host,
 			'auth' => true,
 			'username' => $username,
+			'port' => $port,
 			'password' => $password));
 		$mail = $smtp->send($to, $headers, $body);
 		

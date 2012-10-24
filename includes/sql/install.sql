@@ -548,3 +548,4 @@ ALTER TABLE `%PRE%user_packs` CHANGE `id` `id` MEDIUMINT( 9 ) UNSIGNED NOT NULL 
 CHANGE `userid` `userid` MEDIUMINT( 9 ) UNSIGNED NOT NULL;
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES ('timezone', 'UTC');
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES ('wwwsubdomain', 'both');
+INSERT INTO `%PRE%config` (`name` ,`value`) VALUES ('smtp_port',  '25'), ('smtp_secure',  '0');
