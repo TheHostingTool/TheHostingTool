@@ -18,7 +18,7 @@
   <tr>
     <td width="20%">Backend:</td>
     <td>
-      <input name="backend" type="text" id="backend" value="%BACKEND%" /><a title="The backend package name, shown in WHM. DO NOT SE SPACES!" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      <input name="backend" type="text" id="backend" value="%BACKEND%" /><a title="The backend package name, shown in WHM. DO NOT USE SPACES!" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
     </td>
   </tr>
   <tr>
