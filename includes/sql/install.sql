@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `tht_config` (
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('url', 'http://thehostingtool.com/'),
 ('vname', '1.2.4'),
-('vcode', '102040'),
+('vcode', '1010204'),
 ('whm-ssl', '1'),
 ('paypalemail', 'your@email.com'),
 ('default', 'order'),
