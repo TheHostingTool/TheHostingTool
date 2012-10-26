@@ -36,7 +36,7 @@ $(document).ready(function() {
 	});
 	
 	$("#cancelLink").click(function() {
-		var reason = prompt('Why are you cancelling this account? Leave blank if you do not wish to provide a reason.');
+		var reason = prompt('Why are you canceling this account? Leave blank if you do not wish to provide a reason.');
 		if(reason != null && reason != "") {
 			var query = window.location + "&func=cancel&reason=" + reason;
 		}
