@@ -46,6 +46,7 @@ $(window).load(function () {
       <tr>
         <td width="20%">SMTP Secure Connections:</td>
         <td>
+        <input type="hidden" name="smtp_secure" value="0" />
         <input name="smtp_secure" id="smtp_secure" type="checkbox" value="1" %SMTP_SECURE%" />
         <a title="Check this if your SMTP server accepts secure SSL/TLS connections." class="tooltip"><img src="<ICONDIR>information.png" /></a></td>
       </tr>
