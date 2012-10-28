@@ -26,6 +26,10 @@ class page {
 		Welcome to the Package Management Area. Here you can add, edit and delete web hosting packages. Have fun :)<br />
 		To get started, choose a link from the sidebar's SubMenu.";	
 	}
+
+	private function isAdditional($key) {
+		return $key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin" && $key != $GLOBALS['csrf']['input-name'] && $key != "direct" && $key != "add";
+	}
 	
 	public function content() { # Displays the page 
 	global $main;
@@ -42,7 +46,7 @@ class page {
 					}
 					if(!$n) {
 						foreach($main->postvar as $key => $value) {
-							if($key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin" && $key != $GLOBALS['csrf']['input-name']) {
+							if($this->isAdditional($key)) {
 								if($n) {
 									$additional .= ",";	
 								}
@@ -82,7 +86,7 @@ class page {
 							}
 							if(!$n) {
 								foreach($main->postvar as $key => $value) {
-									if($key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin") {
+									if($this->isAdditional($key)) {
 										if($n) {
 											$additional .= ",";	
 										}
