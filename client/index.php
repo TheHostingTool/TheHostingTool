@@ -40,10 +40,10 @@ function client() {
 			// Main Side Bar HTML
 			$nav = "Sidebar";
 			if(!$db->config("delacc")) {
-				$sub = $db->query("SELECT * FROM `<PRE>clientnav` WHERE `link` != 'delete'");
+				$sub = $db->query("SELECT * FROM `<PRE>clientnav` WHERE `link` != 'delete' ORDER BY `weight` ASC");
 			}
 			else {
-				$sub = $db->query("SELECT * FROM `<PRE>clientnav`");
+				$sub = $db->query("SELECT * FROM `<PRE>clientnav` ORDER BY `weight` ASC");
 			}
 			while($row = $db->fetch_array($sub)) {
 				$array2['IMGURL'] = $row['icon'];

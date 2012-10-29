@@ -15,7 +15,6 @@ class page {
 		global $style, $db, $main;
 		$data = $db->client($_SESSION['cuser']);
 		$array['USER'] = $data['user'];
-		$array['EMAIL'] = $data['email'];
 		$array['DOMAIN'] = $data['domain'];
 		$array['FIRSTNAME'] = $data['firstname'];
 		$array['LASTNAME'] = $data['lastname'];
@@ -27,17 +26,6 @@ class page {
 		$array['PHONE'] = $data['phone'];
 		$array['DISP'] = "<div>";
 			if($_POST) {
-				if(!preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i',$main->postvar['email'])) {
-					$main->errors("Your email is the wrong format!");
-					echo $style->replaceVar("tpl/cedit.tpl", $array);
-					return;
-				}
-				$query = $db->query("SELECT * FROM `<PRE>users` WHERE `email` = '{$main->postvar['email']}' AND `id` != '{$_SESSION['cuser']}'");
-				if($db->num_rows($query) != 0) {
-					$main->errors("That e-mail address is already in use!");
-					echo $style->replaceVar("tpl/cedit.tpl", $array);
-					return;
-				}
 				if(!$main->postvar['state']) {
 					$main->errors("Please enter a valid state!");
 					echo $style->replaceVar("tpl/cedit.tpl", $array);
@@ -98,7 +86,6 @@ class page {
 					echo $style->replaceVar("tpl/cedit.tpl", $array);
 					return;
 				}
-				$db->query("UPDATE `<PRE>users` SET `email` = '{$main->postvar['email']}' WHERE `id` = '{$_SESSION['cuser']}'");
 				$db->query("UPDATE `<PRE>users` SET `state` = '{$main->postvar['state']}' WHERE `id` = '{$_SESSION['cuser']}'");
 				$db->query("UPDATE `<PRE>users` SET `address` = '{$main->postvar['address']}' WHERE `id` = '{$_SESSION['cuser']}'");	
 				$db->query("UPDATE `<PRE>users` SET `phone` = '{$main->postvar['phone']}' WHERE `id` = '{$_SESSION['cuser']}'");

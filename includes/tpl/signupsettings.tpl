@@ -11,21 +11,32 @@
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>
     <td width="20%">Multiple Signups:</td>
-    <td>
-      %MULTIPLE%    <a title="Do you allow multiple signups for one user?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+    <td width="1%">
+      %MULTIPLE%
     </td>
+    <td><a title="Do you allow multiple signups for one user?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+  </tr>
+  <tr>
+    <td width="20%">Email Validation:</td>
+    <td>
+      <input type="hidden" name="emailval" value="0" />
+      <input type="checkbox" value="1" name="emailval" %EMAILVAL% />
+    </td>
+    <td><a title="Should we ask the user to confirm their email?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   <tr>
     <td width="20%">TLD's only:</td>
     <td>
-      %TLDONLY%    <a title="Allow ONLY top level domains? Leave as Disabled if unsure." class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      %TLDONLY%
     </td>
+    <td><a title="Allow ONLY top level domains? Leave as Disabled if unsure." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   <tr>
     <td width="20%">General Signups:</td>
     <td>
-      %GENERAL%    <a title="Is the signup system offline?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a>
+      %GENERAL%
     </td>
+    <td><a title="Is the signup system offline?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
   <tr>
     <td valign="top">Signups Closed Message:</td>

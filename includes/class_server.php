@@ -231,7 +231,7 @@ class server {
 													  '{$main->getvar['zip']}',
 													  '{$main->getvar['country']}',
 													  '{$main->getvar['phone']}',
-													  '3')");
+													  '1')");
 			$db->query("INSERT INTO `<PRE>users_bak` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone) VALUES(
 													  '{$main->getvar['username']}',
 													  '{$main->getvar['email']}',
@@ -283,7 +283,13 @@ class server {
 				$array['PASS'] = $main->getvar['password']; 
 				$array['EMAIL'] = $main->getvar['email'];
 				$array['DOMAIN'] = $main->getvar['fdom'];
-				$array['CONFIRM'] = $url . "client/confirm.php?u=" . $newusername . "&c=" . $date;
+				$emailval = (bool)$db->config("emailval");
+				if($emailval) {
+					$id = $data['id'];
+					$code = sha1($id.mt_rand(0,99999).$newusername.microtime().$main->getvar['email']);
+					$db->query("UPDATE `<PRE>users` SET `confirmcode` = '{$code}' WHERE `id` = '{$id}'");
+					$array['CONFIRM'] = $url . "client/confirm.php?i={$id}&u={$newusername}&c={$code}";
+				}
 				
 				//Get plan email friendly name
 				$pquery = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$main->getvar['package']}'");
@@ -293,8 +299,8 @@ class server {
 				$puser = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
 				$puser2 = $db->fetch_array($puser);
 				if($pname['admin'] == 0) {
-					$emaildata = $db->emailTemplate("newacc");
-					echo "<strong>Your account has been completed!</strong><br />You may now use the client login bar to see your client area or proceed to your control panel. An email has been dispatched to the address on file.";
+					$emaildata = $db->emailTemplate($emailval?"newaccval":"newacc");
+					echo "<strong>Your account has been created!</strong><br />You may now use the client login bar to see your client area or proceed to your control panel. An email has been dispatched to the address on file.";
 					if($type->determineType($main->getvar['package']) == "paid") {
 						echo " This will apply only when you've made payment.";	
 						$_SESSION['clogged'] = 1;
@@ -303,9 +309,9 @@ class server {
 					$donecorrectly = true;
 				}
 				elseif($pname['admin'] == 1) {
-					if($serverphp->suspend($main->getvar['username'], $type->determineServer($main->getvar['package'])) == true) {
+					if($serverphp->suspend($main->getvar['username'], $type->determineServer($main->getvar['package']), 'TheHostingTool: Awaiting Admin Validation') == true) {
 						$db->query("UPDATE `<PRE>user_packs` SET `status` = '3' WHERE `id` = '{$puser2['id']}'");
-						$emaildata = $db->emailTemplate("newaccadmin");
+						$emaildata = $db->emailTemplate($emailval?"newaccadminval":"newaccadmin");
 						$emaildata2 = $db->emailTemplate("adminval");
 						$email->staff($emaildata2['subject'], $emaildata2['content']);
 						echo "<strong>Your account is awaiting admin validation!</strong><br />An email has been dispatched to the address on file. You will recieve another email when the admin has overlooked your account.";
@@ -432,8 +438,8 @@ class server {
 				$emaildata = $db->emailTemplate("cancelacc");
 				$array['REASON'] = "Account Declined.";
 				$email->send($data2['email'], $emaildata['subject'], $emaildata['content'], $array);
-				$db->query("UPDATE `<PRE>user_packs` SET `status` = '9' WHERE `id` = '{$data['id']}'");
-				$db->query("UPDATE `<PRE>users` SET `status` = '9' WHERE `id` = '{$db->strip($data['userid'])}'");
+				$db->query("DELETE FROM `<PRE>user_packs` WHERE `id` = '{$data['id']}'");
+				$db->query("DELETE FROM `<PRE>users` WHERE `id` = '{$db->strip($data['userid'])}'");
 				$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 													  '{$db->strip($data['userid'])}',
 													  '{$data2['user']}',
@@ -562,7 +568,7 @@ class server {
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
 		$uquery = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$query['userid']}' AND (`status` = '1')");
 		if($db->num_rows($query) == 0 AND $db->num_rows($uquery) == 0) {
-			$array['Error'] = "That package doesn't exist or cannot be approved! (Did they confirm their e-mail?)";
+			$array['Error'] = "That package doesn't exist or cannot be approved!";
 			$array['User PID'] = $id;
 			$main->error($array);
 			return;	
@@ -591,25 +597,31 @@ class server {
 		}
 	}
 	
-	public function confirm($username, $confirm) { // Set's user's account to Active when the unique link is visited.
-		global $db, $main, $type, $email;
-		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$username}' AND `signup` = {$confirm} AND `status` = '3'");
+	// Confirms an email
+	public function confirm($id, $confirm, $user = null, $force = false) {
+		global $db, $main, $type;
+		$id = (int)$db->strip($id);
+		$confirm = $force?'':$db->strip($confirm);
+		if($user !== null) {
+			$user = $db->strip($user);
+		}
+		$query = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$id}' ".($force?'':"AND `confirmcode` = '{$confirm}'").($user!==null?" AND `user` = '{$user}'":''));
 		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That package doesn't exist or cannot be confirmed!";
-			$main->error($array);
-			return false;	
+			return false;
 		}
-		else {
-			$data = $db->fetch_array($query);
-			$date = time();
-			$db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `user` = '{$username}'");
-			$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
-												  '{$db->strip($data['userid'])}',
-												  '{$data['user']}',
-												  '{$date}',
-												  'Account/E-mail Confirmed.')");
-			return true;
+		$data = $db->fetch_array($query);
+		//$db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `user` = '{$username}'");
+		$add = "";
+		if($data['newemail'] !== null) {
+			$add = "`email` = '".$db->strip($data['newemail'])."', ";
 		}
+		$db->query("UPDATE `<PRE>users` SET {$add}`emailval` = 1, `confirmcode` = NULL, `newemail` = NULL WHERE `id` = {$id}");
+		$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+											  '{$db->strip($data['userid'])}',
+											  '{$data['user']}',
+											  '".time()."',
+											  'Account/E-mail Confirmed ({$data['email']})')");
+		return true;
 	}
 	
 	public function testConnection($serverId) {

@@ -18,7 +18,8 @@ class page {
 		$this->navtitle = "Clients Sub Menu";
 		$this->navlist[] = array("Search Clients", "magnifier.png", "search");
 		$this->navlist[] = array("Client Statistics", "book.png", "stats");
-		$this->navlist[] = array("Admin Validate", "user_suit.png", "validate");
+		$this->navlist[] = array("Admin Validation", "user_suit.png", "validate");
+		$this->navlist[] = array("Email Confirmation", "email.png", "emailconfirm");
 	}
 	
 	public function description() {
@@ -389,6 +390,60 @@ class page {
 						$tpl .= $style->replaceVar("tpl/adminval.tpl", $array);
 					}
 					echo $tpl;
+				}
+				break;
+
+			case "emailconfirm":
+				if(!(bool)$db->config("emailval")) {
+					$main->errors("Email confirmation is currently disabled. Please go to General Settings -> Signup Form to enable it.");
+					echo "<ERRORS>";
+					return;
+				}
+				switch ($_POST['action']) {
+					case 'resend':
+						global $email;
+						$result = $email->sendConfirmEmail((int)$_POST['id']);
+						if(is_array($result)) {
+							$main->errors('Confirmation email for <code>'.$result[0].'</code> has been resent to <code>'.$result[1].'</code><br />');
+							break;
+						}
+						$main->errors('Failed to resend email confirmation.<br />');
+						break;
+					case 'confirm':
+						if($server->confirm($_POST['id'], null, null, true)) {
+							$main->errors('Email manually confirmed.<br />');
+							break;
+						}
+						$main->errors('Manual email confirmation failed.<br />');
+						break;
+				}
+				$add = '';
+				$reason = '';
+				if($_GET['include'] == 'new') {
+					$add = '`emailval` = 0';
+					$reason = 'new accounts';
+				} elseif($_GET['include'] == 'changes') {
+					$add = '`newemail` IS NOT NULL';
+					$reason = 'new emails';
+				} else {
+					$add = '`emailval` = 0 OR `newemail` IS NOT NULL';
+					$reason = 'accounts/emails';
+				}
+				$query = $db->query("SELECT * FROM `<PRE>users` WHERE $add");
+				$e2 = '';
+				if($db->num_rows($query) == 0) {
+						$e2 = "<br /><br />There are no clients with $reason that have not been confirmed.";
+						if(!isset($reason)) { break; }
+				}
+				echo $style->replaceVar("tpl/admineconfirmlist.tpl", array('ERRORS2' => $e2));
+				while($data = $db->fetch_array($query)) {
+					$replace['USER'] = $data['user'];	
+					$replace['EMAIL'] = $data['email'];
+					$replace['include'] = isset($_GET['include']) ? '&include='.$_GET['include'] : '';
+					$replace['NEWEMAIL'] = $data['newemail']===null?'Initial email confirmation. Not changing emails.':$data['newemail'];
+					$replace['SIGNUP'] = date('r', $data['signup']);
+					$replace['ID'] = $data['id'];
+					echo $style->replaceVar("tpl/admineconfirmentry.tpl", $replace);
 				}
 				break;
 		}

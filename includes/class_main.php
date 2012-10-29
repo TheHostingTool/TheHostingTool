@@ -478,5 +478,26 @@ class main {
         $this->cache['getSubversionRevision'] = false;
         return false;
     }
+
+    // Make sure you use === with this!
+    // 0 = Confirmed
+    // 1 = Accepted (not confirmed but email confirmation is not required)
+    // 2 = Unconfirmed
+    // 3 = Unconfirmed New Email
+    public function getEmailStatus($id) {
+    	global $db;
+		$emailval = (bool)$db->config('emailval');
+		$client = $db->client($id);
+		$status = 0;
+		if($client['newemail'] !== null) {
+			$status = 3;
+		} elseif($emailval && !(bool)$client['emailval']) {
+			$status = 2;
+
+		} elseif(!$emailval && !(bool)$client['emailval']) {
+			$status = 1;
+		}
+		return $status;
+    }
 }
 ?>

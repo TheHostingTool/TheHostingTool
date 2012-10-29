@@ -15,7 +15,7 @@ To get started, select an action in the Sidebar. Here's an overview of your acco
 	  <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	    <tr>
 	      <td width="50%">Email Address:</td>
-	      <td align="right">%EMAIL% | <a href="?page=details">Change..</a>
+	      <td align="right">%EMAIL% | <a href="?page=email">%ESTATUS%</a>
 	      <a title="Your email address." class="tooltip"><img src="<ICONDIR>information.png" /></a></td>
         </tr>
       </table>

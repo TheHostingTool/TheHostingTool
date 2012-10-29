@@ -26,7 +26,18 @@ class page {
 		$array['LASTLOGIN'] = $ldata['message'];
 		$array['LASTDATE'] = strftime("%m/%d/%Y", $ldata['logtime']);
 		$array['LASTTIME'] = strftime("%T", $ldata['logtime']);
-		$array['EMAIL'] = $data['email'];
+		$estatus = $main->getEmailStatus($_SESSION['cuser']);
+		$array['EMAIL'] = $estatus==3?$data['newemail']:$data['email'];
+		$array['ESTATUS'] = '<span style="color:green;">Confirmed</span>';
+		switch ($estatus) {
+			case 1:
+				$array['ESTATUS'] = '<span style="color:green;">Accepted</span>';
+				break;
+			case 2:
+			case 3:
+				$array['ESTATUS'] = '<span style="color:red;font-weight:bold;">Unconfirmed</span>';
+				break;
+		}
 		$array['ALERTS'] = $db->config('alerts');
 		$query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$db->strip($data['id'])}'");
 		$data3 = $db->fetch_array($query2);

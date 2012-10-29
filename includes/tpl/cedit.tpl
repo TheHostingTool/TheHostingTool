@@ -19,13 +19,6 @@ function check() {
       <a title="The username you registered with." class="tooltip"><img src="<ICONDIR>information.png" /></a>
     </td>
   </tr>
-  <tr>
-    <td width="20%">Email:</td>
-    <td>
-      <input type="text" name="email" id="email" value="%EMAIL%" />
-      <a title="Please type your email address here." class="tooltip"><img src="<ICONDIR>information.png" /></a>
-    </td>
-  </tr>
     <tr>
     <td width="20%">First Name:</td>
     <td>
