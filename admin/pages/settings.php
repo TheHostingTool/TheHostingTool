@@ -45,8 +45,9 @@ class page {
 				}
 			}
 			foreach($_POST as $key => $value) {
-                // It's safe to use $_POST here because updateConfig doesn't assume $value is friendly.
-				$db->updateConfig($key, $value);
+                // It's safe to use $_POST here because updateConfig doesn't assume $key or $value is friendly.
+                if($key != "add" && $key != $GLOBALS['csrf']['input-name'])
+				    $db->updateConfig($key, $value);
 			}
 			$main->errors("Settings Updated!");
 		}
@@ -97,6 +98,7 @@ class page {
                 $values[] = array("Enabled", "1");
                 $values[] = array("Disabled", "0");
                 $array['MULTIPLE'] = $main->dropDown("multiple", $values, $db->config("multiple"));
+                $array['EMAILVAL'] = (bool)$db->config("emailval")?'checked="checked"':'';
                 $array['TLDONLY'] = $main->dropDown("tldonly", $values, $db->config("tldonly"));
                 $array['GENERAL'] = $main->dropDown("general", $values, $db->config("general"));
                 $array['MESSAGE'] = $db->config("message");
