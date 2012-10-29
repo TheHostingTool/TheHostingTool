@@ -49,6 +49,11 @@ class db {
 		}
 		return $sql; # Return SQL
 	}
+
+	// mysql_insert_id
+	public function insert_id() {
+		return @mysql_insert_id($sql);
+	}
 	
 	public function num_rows($sql) { # Runs a query and returns the rows
 		$sql = mysql_num_rows($sql); # Run query
