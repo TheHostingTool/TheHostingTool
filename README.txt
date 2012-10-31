@@ -27,6 +27,8 @@ Website:		thehostingtool.com
 Forum:			thehostingtool.com/forum
 Wiki (WIP):		wiki.thehostingtool.com
 Twitter:		@thehostingtool
+Facebook:		facebook.com/TheHostingTool
+Google+:		gplus.to/TheHostingTool
 Google Code:	code.google.com/p/thehostingtool
 
 
@@ -35,18 +37,17 @@ OUR TEAM
 
 Management:
 	Jonny (Owner/Creator) <jonny@thehostingtool.com>
-	Kevin (Lead Developer, QA Lead, Support Lead) <kevin@thehostingtool.com> @kmark937
+	Kevin (Lead Developer, QA Lead, Support Lead) <kevin@thehostingtool.com> @Kev1nMark
 	Nick (Staff Coordinator) <nick@thehostingtool.com> @thtnick
 Developers:
-	KuJoe <kujoe@thehostingtool.com> @zkujoe
+	If you're interested in developing for THT, give Kevin an email or PM on the forums.
 Support Team:
-	David
 	TheBingsta
-	Matt <matt@thehostingtool.com>
-Wiki Team:
 	zzbomb <zzbomb@thehostingtool.com> @zzbomb
+Wiki Team:
+	Wiki project on hold for now!
 Quality Assurance:
-	If you're interested in QA, give Nick an email or PM on the forums.
+	If you're interested in QA, give Kevin an email or PM on the forums.
 
 
 INSTALLATION
@@ -76,5 +77,5 @@ channel on irc.expertec.co.uk
 COPYRIGHT INFORMATION
 -----------------------------------
 
-Copyright © 2008-2011 TheHostingTool Development Team and Contributors
+Copyright Â© 2008-2012 TheHostingTool Development Team and Contributors
 TheHostingTool is licensed under the GNU-GPLv3. See COPYING.txt for license details.

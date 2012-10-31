@@ -178,8 +178,7 @@ class p2h {
 		if(!$n) {
 			switch($this->checkSignup($details['type'], $details['prefix'])) {
 				case 1:
-					//What we do here?
-					$main->getvar['type_fpass'] = 0;
+					unset($main->getvar['type_fpass']);
 					break;
 
 				case 0:
