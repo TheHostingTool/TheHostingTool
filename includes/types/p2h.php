@@ -95,7 +95,7 @@ class p2h {
 			case "edit":
 				$query = $this->queryForums();
 				if($db->num_rows($query) == 0) {
-					$array['CONTENT'] = "There are no forums to delete!";
+					$array['CONTENT'] = "There are no forums to edit!";
 				}
 				else {
 					if($main->getvar['name']) {
