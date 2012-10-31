@@ -36,7 +36,7 @@ $(document).ready(function() {
 	});
 	
 	$("#cancelLink").click(function() {
-		var reason = prompt('Why are you canceling this account? Leave blank if you do not wish to provide a reason.');
+		var reason = prompt('CAUTION: If you proceed, the account "%USER%" will be completely and irrevocably removed from the server but not THT.\r\n\r\nWhy are you canceling this account? Leave blank if you do not wish to provide a reason.');
 		if(reason != null && reason != "") {
 			var query = window.location + "&func=cancel&reason=" + reason;
 		}
@@ -81,7 +81,7 @@ $(document).ready(function() {
       </tr>
       <tr id="cancelTr">
         <td width="1%" align="center"><img src="<URL>themes/icons/package_delete.png" /></td>
-        <td align="left"><a id="cancelLink" title="Delinks this account from the package in THT. The account itself will not be touched." class="tooltip" href="javascript:void(0);">Cancel User</a></td>
+        <td align="left"><a id="cancelLink" title="Terminates the package on the server but keeps the client and package info in THT." class="tooltip" href="javascript:void(0);">Cancel User</a></td>
       </tr>
       <tr>
         <td width="1%" align="center"><img src="<URL>themes/icons/cross.png" /></td>
