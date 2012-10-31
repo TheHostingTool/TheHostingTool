@@ -14,8 +14,15 @@
 		<script type="text/javascript">
 		//<![CDATA[
 		$(document).ready(function(){
+            var sortedYet = false;
 			$(".column").sortable({
-				connectWith: '.column'
+				connectWith: '.column',
+                change: function() {
+                    if(!sortedYet) {
+                        sortedYet = true;
+                        $("#buttonSpace").slideDown();
+                    }
+                }
 			});
 
 			$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
@@ -118,17 +125,17 @@
 			<table>
 				<tr>
 					<td><label for="inputName-new">Name:</label></td>
-					<td><input class="inputClass" type="text" name="name" id="inputName-new" /></td>
+					<td><input size="28" class="inputClass" type="text" name="name" id="inputName-new" /></td>
 					<td><a class="tooltip" title="The text your users see in the navbar."><img src="<ICONDIR>eye.png" class="tooltip" alt="Eye" /></a></td>
 				</tr>
 				<tr>
 					<td><label for="inputIcon-new">Icon:</label></td>
-					<td><input class="inputClass" type="text" class="tooltip" name="icon" id="inputIcon-new" /></td>
+					<td><input size="28" class="inputClass" type="text" class="tooltip" name="icon" id="inputIcon-new" /></td>
 					<td><a class="tooltip" title="The icons that your users see next to the navigation link. Icons are located in the 'themes/icons' folder. Example: stop.png"><img src="<ICONDIR>picture.png" alt="Picture" /></a></td>
 				</tr>
 				<tr>
 					<td><label for="inputLink-%ID%">Link:</label></td>
-					<td><input class="inputClass" type="text" class="tooltip" name="link" id="inputLink-new" /></td>
+					<td><input size="28" class="inputClass" type="text" class="tooltip" name="link" id="inputLink-new" /></td>
 					<td><a class="tooltip" title="The relative URL for the navagation link. Example: admin/"><img src="<ICONDIR>link.png" alt="Link" /></a></td>
 				</tr>
 			</table>
