@@ -1,13 +1,10 @@
-<link type="text/css" href="<URL>includes/codemirror/codemirror.css" rel="stylesheet"/>
-<script type="text/javascript" src="<URL>includes/codemirror/codemirror.js"></script>
-<link type="text/css" href="<URL>includes/codemirror/xml/xml.css" rel="stylesheet"/>
-<script type="text/javascript" src="<URL>includes/codemirror/xml/xml.js"></script>
-<link type="text/css" href="<URL>includes/codemirror/javascript/javascript.css" rel="stylesheet"/>
-<script type="text/javascript" src="<URL>includes/codemirror/javascript/javascript.js"></script>
-<link type="text/css" href="<URL>includes/codemirror/css/css.css" rel="stylesheet"/>
-<script type="text/javascript" src="<URL>includes/codemirror/css/css.js"></script>
-<script type="text/javascript" src="<URL>includes/codemirror/htmlmixed/htmlmixed.js"></script>
-<style>.CodeMirror {background: #f8f8f8;}</style> 
+<link type="text/css" href="<URL>includes/codemirror/lib/codemirror.css" rel="stylesheet"/>
+<script src="<URL>includes/codemirror/lib/codemirror.js"></script>
+<script src="<URL>includes/codemirror/mode/javascript/javascript.js"></script>
+<script src="<URL>includes/codemirror/mode/xml/xml.js"></script>
+<script src="<URL>includes/codemirror/mode/css/css.js"></script>
+<script src="<URL>includes/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<style>.CodeMirror {background: #f8f8f8;}</style>
 <script>
 $(document).ready(function() {
 	%COMMENTHACK%var editor = CodeMirror.fromTextArea(document.getElementById("tplCode"), {mode: "htmlmixed"});
