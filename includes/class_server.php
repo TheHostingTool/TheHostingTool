@@ -467,13 +467,14 @@ class server {
 			$data2 = $db->fetch_array($query2);
 			$server = $type->determineServer($data['pid']);
 			global $serverphp;
-			if(!is_object($this->servers[$server]) && !$serverphp) {
-				$this->servers[$server] = $this->createServer($data['pid']); // Create server class
-				$donestuff = $this->servers[$server]->suspend($data2['user'], $server, $reason);
+			$activeserv = $serverphp;
+			if(is_object($this->servers[$server])) {
+				$activeserv = $this->servers[$server];
 			}
-			else {
-				$donestuff = $serverphp->suspend($data2['user'], $server, $reason);
+			elseif(!$serverphp) {
+				$activeserv = $this->servers[$server] = $this->createServer($data['pid']); // Create server class
 			}
+			$donestuff = $activeserv->suspend($data2['user'], $server, $reason);
 			if($donestuff == true) {
 				$date = time();
 				$db->query("UPDATE `<PRE>user_packs` SET `status` = '2' WHERE `id` = '{$data['id']}'");

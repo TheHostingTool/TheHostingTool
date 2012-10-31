@@ -239,16 +239,15 @@ class p2h {
 					if($posts < $mposts) {
 						// If the user haven't posted enough...
 						$user = $db->client($data['userid']);
-						$userPack = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data['id']}'");
-						// Redeclaration should free the memory used by the query...
-						$userPack = $db->fetch_array($userPack);
 						// If the user just signed up today, don't punish them.
-						if(date("mdY") != date("mdY", $userPack['signup'])) {
-							// Suspend the user.
-							$server->suspend($data['id'], "Only posted $posts out of $mposts");
-							// Output to the cron.
-							echo "<strong>".$user['user']." (".$fuser['fuser']."):</strong> Suspended for not posting the required amount. ($posts out of $mposts)<br />";
+						if(date("mdY") == date("mdY", $data['signup'])) {
+							echo "<strong>".$user['user']." (".$fuser['fuser']."):</strong> Didn't meet the posting requirement ($posts out of $mposts) but was not suspended because he just signed up today.";
+							continue;
 						}
+						// Suspend the user.
+						$server->suspend($data['id'], "Only posted $posts out of $mposts");
+						// Output to the cron.
+						echo "<strong>".$user['user']." (".$fuser['fuser']."):</strong> Suspended for not posting the required amount. ($posts out of $mposts)<br />";
 					}
 				}
 			}
