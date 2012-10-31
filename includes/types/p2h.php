@@ -336,11 +336,11 @@ class p2h {
 		$monthly = $this->getMonthly($data['pid']);
 		$array['USER'] = $user['fuser'];
 		if($posts >= $monthly) {
-			$array['MESSAGE'] = "<strong>Well Done!</strong><br />You have achieved the monthly posts of ". $monthly .". You're total posts is ". $posts .".";
+			$array['MESSAGE'] = "<strong>Nice.</strong><br />You have achieved the monthly posting requirement of ". $monthly .". You've made ". $posts ." total.";
 		}
 		else {
 			$need = $monthly - $posts;
-			$array['MESSAGE'] = "<strong>You Need More Posts!</strong><br />You haven't achieved the monthly posts of ". $monthly .". You're total posts is ". $posts .". You need ". $need ." more posts!";
+			$array['MESSAGE'] = "<strong>Don't stop now!</strong><br />You have yet to achieve the monthly posting requirement of ". $monthly .". You've made ". $posts ." total. You need ". $need ." more!";
 		}
 		echo $style->replaceVar("tpl/forumposting.tpl", $array);
 	}

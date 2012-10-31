@@ -1,6 +1,6 @@
 <table width="100%" border="0" cellspacing="0">
   <tr>
-    <td width="20%">Forum Username:</td>
+    <td width="15%">Forum Username:</td>
     <td>%USER%</td>
   </tr>
   <tr>
