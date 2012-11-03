@@ -30,19 +30,19 @@ function changePrefix(value)
             </label></td>
 	      </tr>
           <tr>
-			<td width="30%">mySQL Username:</td>
+			<td width="30%">MySQL Username:</td>
 			<td><label>
 			<input name="username" type="text" class="form" id="username" />
 			</label></td>
 		  </tr>
           <tr>
-            <td>mySQL Password:</td>
+            <td>MySQL Password:</td>
             <td><label>
               <input name="password" type="password" class="form" id="password" />
             </label></td>
           </tr>
           <tr>
-            <td>mySQL Database:</td>
+            <td>MySQL Database:</td>
             <td><label>
               <input name="database" type="text" class="form" id="database" />
             </label></td>

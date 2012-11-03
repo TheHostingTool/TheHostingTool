@@ -9,19 +9,19 @@
 			</label></td>
 		  </tr>
           <tr>
-			<td width="30%">mySQL Username:</td>
+			<td width="30%">MySQL Username:</td>
 			<td><label>
 			<input name="username" type="text" class="form" id="username" value="%USER%" />
 			</label></td>
 		  </tr>
           <tr>
-            <td>mySQL Password:<br />(Leave blank if you don't want it to change)</td>
+            <td>MySQL Password:<br />(Leave blank if you don't want it to change)</td>
             <td><label>
               <input name="password" type="password" class="form" id="password" />
             </label></td>
           </tr>
           <tr>
-            <td>mySQL Database:</td>
+            <td>MySQL Database:</td>
             <td><label>
               <input name="database" type="text" class="form" id="database" value="%DB%" />
             </label></td>

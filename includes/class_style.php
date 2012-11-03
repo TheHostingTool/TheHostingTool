@@ -1,7 +1,7 @@
 <?php
 //////////////////////////////
 // The Hosting Tool
-// Database (mySQL) Class
+// Database (MySQL) Class
 // By Jonny H
 // Released under the GNU-GPL
 //////////////////////////////

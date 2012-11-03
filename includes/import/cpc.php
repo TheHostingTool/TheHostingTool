@@ -32,7 +32,7 @@ class cpc {
 			if(!$n) {
 				$cpccon = @mysql_connect($main->postvar['hostname'], $main->postvar['username'], $main->postvar['password'], true);
 				if(!$cpccon) {
-					echo "mySQL Details incorrect!";
+					echo "MySQL Details incorrect!";
 				}
 				else {
 					$select = @mysql_select_db($main->postvar['database'], $cpccon);
