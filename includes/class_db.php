@@ -105,6 +105,10 @@ class db {
 	public function config($name) { # Returns a value of a config variable
 		$query = $this->query("SELECT * FROM `<PRE>config` WHERE `name` = '{$name}'");
 		if($this->num_rows($query) == 0) {
+			// Legacy version support
+			if(strtolower($name) == "vname") {
+				return $this->config("version");
+			}
 			$error['Error'] = "Couldn't Retrieve config value!";
 			$error['Config Name'] = $name;
 			global $main;
