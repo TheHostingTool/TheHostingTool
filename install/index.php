@@ -61,7 +61,7 @@ function writeconfig($host, $user, $pass, $db, $pre, $true) {
 	return false;
 }
 
-define("INSTALL", 1);
+define("INSTALL", 0);
 define("THT", 1);
 define("THEME", "Reloaded2"); # Set the theme
 define("URL", "../"); # Set url to blank
@@ -73,7 +73,6 @@ define("SUB", "Choose Method");
 require_once(LINK."/class_db.php");
 require_once(LINK."/class_main.php");
 require_once(LINK."/class_style.php");
-$db = new db();
 $main = new main();
 $style = new style();
 
@@ -82,7 +81,11 @@ $array['VCODE'] = NVERCODE;
 $array['ANYTHING'] = "";
 $link = LINK."conf.inc.php";
 if(file_exists($link)) {
+	unset($sql);
 	require($link);
+	if(isset($sql)) {
+		$db = new db();
+	}
 }
 $disable = false;
 if($sql['install'] == 'true') {
