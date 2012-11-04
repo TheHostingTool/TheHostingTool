@@ -463,7 +463,7 @@ class main {
 				continue;
 			}
 			$wcdb = new PDO("sqlite:$dotdot.svn/wc.db");
-			$result = $wcdb->query('SELECT "revision" FROM "NODES" WHERE "repos_path" = "'.basename(realpath('..')).'"');
+			$result = $wcdb->query('SELECT "changed_revision" FROM "NODES" WHERE "repos_path" = "'.basename(realpath('..')).'"');
 			$this->cache['getSubversionRevision'] = (int)$result->fetchColumn();
 		    return $this->cache['getSubversionRevision'];
 		}
