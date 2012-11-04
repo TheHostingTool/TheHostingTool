@@ -119,7 +119,7 @@ function installstuff() {
 	else {
 		etc = "&type=install";	
 	}
-	$.get("<AJAX>?function=install&version="+encodeURIComponent('%VERSION%')+etc, function(myinstall) {
+	$.get("<AJAX>?function=install&vname="+encodeURIComponent('%VERSION%')+"&vcode="+encodeURIComponent('%VCODE%')+etc, function(myinstall) {
 		document.getElementById("step3").innerHTML = myinstall;
 	});	
 }

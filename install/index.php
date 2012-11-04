@@ -8,6 +8,7 @@
 
 // The new version of THT we're installing
 define("NVER", "1.2.4");
+define("NVERCODE", 1012040);
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
@@ -77,6 +78,7 @@ $main = new main();
 $style = new style();
 
 $array['VERSION'] = NVER;
+$array['VCODE'] = NVERCODE;
 $array['ANYTHING'] = "";
 $link = LINK."conf.inc.php";
 if(file_exists($link)) {

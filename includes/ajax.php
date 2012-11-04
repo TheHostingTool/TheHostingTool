@@ -557,11 +557,13 @@ class Ajax {
 				}
 			}
 			else {
-				echo "Eh? Fatal Error Debug: ". $main->getvar['type'];
+				echo "Fatal Error Debug: ". $main->getvar['type'];
 			}
-			$ver = mysql_real_escape_string($_GET['version']);
-			$query = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = '{$ver}' WHERE `name` = 'version'");
-			if(!$query) {
+			$vname = mysql_real_escape_string($_GET['vname']);
+			$vcode = mysql_real_escape_string($_GET['vcode']);
+			$query = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = '{$vname}' WHERE `name` = 'vname'");
+			$query2 = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = '{$vcode}' WHERE `name` = 'vcode'");
+			if(!$query || !$query2) {
 				echo '<div class="errors">There was a problem editing your script version!</div>';
 			}
 			if($main->getvar['type'] == "install") {
