@@ -148,6 +148,7 @@ $(window).load(function () {
       </tr>
     </table></td>
     <td valign="top"><div class="table" style="margin-top:7px;">
+        <div class="cat">Welcome to TheHostingTool v%VERSION%</div>
         <div class="text" id="main">
         	<div id="step1" style="display:none;">
             <span class="errors">%ANYTHING%</span>

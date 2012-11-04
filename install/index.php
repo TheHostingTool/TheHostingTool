@@ -6,6 +6,22 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
+// The new version of THT we're installing
+define("NVER", "1.2.4");
+
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+
+// Page generated
+$starttime = explode(' ', microtime());
+$starttime = $starttime[1] + $starttime[0];
+
+define("FOLDER", substr($path,$position));
+
+session_start();
+ob_start();
+
+define("LINK", "../includes/");
+
 /*
  * Quick little function made to make generating a default site URL
  * easy. Hopefully this will assist a lot of support topics regarding
@@ -28,18 +44,6 @@ function generateSiteUrl() {
 	return $url;
 }
 
-// The new version of THT we're installing
-define("NVER", "1.2.4");
-
-define("LINK", "../includes/"); # Set link
-include(LINK."compiler.php"); # Get compiler
-
-// If we still have a configuration, database should be ok.
-if(INSTALL) {
-    $db = new db();
-    define("CVER", $db->config("vname"));
-}
-
 function writeconfig($host, $user, $pass, $db, $pre, $true) {
 	global $style;
 	$array['HOST']	=  addcslashes($host, '\\\'');
@@ -51,14 +55,13 @@ function writeconfig($host, $user, $pass, $db, $pre, $true) {
 	$tpl = $style->replaceVar("tpl/install/conftemp.tpl", $array);
 	$link = LINK."conf.inc.php";
 	if(is_writable($link)) {
-		file_put_contents($link, $tpl);
-		return true;
+		return file_put_contents($link, $tpl) !== false;
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
+define("INSTALL", 1);
+define("THT", 1);
 define("THEME", "Reloaded2"); # Set the theme
 define("URL", "../"); # Set url to blank
 
@@ -66,12 +69,21 @@ define("NAME", "THT");
 define("PAGE", "Install");
 define("SUB", "Choose Method");
 
+require_once(LINK."/class_db.php");
+require_once(LINK."/class_main.php");
+require_once(LINK."/class_style.php");
+$db = new db();
+$main = new main();
+$style = new style();
+
 $array['VERSION'] = NVER;
 $array['ANYTHING'] = "";
 $link = LINK."conf.inc.php";
+if(file_exists($link)) {
+	require($link);
+}
 $disable = false;
-if(INSTALL == 1) {
-	include(LINK."conf.inc.php");
+if($sql['install'] == 'true') {
 	if(!writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "false")) {
 		$array['ANYTHING'] = "Your $link isn't writeable or does not exist! Please CHMOD it to 666 and make sure it exists!";
 		$disable = true;
