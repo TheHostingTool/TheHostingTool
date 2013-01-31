@@ -459,7 +459,7 @@ class main {
 		}
 		for($i = 1; $i <= $searchDepth; $i++) {
 			$dotdot .= '../';
-			if(!file_exists("$dotdot.svn/wc.db")) {
+			if(!@file_exists("$dotdot.svn/wc.db")) {
 				continue;
 			}
 			$wcdb = new PDO("sqlite:$dotdot.svn/wc.db");
