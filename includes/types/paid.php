@@ -22,7 +22,7 @@ class paid {
         public function __construct() { # Assign stuff to variables on creation
 			global $main, $db, $invoice;
 			$this->acpNav[] = array("Paid Configuration", "paid", "coins.png", "Paid Configuration");
-			$this->acpForm[] = array("Monthly Cost", '<input name="monthly" type="text" id="monthly" size="5" onkeypress="return onlyNumbers();" />', 'monthly');
+			$this->acpForm[] = array("Monthly Cost", '<input name="monthly" type="number" step="any" id="monthly" size="5" onkeypress="return onlyNumbers();" />', 'monthly');
 		}
 		
 		public function acpPage() {
