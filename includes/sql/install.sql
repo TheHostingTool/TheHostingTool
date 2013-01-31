@@ -106,7 +106,7 @@ INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`) VALUES
 -- Table structure for table `%PRE%config`
 --
 
-CREATE TABLE IF NOT EXISTS `tht_config` (
+CREATE TABLE IF NOT EXISTS `%PRE%config` (
   `name` varchar(50) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY (`name`)
