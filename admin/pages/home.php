@@ -94,7 +94,7 @@ class page {
 			$array['link'] = $item['link'];
 			$array['TIME'] = $item["pubdate"];
             // By some miracle, this works perfectly for correcting MyBB's stupid relative URLs in its feeds
-            preg_match_all('/(<(?:a|img) (?:href|src)=(?:"|\'))([-A-Z0-9+&@#\/%?=~_|!:,.;]*[A-Z0-9+&@#\/%=~_|])((?:"|\')[a-z0-9]*[^<>]*\/?>)/si', $item['summary'], &$matches, PREG_SET_ORDER);
+            preg_match_all('/(<(?:a|img) (?:href|src)=(?:"|\'))([-A-Z0-9+&@#\/%?=~_|!:,.;]*[A-Z0-9+&@#\/%=~_|])((?:"|\')[a-z0-9]*[^<>]*\/?>)/si', $item['summary'], $matches, PREG_SET_ORDER);
             for($matchi = 0; $matchi < count($matches); $matchi++) {
                 if(stripos($matches[$matchi][2], 'http') === false) {
                     $item['summary'] = str_replace($matches[$matchi][0], $matches[$matchi][1].'http://thehostingtool.com/forum/'.$matches[$matchi][2].$matches[$matchi][3], $item['summary']);

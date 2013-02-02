@@ -239,7 +239,7 @@ class Net_SMTP
         if ($this->_debug) {
             if ($this->_debug_handler) {
                 call_user_func_array($this->_debug_handler,
-                                     array(&$this, $message));
+                                     array($this, $message));
             } else {
                 echo "DEBUG: $message\n";
             }
