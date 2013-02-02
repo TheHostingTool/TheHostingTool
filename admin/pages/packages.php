@@ -13,12 +13,14 @@ class page {
 	
 	public $navtitle;
 	public $navlist = array();
+	public $defaultNav;
 							
 	public function __construct() {
 		$this->navtitle = "Packages Sub Menu";
 		$this->navlist[] = array("Add Packages", "package_add.png", "add");
 		$this->navlist[] = array("Edit Packages", "package_go.png", "edit");
 		$this->navlist[] = array("Delete Packages", "package_delete.png", "delete");
+		$this->defaultNav = 1;
 	}
 	
 	public function description() {

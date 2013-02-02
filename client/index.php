@@ -110,18 +110,22 @@ function client() {
 					$main->redirect($url);
 				}
 				elseif($main->postvar['no']) {
-					$main->done();	
+					$main->done();
 				}
 			}
 			else {
 				if($content->navlist && !isset($main->getvar['sub'])) {
 					$html = "Select a sub-page from the sidebar.";
+					if(isset($content->defaultNav)) {
+						header("Location: ?page=".$main->getvar['page']."&sub=".$content->navlist[$content->defaultNav][2]);
+						die();
+					}
 				}
 				else {
 					ob_start();
 					$content->content();
-					$html = ob_get_contents(); # Retrieve the HTML
-					ob_clean(); # Flush the HTML	
+					$html = ob_get_contents(); // Retrieve the HTML
+					ob_clean(); // Flush the HTML	
 				}
 			}
 		}

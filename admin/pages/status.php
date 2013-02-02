@@ -13,11 +13,13 @@ class page {
 			 	
 	public $navtitle;
 	public $navlist = array();
+	public $defaultNav;
 	
 	public function __construct() {
 		$this->navtitle = "Server Status Sub Menu";
 		$this->navlist[] = array("Server Status", "application_osx_terminal.png", "status");
 		$this->navlist[] = array("PHP Info", "page_white_php.png", "phpinfo");
+		$this->defaultNav = 0;
 	}
 
 	public function description() {

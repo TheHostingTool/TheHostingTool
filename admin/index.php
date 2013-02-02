@@ -164,6 +164,10 @@ function acp() {
                     $subsidebar2 .= $subsidebar;
                     // Done, now output it in a sub() table
                     $html .= $main->sub($subsidebar2, NULL); # Initial implementation, add the SubSidebar(var) into the description, basically append it 
+					if(isset($content->defaultNav)) {
+						header("Location: ?page=".$main->getvar['page']."&sub=".$content->navlist[$content->defaultNav][2]);
+						die();
+					}
 				}
 				else {
 					ob_start();

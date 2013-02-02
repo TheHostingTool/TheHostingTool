@@ -13,11 +13,13 @@ class page {
 	
 	public $navtitle;
 	public $navlist = array();
+	public $defaultNav;
 							
 	public function __construct() {
 		$this->navtitle = "Tickets Menu";
 		$this->navlist[] = array("New Ticket", "page_white_add.png", "add");
 		$this->navlist[] = array("View Tickets", "page_white_go.png", "view");
+		$this->defaultNav = 1;
 	}
 	
 	public function description() {
