@@ -196,8 +196,8 @@ function checkForDependencies() {
 	// Here, we're going to see if we have the functions that we need. :D
 	$needed = array();
 	// First things first:
-	if(version_compare(PHP_VERSION, '5.0.0', '<')) {
-		die("PHP Version 5 or greater is required! You're currently running: " . phpversion());
+	if(version_compare(PHP_VERSION, '5.2.0', '<')) {
+		die("PHP Version 5.2 or greater is required! You're currently running: " . PHP_VERSION);
 	}
 	if(!function_exists("curl_init")) {
 		$needed[] = "cURL";
@@ -209,7 +209,7 @@ function checkForDependencies() {
 		return true;
 	}
 	else {
-		$output = "The following function(s) are/is needed for
+		$output = "The following function".(count($needed)==1?" is":"s are")." needed for
 		TheHostingTool to run properly: <ul>";
 		foreach($needed as $key => $value) {
 			$output .= "<li>$value</li>";
