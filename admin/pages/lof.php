@@ -78,11 +78,11 @@ class page {
 					echo $style->replaceVar("tpl/themesettings.tpl", $array);
 					break;
 					
-				case "tupload": # Theme Uploader
+				case "tupload": // Theme Uploader
                     $this->upload();
 					break;
 					
-				case "cssedit": #CSS Editor - Thanks Jimmie & Kevin!
+				case "cssedit": // CSS Editor
 					$url = $db->config('url')."themes/".$db->config('theme')."/images/";
 					$filetochange = LINK."../themes/".$db->config('theme')."/style.css";
 					$filetochangeOpen = file_get_contents($filetochange);
@@ -104,7 +104,7 @@ class page {
 					echo $style->replaceVar('tpl/cssedit.tpl', $css);
 					break;
 					
-				case "tpledit": //TPL Editor -  Thanks Jimmie & Kevin!
+				case "tpledit":
 					// Quite simple redir-tor
 					echo $style->replaceVar('tpl/tpledit.tpl');
 					break;
