@@ -149,10 +149,13 @@ class db {
 		}
 	}
 	
-	public function client($id) { # Returns values of a id
+	public function client($id, $returnErrors = false) { # Returns values of a id
 		$id = $this->strip($id);
 		$query = $this->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$id}'");
 		if($this->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$error['Error'] = "Couldn't retrieve client data!";
 			$error['Username'] = $name;
 			global $main;

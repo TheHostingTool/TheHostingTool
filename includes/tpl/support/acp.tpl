@@ -5,7 +5,9 @@ function addme() {
 </script>
 <script type="text/javascript">
 function editme(id) {
-	$.get("<AJAX>?function=%AJAX%&id="+id, function(data) {
+    var post = {};
+    post[csrfMagicName] = csrfMagicToken;
+	$.post("<AJAX>?function=%AJAX%&id="+id, post, function(data) {
 			var result = data.split("{}[]{}");
 			if(document.getElementById("editbox").style.display == "none") {
 				document.getElementById("editname").value = result[0];

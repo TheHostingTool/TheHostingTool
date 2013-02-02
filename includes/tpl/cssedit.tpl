@@ -8,7 +8,9 @@ $(document).ready(function() {
 	$("#editTheCssNao").click(function() {
 		$("#" + this.id).blur();
 		$("#" + this.id).attr("disabled", "disabled");
-		$.post("<AJAX>?function=editcss", { css: editor.getValue(), __tht_csrf_magic: csrfMagicToken }, function(data){
+		var post = { css: editor.getValue() };
+		post[csrfMagicName] = csrfMagicToken;
+		$.post("<AJAX>?function=editcss", post, function(data){
 			$.get("<AJAX>?function=notice", { status: "good", message: data }, function(data2){
 				$("#belowDynamic").slideUp(500, function() {
 					$("#spaceForNotice").html(data2);

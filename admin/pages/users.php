@@ -46,69 +46,6 @@ class page {
 					$client = $db->client($main->getvar['do']);
 					$pack2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$main->getvar['do']}'");
 					$pack = $db->fetch_array($pack2);
-					switch ($main->getvar['func']) {
-						case "sus":
-                            if(!empty($main->getvar['reason'])) {
-								$command = $server->suspend($pack['id'], $main->getvar['reason']);
-                            }
-                            else {
-								$command = $server->suspend($pack['id']);
-                            }
-							if($command === true) {
-								$main->errors("User has been suspended!");	
-							}
-							else {
-								$main->errors($command);
-							}
-							break;
-							
-						case "unsus":
-							$command = $server->unsuspend($pack['id']);
-							if($command == true) {
-								$main->errors("User has been unsuspended!");	
-							}
-							else {
-								$main->errors($command);
-							}
-							break;
-							
-						case "cancel":
-							if(!empty($main->getvar['reason'])) {
-								$command = $server->cancel($pack['id'], $main->getvar['reason']);
-                            }
-                            else {
-								$command = $server->cancel($pack['id']);
-                            }
-							if($command == true) {
-								$main->errors("User has been cancelled!");
-								$main->done();
-							}
-							else {
-								$main->errors($command);
-							}
-							break;
-						
-						case "term":
-							if(!empty($main->getvar['reason'])) {
-								$command = $server->terminate($pack['id'], $main->getvar['reason']);
-                            }
-                            else {
-								$command = $server->terminate($pack['id']);
-                            }
-							if($command == true) {
-								$main->errors("User has been terminated!");
-								$main->done();
-							}
-							else {
-								$main->errors($command);
-							}
-							break;
-					}
-				}
-				if($main->getvar['do'] ) {
-					$client = $db->client($main->getvar['do']);
-					$pack2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$main->getvar['do']}'");
-					$pack = $db->fetch_array($pack2);
 				}
 				if($main->getvar['do'] ) {
 					if($pack['status'] == "2") {
@@ -353,12 +290,12 @@ class page {
 				break;
 				
 			case "validate":
-				if($main->getvar['do']) {
-					if($main->getvar['accept'] == 1) {
-						if($server->approve($main->getvar['do'])) {
+				if($main->postvar['do']) {
+					if($main->postvar['accept'] == 1) {
+						if($server->approve($main->postvar['do'])) {
 							$main->errors("Account activated!");
 							$emaildata = $db->emailTemplate("approvedacc");
-							$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->getvar['do']}'");
+							$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->postvar['do']}'");
 							$data = $db->fetch_array($query);
 							$client = $db->client($data['userid']);
 							$db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `id` = '{$client['id']}'");
@@ -366,12 +303,12 @@ class page {
 						}
 					}
 					else {
-						$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->getvar['do']}'");
+						$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$main->postvar['do']}'");
 						$data = $db->fetch_array($query);
 						$client = $db->client($data['userid']);
-						if($server->decline($main->getvar['do'])) {
+						if($server->decline($main->postvar['do'])) {
 							$main->errors("Account declined!");
-						}	
+						}
 					}
 				}
 				$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `status` = '3'");

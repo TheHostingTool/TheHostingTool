@@ -325,15 +325,15 @@ class Ajax {
         global $main, $db, $style;
         if($_SESSION['logged']) {
             //echo '<script type="text/javascript" src="'.URL.'includes/javascript/jquerytooltip.js">';
-            $type  = $main->getvar['type'];
-            $value = $main->getvar['value'];
-            if($main->getvar['num']) {
-                $show = $main->getvar['num'];
+            $type  = $main->postvar['type'];
+            $value = $main->postvar['value'];
+            if($main->postvar['num']) {
+                $show = $main->postvar['num'];
             } else {
                 $show = 10;
             }
-            if($main->getvar['page'] != 1) {
-                $lower = $main->getvar['page'] * $show;
+            if($main->postvar['page'] != 1) {
+                $lower = $main->postvar['page'] * $show;
                 $lower = $lower - $show;
                 $upper = $lower + $show;
             } else {
@@ -411,11 +411,14 @@ class Ajax {
         }
     }
     
-    public function status() {
+    public function ticketStatus() {
+        if(!$_SESSION['logged']) {
+            return;
+        }
         global $db;
         global $main;
-        $id     = $main->getvar['id'];
-        $status = $main->getvar['status'];
+        $id     = $main->postvar['id'];
+        $status = $main->postvar['status'];
         $query  = $db->query("UPDATE `<PRE>tickets` SET `status` = '{$status}' WHERE `id` = '{$id}'");
         if($query) {
             echo "<img src=" . URL . "themes/icons/accept.png>";
@@ -718,7 +721,7 @@ class Ajax {
         global $style;
         echo $style->replaceVar("tpl/acppacks/addbox.tpl");
     }
-    
+
     function pedit() {
         if($_SESSION['logged']) {
             global $db, $style, $main;
@@ -1045,13 +1048,77 @@ class Ajax {
     function deleteTicket() {
         if($_SESSION['logged']) {
             global $main, $db;
-            $tid = $main->getvar['ticket'];
+            $tid = $main->postvar['ticket'];
             if($tid != "" and is_numeric($tid)) {
                 $query = "DELETE FROM `<PRE>tickets` WHERE `id` = {$tid}";
                 $db->query($query);
                 $query = "DELETE FROM `<PRE>tickets` WHERE `ticketid` = {$tid}";
                 $db->query($query);
             }
+        }
+    }
+
+    function clientAction() {
+        if(!$_SESSION['logged']) { return; }
+        header("Content-type: application/json");
+        echo json_encode($this->_clientAction());
+    }
+
+    private function _clientAction() {
+        global $db, $server;
+        $client = $db->client($_POST['id'], true);
+        if(!$client) {
+            return array("msg" => "Unknown client.", "error" => true);
+        }
+        $pack = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '".$db->strip($_POST['id'])."'");
+        if($db->num_rows($pack) == 0) {
+            return array("msg" => "Unknown package.", "error" => true);
+        }
+        $pack = $db->fetch_array($pack);
+        switch($_POST['action']) {
+            case "unsuspend":
+                if($server->unsuspend($pack['id'], true)) {
+                    return array("msg" => "Unsuspended.", "error" => false);
+                }
+                return array("msg" => "Could not unsuspend.", "error" => true);
+                break;
+            case "suspend":
+                if($server->suspend($pack['id'], !empty($_POST['reason']) ? $_POST['reason'] : false, true)) {
+                    return array("msg" => "Suspended.", "error" => false);
+                }
+                return array("msg" => "Could not suspend.", "error" => true);
+                break;
+            case "cancel":
+                if($server->cancel($pack['id'], !empty($_POST['reason']) ? $_POST['reason'] : false, true)) {
+                    return array("msg" => "Canceled.", "error" => false);
+                }
+                return array("msg" => "Could not cancel.", "error" => true);
+                break;
+            case "terminate":
+                if($server->terminate($pack['id'], !empty($_POST['reason']) ? $_POST['reason'] : false, true)) {
+                    return array("msg" => "Terminated.", "error" => false);
+                }
+                return array("msg" => "Could not terminate.", "error" => true);
+                break;
+            case "validate":
+                if($_POST['accept'] == "1") {
+                    if($server->approve($pack['id'], true)) {
+                        global $email;
+                        $emaildata = $db->emailTemplate("approvedacc");
+                        $db->query("UPDATE `<PRE>users` SET `status` = '1' WHERE `id` = '{$client['id']}'");
+                        $email->send($client['email'], $emaildata['subject'], $emaildata['content']);
+                        return array("msg" => "Approved.", "error" => false);
+                    }
+                    return array("msg" => "Could not approve.", "error" => true);
+                }
+                if($server->decline($pack['id'], true)) {
+                    return array("msg" => "Declined.", "error" => false);
+                }
+                return array("msg" => "Could not decline.", "error" => true);
+                break;
+            default:
+                return array("msg" => "Unknown action.", "error" => true);
+                break;
         }
     }
 }

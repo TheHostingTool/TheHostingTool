@@ -55,8 +55,8 @@ class page {
 						$main->errors("Category Edited!");
 					}
 				}
-				if($main->getvar['del']) {
-					$db->query("DELETE FROM `<PRE>cats` WHERE `id` = '{$main->getvar['del']}'");
+				if($main->postvar['del']) {
+					$db->query("DELETE FROM `<PRE>cats` WHERE `id` = '{$main->postvar['del']}'");
 					$main->errors("Category Deleted!");
 					$main->done();
 				}
@@ -110,8 +110,8 @@ class page {
 						$main->errors("Article Edited!");
 					}
 				}
-				if($main->getvar['del']) {
-					$db->query("DELETE FROM `<PRE>articles` WHERE `id` = '{$main->getvar['del']}'");
+				if($main->postvar['del']) {
+					$db->query("DELETE FROM `<PRE>articles` WHERE `id` = '{$main->postvar['del']}'");
 					$main->errors("Article Deleted!");
 					$main->done();
 				}

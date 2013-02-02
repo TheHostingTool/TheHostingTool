@@ -12,7 +12,9 @@ $(document).ready(function() {
         $("#" + this.id).blur();
         $("#" + this.id).attr("disabled", "disabled");
         var code = $("#tplCode").val();
-		$.post("<AJAX>?function=edittpl", { file: "header", contents: editor.getValue(), __tht_csrf_magic: csrfMagicToken }, function(data){
+        var post = { file: "header", contents: editor.getValue() };
+        post[csrfMagicName] = csrfMagicToken;
+		$.post("<AJAX>?function=edittpl", post, function(data){
             $.get("<AJAX>?function=notice", { status: "good", message: data }, function(data2){
                 $("#belowDynamic").slideUp(500, function() {
                     $("#spaceForNotice").html(data2);

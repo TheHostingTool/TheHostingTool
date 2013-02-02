@@ -1,48 +1,87 @@
 <script type="text/javascript">
-var text = "%TEXT";
+var text = "%TEXT%";
+var icondir = "<ICONDIR>";
+
+var suspendIconClick = function() {
+    var id = this.id;
+    var accountId = id.split("-")[1];
+    // Dang. Look at this split. :P
+    var status = $("#" + id)[0].className.split(" ")[2].split("-")[1];
+    if(status == "Suspend") {
+      var reason = prompt('Please state your reason for suspending. Leave blank for none.');
+      var post = { id: accountId, action: "suspend" };
+      post[csrfMagicName] = csrfMagicToken;
+      if(reason != null && reason != "") {
+        post.reason = reason;
+      }
+      else if(reason == null) {
+        return;
+      }
+      $("#account-" + accountId).unbind("click");
+      $("#account-" + accountId + " > img").attr('src', icondir + "ajax-loader.gif");
+      $.post("<AJAX>?function=clientAction", post, function(data) {
+        if(!data.error) {
+          window.location.reload();
+          return;
+        }
+        alert(data.msg);
+        $("#account-" + accountId + " > img").attr('src', icondir + "exclamation.png");
+        $("#account-" + accountId).click(suspendIconClick);
+      });
+    }
+    else if(status == "Unsuspend") {
+      var post = { id: accountId, action: "unsuspend" };
+      post[csrfMagicName] = csrfMagicToken;
+      $("#account-" + accountId).unbind("click");
+      $("#account-" + accountId + " > img").attr('src', icondir + "ajax-loader.gif");
+      $.post("<AJAX>?function=clientAction", post, function(data) {
+        if(!data.error) {
+          window.location.reload();
+          return;
+        }
+        alert(data.msg);
+        $("#account-" + accountId + " > img").attr('src', icondir + "accept.png");
+        $("#account-" + accountId).click(suspendIconClick);
+      });
+    }
+    else if(status == "<a href='?page=users&sub=validate'>Validate</a>") {
+      window.location = "%URL%/admin/?page=users&sub=validate";
+    }
+    else if(status == "Cancelled") {
+      window.location = "%URL%/admin/none.php";
+    }
+    else {
+      window.location = "%URL%/admin/?page=users&sub=validate";
+    }
+}
 
 var kthx = function() {
 	$(".suspendIcon").unbind('click');
-	$(".suspendIcon").click(function(){
-		var id = this.id;
-		var accountId = id.split("-")[1];
-		// Dang. Look at this split. :P
-		var status = $("#" + id)[0].className.split(" ")[2].split("-")[1];
-		if(status == "Suspend") {
-			var reason = prompt('Please state your reason for suspending. Leave blank for none.');
-			if(reason != null && reason != "") {
-				var query = window.location + "&do=" + accountId + "&func=sus&reason=" + reason;
-			}
-			else if(reason == null) {
-				alert("No action taken.");
-				return;
-			}
-			else {
-				var query = window.location + "&do=" + accountId + "&func=sus";
-			}
-			window.location = query;
-		}
-		else if(status == "Unsuspend") {
-			window.location = window.location + "&do=" + accountId + "&func=unsus";
-		}
-		else if(status == "<a href='?page=users&sub=validate'>Validate</a>") {
-			window.location = "%URL%/admin/?page=users&sub=validate";
-		}
-		else if(status == "Cancelled") {
-			window.location = "%URL%/admin/none.php";
-		}
-		else {
-			window.location = "%URL%/admin/?page=users&sub=validate";
-		}
-	});
+	$(".suspendIcon").click(suspendIconClick);
 }
 
 function clientsearch(type, value, page) {
 	var num = document.getElementById('num').value;
-	ajaxSlide("clientsajax", "<AJAX>?function=search&type="+type+"&value="+value+"&page="+page+"&num="+num, function() {
-		kthx();
-		doTooltip();
-	});
+  var post = { type: type, value: value, page: page, num: num };
+  post[csrfMagicName] = csrfMagicToken;
+  $.post("<AJAX>?function=search", post, function(data) {
+    if($("#clientsajax").css('display') == 'none') {
+      $("#clientsajax").html(data);
+      $("#clientsajax").slideDown(500, function() {
+        kthx();
+        doTooltip();
+      });
+    }
+    else {
+      $("#clientsajax").slideUp(500, function() {
+        $("#clientsajax").html(data);
+        $("#clientsajax").slideDown(500, function() {
+          kthx();
+          doTooltip();
+        });
+      });
+    }
+  });
 }
 function page(num) {
 	clientsearch(document.getElementById('type').value, document.getElementById('value').value, num);

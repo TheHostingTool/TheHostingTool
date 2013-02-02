@@ -249,9 +249,13 @@ function csrf_get_tokens() {
  * @param $tokens is safe for HTML consumption
  */
 function csrf_callback($tokens) {
-    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-    echo "<html><head><title>Possible CSRF attack detected.</title></head><body>Possible CSRF attack detected. Please make sure cookies are enabled.</body></html>
-";
+    if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header("Content-type: application/json");
+        echo json_encode(array("msg" => "Bad CSRF token.", "error" => true));
+        return;
+    }
+    header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+    echo "<html><head><title>Bad CSRF token.</title></head><body>Bad CSRF token. Please make sure cookies are enabled.</body></html>";
 }
 
 /**

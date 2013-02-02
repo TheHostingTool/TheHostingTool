@@ -36,7 +36,9 @@ class server {
 		global $main;
 		global $db;
 		global $type;
-			
+
+		ignore_user_abort(true);
+
 		//Check details
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$main->getvar['package']}' AND `is_disabled` = 0"); // Package disabled?
 		if($db->num_rows($query) != 1) {
@@ -344,14 +346,18 @@ class server {
 			}
 		}
 	}
-	public function terminate($id, $reason = false) { // Deletes a user account from the package ID
+	public function terminate($id, $reason = false, $returnErrors = false) { // Deletes a user account from the package ID
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be terminated!";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -380,14 +386,18 @@ class server {
 			}
 		}
 	}
-	public function cancel($id, $reason = false) { // Deletes a user account from the package ID
+	public function cancel($id, $reason = false, $returnErrors = false) { // Deletes a user account from the package ID
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND `status` != '9'");
 		if($db->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be cancelled! Are you trying to cancel an already cancelled account?";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -408,7 +418,7 @@ class server {
 													  '{$db->strip($data['userid'])}',
 													  '{$data2['user']}',
 													  '{$date}',
-													  'Cancelled  ($reason)')");
+													  'Cancelled  ({$db->strip($reason)})')");
 				return true;
 			}
 			else {
@@ -416,14 +426,18 @@ class server {
 			}
 		}
 	}
-	public function decline($id) { // Deletes a user account from the package ID
+	public function decline($id, $returnErrors = false) { // Deletes a user account from the package ID
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND `status` != '9'");
 		if($db->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be cancelled! Are you trying to cancel an already cancelled account?";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -452,14 +466,18 @@ class server {
 			}
 		}
 	}
-	public function suspend($id, $reason = false) { // Suspends a user account from the package ID
+	public function suspend($id, $reason = false, $returnErrors = false) { // Suspends a user account from the package ID
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND `status` = '1'");
 		if($db->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be suspended!";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -483,7 +501,7 @@ class server {
 													  '{$db->strip($data['userid'])}',
 													  '{$data2['user']}',
 													  '{$date}',
-													  'Suspended ($reason)')");
+													  'Suspended ({$db->strip($reason)})')");
 				$emaildata = $db->emailTemplate("suspendacc");
 				$email->send($data2['email'], $emaildata['subject'], $emaildata['content']);
 				return true;
@@ -495,6 +513,7 @@ class server {
 	}
 	public function changePwd($id, $newpwd) { // Changes user's password.
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That package doesn't exist!";
@@ -528,14 +547,18 @@ class server {
 		}
 	}
 	
-	public function unsuspend($id) { // Unsuspends a user account from the package ID
+	public function unsuspend($id, $returnErrors = false) { // Unsuspends a user account from the package ID
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
 		if($db->num_rows($query) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be unsuspended!";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -564,15 +587,19 @@ class server {
 		}
 	}
 	
-	public function approve($id) { // Approves a user's account (Admin Validation).
+	public function approve($id, $returnErrors = false) { // Approves a user's account (Admin Validation).
 		global $db, $main, $type, $email;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}' AND (`status` = '2' OR `status` = '3' OR `status` = '4')");
 		$uquery = $db->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$query['userid']}' AND (`status` = '1')");
 		if($db->num_rows($query) == 0 AND $db->num_rows($uquery) == 0) {
+			if($returnErrors) {
+				return false;
+			}
 			$array['Error'] = "That package doesn't exist or cannot be approved!";
 			$array['User PID'] = $id;
 			$main->error($array);
-			return;	
+			return false;
 		}
 		else {
 			$data = $db->fetch_array($query);
@@ -601,6 +628,7 @@ class server {
 	// Confirms an email
 	public function confirm($id, $confirm, $user = null, $force = false) {
 		global $db, $main, $type;
+		ignore_user_abort(true);
 		$id = (int)$db->strip($id);
 		$confirm = $force?'':$db->strip($confirm);
 		if($user !== null) {
@@ -627,6 +655,7 @@ class server {
 	
 	public function testConnection($serverId) {
 		global $db;
+		ignore_user_abort(true);
 		$query = $db->query("SELECT `type` FROM `<PRE>servers` WHERE `id` = {$serverId}");
 		if($db->num_rows($query) == 0) {
 			return "There is no server with an id of {$serverId}";

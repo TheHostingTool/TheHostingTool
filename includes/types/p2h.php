@@ -45,7 +45,7 @@ class p2h {
 
 	public function acpPage() {
 		global $main, $style, $db;
-		switch($main->getvar['do']) {
+		switch(isset($main->getvar['do']) ? $main->getvar['do'] : $main->postvar['do']) {
 			default:
 				if($_POST) {
 					foreach($main->postvar as $key => $value) {
@@ -144,15 +144,15 @@ class p2h {
 					$array['CONTENT'] = "There are no forums to delete!";
 				}
 				else {
-					if($main->getvar['name']) {
-						$db->query("DELETE FROM `<PRE>config` WHERE `name` LIKE 'p2hforum;:;%;:;{$main->getvar['name']}'");
+					if($main->postvar['name']) {
+						$db->query("DELETE FROM `<PRE>config` WHERE `name` LIKE 'p2hforum;:;%;:;{$main->postvar['name']}'");
 						$main->errors("Forum deleted!");
 					}
 					$array['CONTENT'] .= "<ERRORS>";
 					while($data = $db->fetch_array($query)) {
 						$content = explode(";:;", $data['name']);
 						if($fname != $content[2]) {
-							$array['CONTENT'] .= $main->sub("<strong>".$content[2]."</strong>", '<a href="?page=type&type=p2h&sub=forums&do=delete&name='.$content[2].'"><img src="'. URL .'themes/icons/delete.png"></a>');
+							$array['CONTENT'] .= $main->sub("<strong>".$content[2]."</strong>", '<form action="" method="POST"><input type="image" name="name" value="'.$content[2].'" src="'. URL .'themes/icons/delete.png"></form>');
 						}
 						$fname = $content[2];
 					}

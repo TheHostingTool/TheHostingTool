@@ -2,7 +2,9 @@
 var loading = '<img src="<URL>themes/icons/ajax-loader.gif">';
 function status(id, status) {
 	document.getElementById("statuschange").innerHTML = loading;
-	$.get("<AJAX>?function=status&id="+id+"&status="+status, function(data) {
+    var post = { id: id, status: status };
+    post[csrfMagicName] = csrfMagicToken;
+	$.post("<AJAX>?function=ticketStatus", post, function(data) {
 		document.getElementById("statuschange").innerHTML = data;														  
 	});
 }

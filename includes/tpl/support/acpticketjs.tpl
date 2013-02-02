@@ -6,7 +6,9 @@ $(document).ready(function() {
 		var id = this.id.toString().split("-")[2];
 		$("#ticket-" + id).slideUp(function() {
 					$("#ticket-" + id).remove();
-					$.get("<AJAX>", { "function": "deleteTicket", "ticket": id } );
+					var post = { "function": "deleteTicket", "ticket": id };
+					post[csrfMagicName] = csrfMagicToken;
+					$.post("<AJAX>", post);
 					deleted = deleted + 1;
 					if(deleted >= num_tickets) {
 						$("#nun-tickets").slideDown();
