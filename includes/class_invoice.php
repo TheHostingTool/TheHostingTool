@@ -97,7 +97,7 @@ class invoice {
 					// monthly=50,add=Add Package
 					$monthly = explode(",", $monthly);
 					$monthly = explode("=", $monthly[0]);
-					$amount = intval($monthly);
+					$amount = floatval($monthly);
 					$this->create($uid, $amount, $time+2592000, ""); # Create Invoice
 				}
 			}
