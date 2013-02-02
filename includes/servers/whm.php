@@ -43,19 +43,17 @@ class whm {
 		$authstr = $data['user'] . ":" . $cleanaccesshash;
 		$ch = curl_init();
 		if($db->config("whm-ssl") == 1) {
-			$serverstuff = "https://" . $data['host'] . ":2087" . $url;
-			curl_setopt($ch, CURLOPT_URL, $serverstuff);
+			$fullUrl = "https://" . $data['host'] . ":2087" . $url;
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		}
 		else {
-			$serverstuff = "http://" . $data['host'] . ":2086" . $url;
-			curl_setopt($ch, CURLOPT_URL, $serverstuff);
+			$fullUrl = "http://" . $data['host'] . ":2086" . $url;
 		}
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		$curlheaders[0] = "Authorization: WHM $authstr";
-		curl_setopt($ch,CURLOPT_HTTPHEADER,$curlheaders);
+		curl_setopt($ch, CURLOPT_URL, $fullUrl);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: WHM $authstr"));
 		$data = curl_exec($ch);
 		if($data === false) {
 			if($returnErrors) {
