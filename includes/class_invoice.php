@@ -52,7 +52,7 @@ class invoice {
 			$paypal->add_field('return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
 			$paypal->add_field('cancel_return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
 			$paypal->add_field('notify_url',  $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
-			$paypal->add_field('item_name', 'THT Order: '.$array['notes']);
+			$paypal->add_field('item_name', $db->config('name').': '.$array['notes']);
 			$paypal->add_field('amount', $array['amount']);
 			$paypal->add_field('currency_code', $db->config("currency"));
 			$paypal->submit_paypal_post(); // submit the fields to paypal
