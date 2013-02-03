@@ -7,8 +7,8 @@
 //////////////////////////////
 
 // The new version of THT we're installing
-define("NVER", "1.2.5");
-define("NVERCODE", 1010205);
+define("NVER", "1.2.6");
+define("NVERCODE", 1010206);
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
