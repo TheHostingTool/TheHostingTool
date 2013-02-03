@@ -544,7 +544,7 @@ class Ajax {
                 }
             }
             echo "Complete!<br /><strong>There were " . $errors['n'] . " errors while executing the SQL!</strong><br />";
-            if(!$this->writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "false")) {
+            if(!$this->writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], $main->getvar['type'] == "upgrade" ? "true" : "false")) {
                 echo '<div class="errors">There was a problem re-writing to the config!</div>';
             }
             if($main->getvar['type'] == "install") {
