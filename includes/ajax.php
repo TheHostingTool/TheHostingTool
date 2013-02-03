@@ -493,6 +493,9 @@ class Ajax {
         $array['DB']   = $db;
         $array['PRE']  = $pre;
         $array['TRUE'] = $true;
+        foreach($array as &$v) {
+            $v = str_replace("'", "\\'", $v);
+        }
         $tpl           = $style->replaceVar("tpl/install/conftemp.tpl", $array);
         $link          = LINK . "conf.inc.php";
         if(is_writable($link)) {
@@ -541,7 +544,7 @@ class Ajax {
                 }
             }
             echo "Complete!<br /><strong>There were " . $errors['n'] . " errors while executing the SQL!</strong><br />";
-            if(!$this->writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "true")) {
+            if(!$this->writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "false")) {
                 echo '<div class="errors">There was a problem re-writing to the config!</div>';
             }
             if($main->getvar['type'] == "install") {
@@ -560,6 +563,9 @@ class Ajax {
     }
 
     private function installsql($data, $pre, $con = 0) {
+        if(INSTALL) {
+            return;
+        }
         global $style, $db;
         $array['PRE'] = $pre;
         $sContents    = $style->replaceVar($data, $array);
@@ -663,7 +669,12 @@ class Ajax {
     }
 
     public function installfinal() {
-        global $db, $main;
+        if(INSTALL) {
+            echo 0;
+            return;
+        }
+        global $main;
+        $db = new db();
         $query = $db->query("SELECT * FROM `<PRE>staff`");
         if(!$db->num_rows($query)) {
             foreach($main->getvar as $key => $value) {
@@ -681,7 +692,9 @@ class Ajax {
                                                                                   '{$password}',
                                                                                   '{$salt}',
                                                                                   '{$main->getvar['name']}')");
-                echo 1;
+                $sql = array();
+                include(LINK.'conf.inc.php');
+                echo (int)$this->writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "true");
             } else {
                 echo 0;
             }
