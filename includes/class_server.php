@@ -252,7 +252,7 @@ class server {
 			$rquery = "SELECT * FROM `<PRE>users` WHERE `user` = '{$UsrName}' LIMIT 1;";
 			$rdata = $db->query($rquery);
 			$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
-													  '{$rquery['userid']}',
+													  '{$rdata['id']}',
 													  '{$main->getvar['username']}',
 													  '{$date}',
 													  'Registered.')");
