@@ -213,6 +213,7 @@ class Mail_smtpmx extends Mail {
      */
     function __construct($params)
     {
+        parent::construct();
         if (isset($params['mailname'])) {
             $this->mailname = $params['mailname'];
         } else {
@@ -274,7 +275,7 @@ class Mail_smtpmx extends Mail {
     function send($recipients, $headers, $body)
     {
         if (!is_array($headers)) {
-            return PEAR::raiseError('$headers must be an array');
+            return $this->PEAR->raiseError('$headers must be an array');
         }
 
         $result = $this->_sanitizeHeaders($headers);
@@ -496,7 +497,7 @@ class Mail_smtpmx extends Mail {
             $msg = str_replace($search, $replace, $msg);
         }
 
-        return PEAR::raiseError($msg, $code);
+        return $this->PEAR->raiseError($msg, $code);
     }
 
 }

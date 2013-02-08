@@ -2,7 +2,7 @@
 /**
  * Mock implementation
  *
- * PHP versions 4 and 5
+ * PHP versions 5
  *
  * LICENSE:
  *
@@ -84,8 +84,9 @@ class Mail_mock extends Mail {
      * @param array Hash containing any parameters.
      * @access public
      */
-    function Mail_mock($params)
+    function __construct($params)
     {
+        parent::__construct();
         if (isset($params['preSendCallback']) &&
             is_callable($params['preSendCallback'])) {
             $this->_preSendCallback = $params['preSendCallback'];

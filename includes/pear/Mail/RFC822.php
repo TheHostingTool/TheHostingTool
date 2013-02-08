@@ -137,6 +137,8 @@ class Mail_RFC822 {
     */
     var $limit = null;
 
+    var $PEAR;
+
     /**
      * Sets up the object. The address must either be set here or when
      * calling parseAddressList(). One or the other.
@@ -149,8 +151,10 @@ class Mail_RFC822 {
      *
      * @return object Mail_RFC822 A new Mail_RFC822 object.
      */
-    function Mail_RFC822($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
+    function __construct($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
     {
+        $this->PEAR = new PEAR();
+
         if (isset($address))        $this->address        = $address;
         if (isset($default_domain)) $this->default_domain = $default_domain;
         if (isset($nest_groups))    $this->nestGroups     = $nest_groups;
@@ -196,7 +200,7 @@ class Mail_RFC822 {
 
         if ($this->address === false || isset($this->error)) {
             require_once 'PEAR.php';
-            return PEAR::raiseError($this->error);
+            return $this->PEAR->raiseError($this->error);
         }
 
         // Validate each address individually.  If we encounter an invalid
@@ -206,7 +210,7 @@ class Mail_RFC822 {
 
             if ($valid === false || isset($this->error)) {
                 require_once 'PEAR.php';
-                return PEAR::raiseError($this->error);
+                return $this->PEAR->raiseError($this->error);
             }
 
             if (!$this->nestGroups) {

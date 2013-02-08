@@ -1,7 +1,7 @@
 <?php
 //
 // +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
+// | PHP Version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -56,8 +56,9 @@ class Mail_sendmail extends Mail {
      *              defaults.
      * @access public
      */
-    function Mail_sendmail($params)
+    function __construct($params)
     {
+        parent::__construct();
         if (isset($params['sendmail_path'])) {
             $this->sendmail_path = $params['sendmail_path'];
         }
@@ -105,7 +106,7 @@ class Mail_sendmail extends Mail {
     function send($recipients, $headers, $body)
     {
         if (!is_array($headers)) {
-            return PEAR::raiseError('$headers must be an array');
+            return $this->PEAR->raiseError('$headers must be an array');
         }
 
         $result = $this->_sanitizeHeaders($headers);
@@ -133,19 +134,19 @@ class Mail_sendmail extends Mail {
         }
 
         if (!isset($from)) {
-            return PEAR::raiseError('No from address given.');
+            return $this->PEAR->raiseError('No from address given.');
         } elseif (strpos($from, ' ') !== false ||
                   strpos($from, ';') !== false ||
                   strpos($from, '&') !== false ||
                   strpos($from, '`') !== false) {
-            return PEAR::raiseError('From address specified with dangerous characters.');
+            return $this->PEAR->raiseError('From address specified with dangerous characters.');
         }
 
         $from = escapeshellarg($from); // Security bug #16200
 
         $mail = @popen($this->sendmail_path . (!empty($this->sendmail_args) ? ' ' . $this->sendmail_args : '') . " -f$from -- $recipients", 'w');
         if (!$mail) {
-            return PEAR::raiseError('Failed to open sendmail [' . $this->sendmail_path . '] for execution.');
+            return $this->PEAR->raiseError('Failed to open sendmail [' . $this->sendmail_path . '] for execution.');
         }
 
         // Write the headers following by two newlines: one to end the headers
@@ -161,7 +162,7 @@ class Mail_sendmail extends Mail {
         }
 
         if ($result != 0) {
-            return PEAR::raiseError('sendmail returned error code ' . $result,
+            return $this->PEAR->raiseError('sendmail returned error code ' . $result,
                                     $result);
         }
 

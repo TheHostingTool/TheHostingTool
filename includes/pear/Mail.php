@@ -2,7 +2,7 @@
 /**
  *  PEAR's Mail:: interface.
  *
- * PHP versions 4 and 5
+ * PHP versions 5
  *
  * LICENSE:
  *
@@ -62,6 +62,12 @@ class Mail
      */
     var $sep = "\r\n";
 
+    var $PEAR;
+
+    function __construct() {
+        $this->PEAR = new PEAR();
+    }
+
     /**
      * Provides an interface for generating Mail:: objects of various
      * types
@@ -80,7 +86,7 @@ class Mail
             $mailer = new $class($params);
             return $mailer;
         } else {
-            return PEAR::raiseError('Unable to find class for driver ' . $driver);
+            return $this->PEAR->raiseError('Unable to find class for driver ' . $driver);
         }
     }
 
@@ -114,7 +120,7 @@ class Mail
     function send($recipients, $headers, $body)
     {
         if (!is_array($headers)) {
-            return PEAR::raiseError('$headers must be an array');
+            return $this->PEAR->raiseError('$headers must be an array');
         }
 
         $result = $this->_sanitizeHeaders($headers);
@@ -250,7 +256,8 @@ class Mail
         // Parse recipients, leaving out all personal info. This is
         // for smtp recipients, etc. All relevant personal information
         // should already be in the headers.
-        $addresses = Mail_RFC822::parseAddressList($recipients, 'localhost', false);
+        $Mail_RFC822 = new Mail_RFC822();
+        $addresses = $Mail_RFC822->parseAddressList($recipients, 'localhost', false);
 
         // If parseAddressList() returned a PEAR_Error object, just return it.
         if (is_a($addresses, 'PEAR_Error')) {

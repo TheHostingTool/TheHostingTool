@@ -2,7 +2,7 @@
 /**
  * internal PHP-mail() implementation of the PEAR Mail:: interface.
  *
- * PHP versions 4 and 5
+ * PHP versions 5
  *
  * LICENSE:
  *
@@ -64,8 +64,9 @@ class Mail_mail extends Mail {
      *
      * @param array $params Extra arguments for the mail() function.
      */
-    function Mail_mail($params = null)
+    function __construct($params = null)
     {
+        parent::__construct();
         // The other mail implementations accept parameters as arrays.
         // In the interest of being consistent, explode an array into
         // a string of parameter arguments.
@@ -115,7 +116,7 @@ class Mail_mail extends Mail {
     function send($recipients, $headers, $body)
     {
         if (!is_array($headers)) {
-            return PEAR::raiseError('$headers must be an array');
+            return $this->PEAR->raiseError('$headers must be an array');
         }
 
         $result = $this->_sanitizeHeaders($headers);
@@ -159,7 +160,7 @@ class Mail_mail extends Mail {
         // If the mail() function returned failure, we need to create a
         // PEAR_Error object and return it instead of the boolean result.
         if ($result === false) {
-            $result = PEAR::raiseError('mail() returned failure');
+            $result = $this->PEAR->raiseError('mail() returned failure');
         }
 
         return $result;

@@ -74,7 +74,8 @@ class email {
 		$headers = array ('Content-Type' => 'text/html', 'From' => $from, # We need to set the content-type as text/html or it won't be parsed.
 		  'To' => $this->email['to'],
 		  'Subject' => $this->email['subject']);
-		$smtp = Mail::factory('smtp',
+		$mail = new Mail();
+		$smtp = $mail->factory('smtp',
 		  array ('host' => ($secure?'ssl://':'').$host,
 			'auth' => true,
 			'username' => $username,
@@ -82,7 +83,8 @@ class email {
 			'password' => $password));
 		$mail = $smtp->send($to, $headers, $body);
 		
-		if (PEAR::isError($mail)) {
+		$PEAR = new PEAR();
+		if ($PEAR->isError($mail)) {
 			global $main;
 			$array['Error'] = "SMTP Failed!";
 			$array['Details'] = $mail->getMessage();
