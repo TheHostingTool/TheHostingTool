@@ -514,7 +514,7 @@ class server {
 	public function changePwd($id, $newpwd) { // Changes user's password.
 		global $db, $main, $type, $email;
 		ignore_user_abort(true);
-		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
+		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
 			$array['Error'] = "That package doesn't exist!";
 			$array['User PID'] = $id;

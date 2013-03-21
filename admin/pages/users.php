@@ -159,7 +159,8 @@ class page {
 									$array['CONTENT'] = $style->replaceVar("tpl/clientpwd.tpl");
 								}
 								else {
-									$command = $main->changeClientPassword($pack['id'], $main->postvar['passwd']);
+									// Safe to use $_GET and $_POST here because changeClientPassword will sanitize the inputs
+									$command = $main->changeClientPassword($_GET['do'], $_POST['passwd']);
 									if($command === true) {
 										$main->errors('Password changed!');
 									}
