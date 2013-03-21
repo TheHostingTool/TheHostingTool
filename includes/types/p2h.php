@@ -29,7 +29,14 @@ class p2h {
 		$this->acpForm[] = array("Signup Posts", '<input name="signup" type="text" id="signup" size="5" onkeypress="return onlyNumbers();" />', 'signup');
 		$this->acpForm[] = array("Monthly Posts", '<input name="monthly" type="text" id="monthly" size="5" onkeypress="return onlyNumbers();" />', 'monthly');
 		$this->orderForm[] = array("Forum Username", '<input name="type_fuser" type="text" id="type_fuser" />', 'fuser');
-		$this->orderForm[] = array("Forum Password", '<input name="type_fpass" type="password" id="type_fpass" />', 'fpass');
+		$this->orderForm[] = array("Forum Password", '<input name="type_fpass" type="password" id="type_fpass" />', 'fpass');		
+		$this->repopFormHack();
+		$this->acpNav[] = array("P2H Forums", "forums", "lightning.png", "P2H Forums");
+		$this->clientNav[] = array("Forum Posting", "forums", "lightning.png", "Forum Posting");
+	}
+
+	public function repopFormHack($default = 0) {
+		global $main, $db;
 		$query = $db->query("SELECT * FROM `<PRE>config` WHERE `name` LIKE 'p2hforum;:;%'");
 		$values = array();
 		while($data = $db->fetch_array($query)) {
@@ -39,9 +46,7 @@ class p2h {
 				$values[$content[2]] = array($content[2], $content[2]);
 			}
 		}
-		$this->acpForm[] = array("Forum", $main->dropDown("forum", $values), 'forum');
-		$this->acpNav[] = array("P2H Forums", "forums", "lightning.png", "P2H Forums");
-		$this->clientNav[] = array("Forum Posting", "forums", "lightning.png", "Forum Posting");
+		$this->acpForm[999] = array("Forum", $main->dropDown("forum", $values, $default), 'forum');
 	}
 
 	public function acpPage() {

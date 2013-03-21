@@ -199,10 +199,14 @@ class type {
 			$type = $this->classes[$type];
 		}
 		if($type->acpForm) {
+			// Oh this just hurts...
+			if(method_exists($type, 'repopFormHack')) {
+				$type->repopFormHack($values['form']);
+			}
 			foreach($type->acpForm as $value) {
 				$array['NAME'] = $value[0] .":";
 				$hit = explode("/>", $value[1]); // haha... $hit
-				$default = "";
+				$default = "";                   // There is nothing funny about this code :(
 				if(stripos($value[1], "</select>") === false) {
 					$default = ' value="'.$values[$value[2]].'" />';
 				}
