@@ -146,13 +146,14 @@ class page {
 							$me = explode("=", $value);
 							$cform[$me[0]] = $me[1];
 						}
+						$serverId = $data['server'];
 						global $type;
 						$array['FORM'] = $type->acpPedit($data['type'], $cform);
 						$query = $db->query("SELECT * FROM `<PRE>servers`");
 						while($data = $db->fetch_array($query)) {
 							$values[] = array($data['name'], $data['id']);	
 						}
-						$array['SERVER'] = $array['THEME'] = $main->dropDown("server", $values, $data['server']);
+						$array['SERVER'] = $array['THEME'] = $main->dropDown("server", $values, $serverId);
 						echo $style->replaceVar("tpl/editpackage.tpl", $array);
 					}
 				}
