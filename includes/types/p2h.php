@@ -31,12 +31,13 @@ class p2h {
 		$this->orderForm[] = array("Forum Username", '<input name="type_fuser" type="text" id="type_fuser" />', 'fuser');
 		$this->orderForm[] = array("Forum Password", '<input name="type_fpass" type="password" id="type_fpass" />', 'fpass');
 		$query = $db->query("SELECT * FROM `<PRE>config` WHERE `name` LIKE 'p2hforum;:;%'");
+		$values = array();
 		while($data = $db->fetch_array($query)) {
 			$content = explode(";:;", $data['name']);
-			if($fname != $content[2]) {
-				$values[] = array($content[2], $content[2]);
+			// Hacked this back together to avoid rewriting it...
+			if(!isset($values[$content[2]])) {
+				$values[$content[2]] = array($content[2], $content[2]);
 			}
-			$fname = $content[2];
 		}
 		$this->acpForm[] = array("Forum", $main->dropDown("forum", $values), 'forum');
 		$this->acpNav[] = array("P2H Forums", "forums", "lightning.png", "P2H Forums");
@@ -127,13 +128,15 @@ class p2h {
 					}
 					else {
 						$array['CONTENT'] .= "<ERRORS>";
+						$forums = array();
 						while($data = $db->fetch_array($query)) {
 							$content = explode(";:;", $data['name']);
-							if($fname != $content[2]) {
+							if(!isset($forums[$content[2]])) {
 								$array['CONTENT'] .= $main->sub("<strong>".$content[2]."</strong>", '<a href="?page=type&type=p2h&sub=forums&do=edit&name='.$content[2].'"><img src="'. URL .'themes/icons/pencil.png"></a>');
 							}
-							$fname = $content[2];
+							$forums[$content[2]] = true;
 						}
+						unset($forums);
 					}
 				}
 				break;
@@ -149,13 +152,15 @@ class p2h {
 						$main->errors("Forum deleted!");
 					}
 					$array['CONTENT'] .= "<ERRORS>";
-					while($data = $db->fetch_array($query)) {
-						$content = explode(";:;", $data['name']);
-						if($fname != $content[2]) {
+						$forums = array();
+						while($data = $db->fetch_array($query)) {
+							$content = explode(";:;", $data['name']);
+							if(!isset($forums[$content[2]])) {
 							$array['CONTENT'] .= $main->sub("<strong>".$content[2]."</strong>", '<form action="" method="POST"><input type="image" name="name" value="'.$content[2].'" src="'. URL .'themes/icons/delete.png"></form>');
 						}
-						$fname = $content[2];
+						$forums[$content[2]] = true;
 					}
+					unset($forums);
 				}
 				break;
 		}
