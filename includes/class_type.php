@@ -201,7 +201,7 @@ class type {
 		if($type->acpForm) {
 			// Oh this just hurts...
 			if(method_exists($type, 'repopFormHack')) {
-				$type->repopFormHack($values['form']);
+				$type->repopFormHack($values['forum']);
 			}
 			foreach($type->acpForm as $value) {
 				$array['NAME'] = $value[0] .":";
