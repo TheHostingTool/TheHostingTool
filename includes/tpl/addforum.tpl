@@ -9,7 +9,7 @@ function changePrefix(value)
 	if (value == 'ipb') { prefix.value = 'ipb_'; }
         if (value == 'ipb3') { prefix.value = 'ipb_'; }
 	if (value == 'vb') { prefix.value = 'vb_'; }
-	if (value == 'smf') { prefix.value = 'smf_'; }
+	if (value == 'smf' || value == 'smf2') { prefix.value = 'smf_'; }
 	if (value == 'aef') { prefix.value = 'aef_'; }
 	if (value == 'drupal') { prefix.value = ''; }
 }
@@ -53,11 +53,12 @@ function changePrefix(value)
 			<select name="forum" id="forum" class="form" onchange="changePrefix(this.value)">
 			  <option value="phpbb" selected="selected">phpBB 3</option>
               <option value="phpbb2">phpBB 2</option>
-			  <option value="mybb">myBB</option>
+			  <option value="mybb">MyBB</option>
 			  <option value="ipb">Invision Power Board 2</option>
                           <option value="ipb3">Invision Power Board 3</option>
 			  <option value="vb">vBulletin</option>
-              <option value="smf">SMF</option>
+              <option value="smf">SMF 1</option>
+              <option value="smf2">SMF 2</option>
               <option value="aef">AEF</option>
 			  <option value="drupal">Drupal</option>
 		    </select>

@@ -497,6 +497,19 @@ class p2h {
 				}
 				break;
 
+			case "smf2":
+				$n = 0;
+				$forumuser = $fuser;
+				$select = mysql_query("SELECT * FROM {$prefix}messages WHERE `poster_name` = '{$forumuser}'", $this->con);
+
+				while($data2 = mysql_fetch_array($select)) {
+					$date = explode(":", strftime("%m:%y" ,$data2['poster_time']));
+					if($nmonth <= $date[0] && $nyear <= $date[1]) {
+						$n++;
+					}
+				}
+				break;
+
 			case "aef":
 				$n = 0;
 				$forumuser = $fuser;
@@ -715,6 +728,27 @@ class p2h {
 				else {
 					$member = mysql_fetch_array($result);
 					if(sha1(strtolower($member['memberName']) . $fpass) == $member['passwd']) {
+						if($member['posts'] >= $signup) {
+							return 1;
+						}
+						else {
+							return 0;
+						}
+					}
+					else {
+						return 4;
+					}
+				}
+				break;
+
+			case "smf2":
+				$result = mysql_query("SELECT * FROM `{$prefix}members` WHERE member_name = '{$fuser}'", $this->con);
+				if(mysql_num_rows($result) == "0") {
+					return 3;
+				}
+				else {
+					$member = mysql_fetch_array($result);
+					if(sha1(strtolower($member['member_name']) . $fpass) == $member['passwd']) {
 						if($member['posts'] >= $signup) {
 							return 1;
 						}
