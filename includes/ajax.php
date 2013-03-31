@@ -704,8 +704,8 @@ class Ajax {
     function massemail() {
         if($_SESSION['logged']) {
             global $main, $email, $db;
-            $subject = $main->getvar['subject'];
-            $msg     = $main->getvar['msg'];
+            $subject = $_POST['subject'];
+            $msg     = $_POST['msg'];
             $query   = $db->query("SELECT * FROM `<PRE>users`");
             $error   = false;
             while($client = $db->fetch_array($query)) {

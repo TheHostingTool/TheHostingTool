@@ -9,17 +9,23 @@
 <script type="text/javascript">
 var working = '<div align="center"><img src="<URL>themes/icons/working.gif"></div>';
 function sendemail() {
-		tinyMCE.triggerSave(true,true);
-		var subject = document.getElementById("msgsubject").value;
-		var msg = tinyMCE.get('msgcontent').getContent();
-		document.getElementById("ajaxemail").innerHTML = working;
-		$.get("<AJAX>?function=massemail&subject="+subject+"&msg="+msg, function(mydata) {
-	if(mydata == "1") {
-		document.getElementById("ajaxemail").innerHTML = "The email has been sent to all your clients!";
-	}
-	else {
-		document.getElementById("ajaxemail").innerHTML = "Houston, we have a problem.<hr>" + mydata;
-	}});	
+    tinyMCE.triggerSave(true,true);
+    var subject = document.getElementById("msgsubject").value;
+    var msg = tinyMCE.get('msgcontent').getContent();
+    document.getElementById("ajaxemail").innerHTML = working;
+    var json = { };
+    json["subject"] = subject;
+    json["msg"] = msg;
+    json[csrfMagicName] = csrfMagicToken;
+    $.post("<AJAX>?function=massemail", json, function(mydata) {
+        if(mydata == "1") {
+            document.getElementById("ajaxemail").innerHTML = "The email has been sent to all your clients!";
+        }
+        else {
+            document.getElementById("ajaxemail").innerHTML = "Houston, we have a problem.<hr>" + (!mydata.error ? mydata : mydata.msg);
+        }
+    });
+    return false;
 }
 </script>
 <div id="ajaxemail">
