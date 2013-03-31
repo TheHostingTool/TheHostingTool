@@ -33,7 +33,7 @@ function sendemail() {
   <table width="100%" border="0" cellspacing="3" cellpadding="0">
 	  <tr>
 	    <td width="30%">Subject:</td>
-	    <td><label><input name="msgsubject" id="msgsubject" type="text" size="30" /></label></td>
+	    <td><label><input name="msgsubject" id="msgsubject" onkeypress="return checkEnter();" type="text" size="30" /></label></td>
     </tr>
 	  <tr>
 	    <td valign="top">Content:</td>
