@@ -563,3 +563,4 @@ UPDATE `%PRE%clientnav` SET `weight` = '100' WHERE `id` = 2;
 UPDATE `%PRE%clientnav` SET `weight` = '45' WHERE `id` = 7;
 UPDATE `%PRE%clientnav` SET `weight` = '60' WHERE `id` = 8;
 INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`, `weight`) VALUES (NULL, 'Change Email', 'email_edit.png', 'email', '31');
+ALTER TABLE  `%PRE%invoices` CHANGE  `amount`  `amount` VARCHAR( 20 ) NOT NULL

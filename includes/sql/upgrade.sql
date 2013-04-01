@@ -1,0 +1,1 @@
+ALTER TABLE  `%PRE%invoices` CHANGE  `amount`  `amount` VARCHAR( 20 ) NOT NULL;
