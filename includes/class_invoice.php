@@ -49,9 +49,12 @@ class invoice {
 		if($_SESSION['cuser'] == $array['uid']) {
 			$paypal->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
 			$paypal->add_field('business', $db->config('paypalemail'));
-			$paypal->add_field('return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
-			$paypal->add_field('cancel_return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
-			$paypal->add_field('notify_url',  $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid);
+			$paypal->add_field('return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid.
+                "&paypalcsrf=" . csrf_get_tokens());
+			$paypal->add_field('cancel_return', $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid.
+                "&paypalcsrf=" . rawurlencode(csrf_get_tokens()));
+			$paypal->add_field('notify_url',  $db->config('url')."client/index.php?page=invoices&invoiceID=".$iid.
+                "&paypalcsrf=" . rawurlencode(csrf_get_tokens()));
 			$paypal->add_field('item_name', $db->config('name').': '.$array['notes']);
 			$paypal->add_field('amount', $array['amount']);
 			$paypal->add_field('currency_code', $db->config("currency"));
@@ -107,9 +110,9 @@ class invoice {
 	public function set_paid($iid) { # Pay the invoice by giving invoice id
 		global $db, $server;
 		$query = $db->query("UPDATE `<PRE>invoices` SET `is_paid` = '1' WHERE `id` = '{$iid}'");
-		$query2 = $db->query("SELECT * FROM `<PRE>invoices` WHERE `id` = '{$iid}' LIMIT 1");
+		$query2 = $db->query("SELECT `uid` FROM `<PRE>invoices` WHERE `id` = '{$iid}' LIMIT 1");
 		$data2 = $db->fetch_array($query2);
-		$query3 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$data2['uid']}'");
+		$query3 = $db->query("SELECT `id` FROM `<PRE>user_packs` WHERE `userid` = '{$data2['uid']}'");
 		$data3 = $db->fetch_array($query3);
 		$server->unsuspend($data3['id']);
 		return $query;

@@ -338,8 +338,8 @@ class server {
 				$due = time()+intval($db->config("suspensiondays")*24*60*60);
 				$notes = "Your current hosting package monthly invoice. Package: ". $pname['name'];
 				$invoice->create($data['id'], $amount, $due, $notes);
-				$serverphp->suspend($main->getvar['username'], $type->determineServer($main->getvar['package']));
-				$db->query("UPDATE `<PRE>user_packs` SET `status` = '4' WHERE `id` = '{$data['id']}'");
+				$serverphp->suspend($main->getvar['username'], $type->determineServer($main->getvar['package']), 'TheHostingTool: Awaiting Payment');
+				$db->query("UPDATE `<PRE>user_packs` SET `status` = '4' WHERE `userid` = '{$data['id']}'");
 				$iquery = $db->query("SELECT * FROM `<PRE>invoices` WHERE `uid` = '{$data['id']}' AND `due` = '{$due}'");
 				$idata = $db->fetch_array($iquery);
 				echo '<div class="errors"><b>You are being redirected to payment! It will load in a couple of seconds..</b></div>';

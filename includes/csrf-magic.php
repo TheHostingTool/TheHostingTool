@@ -191,6 +191,12 @@ function csrf_check($fatal = true) {
     $name = $GLOBALS['csrf']['input-name'];
     $ok = false;
     $tokens = '';
+    // PayPal CSRF hack
+    if(substr($_SERVER['SCRIPT_NAME'], -16) == 'client/index.php' &&
+        isset($_GET['page']) && $_GET['page'] == 'invoices' && isset($_GET['paypalcsrf'])) {
+        $_POST[$name] = $_GET['paypalcsrf'];
+    }
+    //
     do {
         if (!isset($_POST[$name])) break;
         // we don't regenerate a token and check it because some token creation

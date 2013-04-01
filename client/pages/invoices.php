@@ -19,7 +19,7 @@ class page {
 				$invoice->set_paid(mysql_real_escape_string($_GET['invoiceID']));
 				$main->errors("Your invoice has been paid!");
 				$client = $db->fetch_array($db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$_SESSION['cuser']}'"));
-				if($client['status'] == 2) {
+				if($client['status'] == '2') {
 					$server->unsuspend($client['id']);
 				}
 			}
