@@ -539,8 +539,7 @@ CREATE TABLE IF NOT EXISTS `%PRE%logs` (
 -- Dumping data for table `%PRE%user_packs_bak`
 --
 
-
--- --------------------------------------------------------
+-- UPDATES
 
 
 ALTER TABLE `%PRE%user_packs` CHANGE `id` `id` MEDIUMINT( 9 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
@@ -564,3 +563,17 @@ UPDATE `%PRE%clientnav` SET `weight` = '45' WHERE `id` = 7;
 UPDATE `%PRE%clientnav` SET `weight` = '60' WHERE `id` = 8;
 INSERT INTO `%PRE%clientnav` (`id`, `visual`, `icon`, `link`, `weight`) VALUES (NULL, 'Change Email', 'email_edit.png', 'email', '31');
 ALTER TABLE  `%PRE%invoices` CHANGE  `amount`  `amount` VARCHAR( 20 ) NOT NULL;
+ALTER TABLE `%PRE%users`  ADD `extra` LONGTEXT NOT NULL;
+INSERT INTO `%PRE%acpnav` (`id`, `visual`, `icon`, `link`) VALUES (NULL, 'Order Form', 'table.png', 'orderform');
+ALTER TABLE `%PRE%packages` ADD `custom_fields` TEXT NOT NULL;
+CREATE TABLE IF NOT EXISTS `%PRE%orderfields` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `order` int(11) NOT NULL DEFAULT '0',
+  `title` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `default` text NOT NULL,
+  `description` text NOT NULL,
+  `required` tinyint(1) NOT NULL DEFAULT '0',
+  `regex` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

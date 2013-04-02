@@ -1134,6 +1134,26 @@ class Ajax {
                 break;
         }
     }
+	   
+	   // Sets the order of the rows in a table.
+	   // $_POST["order"] should be a comma seperated list of IDs for $_POST["table"]
+	   // $_POST["table"] should NOT include the table prefix.
+	   function setOrderOfRows() {
+		   if($_SESSION['logged'] && isset($_POST["table"]) && isset($_POST["order"])) {
+			   global $main, $db;
+			   $i = 0;
+			   foreach(explode(',', $main->postvar["order"]) as $id) {
+				   $q = $db->query("UPDATE `<PRE>orderfields` SET `order` =  '{$i}' WHERE `id` = {$id}");
+				   if(!$q) {
+					   echo '0';
+					   return;
+				   }
+				   $i++;
+			   }
+			   echo '1';
+		   }
+	   }
+	   
 }
 
 if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
