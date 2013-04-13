@@ -3,6 +3,7 @@
 // The Hosting Tool
 // Database (MySQL) Class
 // By Jonny H and Kevin M
+// File patched by Liam D.
 // Released under the GNU-GPLv3
 //////////////////////////////
 
