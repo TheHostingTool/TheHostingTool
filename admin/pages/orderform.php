@@ -55,7 +55,7 @@ class page {
 			$pass["TITLE"] = htmlspecialchars($arr["title"]);
 			$pass["DESCRIPTION"] = htmlspecialchars($arr["description"]);
 			if($arr["required"] == 1) {
-				$pass["REQ"] = "<span style=\"color: red;\">*</span>";
+				$pass["REQ"] = "*";
 				$pass["REQC"] = " checked=\"yes\"";
 			}
 			else {
@@ -88,6 +88,12 @@ class page {
 				case "range":
 					$selected[7] = true;
 					break;
+                case "week":
+                    $selected[8] = true;
+                    break;
+                case "number":
+                    $selected[9] = true;
+                    break;
 			}
 			$pass["TYPELIST"] = $style->createInput('select', 'cfield-field-typelist-'.$arr["id"], '', array('id' => 'cfield-field-typelist-'.$arr["id"], 'class' => 'cfield-field cfield-field-'.$arr["id"].' cfield-field-typelist'),
 				array(
@@ -97,10 +103,12 @@ class page {
 					array('text' => 'Checkbox', 'value' => 'checkbox', 'selected' => $selected[2]),
 					array('text' => 'Select Box', 'value' => 'select', 'selected' => $selected[3]),
 					array('text' => '--- HTML5 ---', 'value' => 'html5', 'disabled' => true),
+                    array('text' => 'Number', 'value' => 'number', 'selected' => $selected[9]),
 					array('text' => 'Telephone #', 'value' => 'tel', 'selected' => $selected[4]),
 					array('text' => 'URL', 'value' => 'url', 'selected' => $selected[5]),
 					array('text' => 'Email', 'value' => 'email', 'selected' => $selected[6]),
-					array('text' => 'Range', 'value' => 'range', 'selected' => $selected[7])
+					array('text' => 'Range', 'value' => 'range', 'selected' => $selected[7]),
+                    array('text' => 'Week', 'value' => 'week', 'selected' => $selected[8])
 				)
 			);
 			$pass["DEFAULTVALUE"] = htmlspecialchars($arr["default"]);

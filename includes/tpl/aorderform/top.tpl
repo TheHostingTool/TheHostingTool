@@ -22,6 +22,9 @@
 	position: relative;
 	top: 10px;
 }
+label {
+    font-weight: bold;
+}
 </style>
 <script type="text/javascript">
 //<![CDATA[
@@ -32,7 +35,7 @@ $("document").ready(function() {
 		width: 2, // The line thickness
 		radius: 4, // The radius of the inner circle
 		color: '#000', // #rbg or #rrggbb
-		speed: 1, // Rounds per second
+		speed: 2, // Rounds per second
 		trail: 60, // Afterglow percentage
 		shadow: false // Whether to render a shadow
 	};
@@ -157,27 +160,41 @@ $("document").ready(function() {
 		lockBox(id);
 		startSpin();
         var json = {
+            id: id,
             title: $("#cfield-field-title-" + id).val(),
-            description: $("#cfield-field-description-" + id).html(),
+            description: $("#cfield-field-description-" + id).val(),
             type: $("#cfield-field-typelist-" + id).val(),
             selectopt: $("#cfield-tbody-selectoptions-" + id).html(),
             defaultvalue: $("#cfield-field-defaultvalue-" + id).val(),
             regex: $("#cfield-field-regex-" + id).val(),
-            required: $("#cfield-field-required-" + id).is(':checked')
+            required: $("#cfield-field-required-" + id).is(':checked'),
+            min: $("#cfield-typeopt-min-" + id).val(),
+            max: $("#cfield-typeopt-max-" + id).val(),
+            step: $("#cfield-typeopt-step-" + id).val()
         };
         json[csrfMagicName] = csrfMagicToken;
 		$.post("<AJAX>?function=updateCustomField", json, function(data) {
-				if(data == "1") {
-					$("#saveBtnDivGood-" + id).slideDown();
-				}
-				else {
-					$("#saveBtnDivBad-" + id).html("An unknown error has occurred. :( Your changes may or may not have been saved.").fadeIn();
-				}
-				$("#saveBtn-" + id).html("Save Changes");
-				unlockBox(id);
-				stopSpin();
+			if(!data.error) {
+			    $("#saveBtnDivGood-" + id).slideDown();
+                if($("#cfield-field-title-" + id).val() != $("#orderTitle-"+id+" a").html()) {
+                    $("#orderTitle-"+id+" a").fadeOut(function() {
+                        $("#orderTitle-"+id+" a").text($("#cfield-field-title-" + id).val()).fadeIn();
+                    });
+                }
+                var star = $("#cfield-field-required-" + id).is(':checked');
+                if((star && $("#orderTitle-Req-" + id).html() != "*") || (!star && $("#orderTitle-Req-" + id).html() == "*")) {
+                    $("#orderTitle-Req-" + id).fadeOut(function() {
+                        $("#orderTitle-Req-" + id).html($("#cfield-field-required-" + id).is(':checked') ? "*" : "").fadeIn();
+                    });
+                }
+		    }
+			else {
+				$("#saveBtnDivBad-" + id).html(data.error ? data.msg : "An unknown error has occurred. :( Your changes may or may not have been saved.").fadeIn();
 			}
-		);
+			$("#saveBtn-" + id).html("Save Changes");
+			unlockBox(id);
+			stopSpin();
+		}, "json");
 	});
 	$(".cfield-field-typelist").change(function() {
 		var id = this.id.split("-")[3];
@@ -185,15 +202,24 @@ $("document").ready(function() {
 		if(this.value == "password") {
 			document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", "text");
 			$(".cfield-selectstuff-optdiv-" + id).slideUp();
+            $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
 			$(".cfield-defaultval-td-" + id).slideDown();
 		}
 		else if(this.value == "select") {
 			$(".cfield-selectstuff-optdiv-" + id).slideDown();
 			$(".cfield-defaultval-td-" + id).slideUp();
+            $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
 		}
+        else if(this.value == "number" || this.value == "range" || this.value == "week") {
+            document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
+            $(".cfield-selectstuff-optdiv-" + id).slideUp();
+            $(".cfield-typeopt-typeoptdiv-" + id).slideDown();
+            $(".cfield-defaultval-td-" + id).slideDown();
+        }
 		else {
 			document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
 			$(".cfield-selectstuff-optdiv-" + id).slideUp();
+            $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
 			$(".cfield-defaultval-td-" + id).slideDown();
 		}
 	});
@@ -256,13 +282,28 @@ $("document").ready(function() {
 		if(title == undefined || title == null || title == "") {
 			return;
 		}
-		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+title+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
+		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+escapeHtml(title)+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
         globalOptionIdCounter++;
 		// Re-bind events to new elements
 		bindActionsAgain();
 		onFieldChangeEvent(id);
 	});
 	$(".cfield-field").change(onFieldChangeEvent);
+
+    var onTypeOptInputChangeEvent = function() {
+        var split = this.id.split("-");
+        $("#cfield-field-defaultvalue-" + split[3]).attr(split[2], $(this).val());
+    }
+    $(".cfield-typeopt-input").change(onTypeOptInputChangeEvent);
+
+    function escapeHtml(unsafe) {
+        return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
 });
 //]]>
 </script>

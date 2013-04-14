@@ -2,7 +2,7 @@
 	<div class="sub">
 		<table width="100%" border="0" cellspacing="2" cellpadding="0">
 			<tr>
-				<td><strong><a id="orderTitle-%ID%" class="orderTitle" href="javascript:void(0);">%TITLE%</a>%REQ%</strong></td>
+				<td><div style="font-weight: bold;" id="orderTitle-%ID%" class="orderTitle"><a href="javascript:void(0);">%TITLE%</a><div style="display: inline; color: red;" id="orderTitle-Req-%ID%">%REQ%</div></div></td>
 				<td rowspan="2" align="right">
 					<a id="orderEditBtn-%ID%" class="orderEditBtn tooltip" href="javascript:void(0);" title="Edit Details for the %TITLE% field."><img src="<ICONDIR>pencil.png" /></a>
 					<a id="orderDelBtn-%ID%" class="orderDelBtn tooltip" href="javascript:void(0);" title="Delete the %TITLE% field."><img src="<ICONDIR>delete.png" /></a>
@@ -20,6 +20,16 @@
 				<tr>
 					<td><strong>Input Type:</strong></td><td>%TYPELIST%</td><td width="50%"><a href="javascript:void(0);"><img class="tooltip" title="The kind of field that will be presented. Use HTML5 options at your own risk. Regular expressions will be automatically applied for backwards compatibility. Changing the type of an already in-use field may cause unexpected and undiserable results." src="<ICONDIR>information.png" /></a></td>
 				</tr>
+                <tr>
+                    <td><div class="cfield-typeopt-typeoptdiv-%ID% hiddenStyle"><strong>Type Options:</strong></div></td>
+                    <td><div class="cfield-typeopt-typeoptdiv-%ID% hiddenStyle">
+                            <table><tbody>
+                                <tr><td><label for=cfield-typeopt-min-%ID%">Min:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-min-%ID%" type="text" size="10"></td></tr>
+                                <tr><td><label for="cfield-typeopt-max-%ID%">Max:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-max-%ID%" type="text" size="10"></td></tr>
+                                <tr><td><label for="cfield-typeopt-step-%ID%">Step:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-step-%ID%" type="text" size="10"></td></tr>
+                            </tr></tbody></table>
+                    </div></td>
+                </tr>
 				<tr>
 					<td><div class="cfield-selectstuff-optdiv-%ID% hiddenStyle"><strong>Select Box Options:</strong></div></td>
 					<td><div class="cfield-selectstuff-optdiv-%ID% hiddenStyle">
