@@ -156,21 +156,22 @@ $("document").ready(function() {
 		$(this).html("Saving...");
 		lockBox(id);
 		startSpin();
-		$.post("<AJAX>?function=updateCustomField", {
-			title: $("#cfield-field-title-" + id).val(),
-			description: $("#cfield-field-description-" + id).html(),
-			type: $("#cfield-field-typelist-" + id).val(),
-			selectopt: $("cfield-tbody-selectoptions-" + id).html(),
-			defaultvalue: $("#cfield-field-defaultvalue-" + id).val(),
-			regex: $("#cfield-field-regex-" + id).val(),
-			required: $("#cfield-field-required-" + id).val(),
-			__tht_csrf_magic: csrfMagicToken
-		}, function(data) {
+        var json = {
+            title: $("#cfield-field-title-" + id).val(),
+            description: $("#cfield-field-description-" + id).html(),
+            type: $("#cfield-field-typelist-" + id).val(),
+            selectopt: $("#cfield-tbody-selectoptions-" + id).html(),
+            defaultvalue: $("#cfield-field-defaultvalue-" + id).val(),
+            regex: $("#cfield-field-regex-" + id).val(),
+            required: $("#cfield-field-required-" + id).is(':checked')
+        };
+        json[csrfMagicName] = csrfMagicToken;
+		$.post("<AJAX>?function=updateCustomField", json, function(data) {
 				if(data == "1") {
 					$("#saveBtnDivGood-" + id).slideDown();
 				}
 				else {
-					$("#saveBtnDivBad-" + id).fadeIn();
+					$("#saveBtnDivBad-" + id).html("An unknown error has occurred. :( Your changes may or may not have been saved.").fadeIn();
 				}
 				$("#saveBtn-" + id).html("Save Changes");
 				unlockBox(id);
@@ -207,6 +208,7 @@ $("document").ready(function() {
 		$(".cfield-action-renameoption").click(onOptionRenameClick);
 		$(".cfield-action-deleteoption").click(onOptionDeleteClick);
 	}
+
 	var onOptionRenameClick = function() {
 		var jTitle = $("#cfield-tr-selecttr-" + this.id.split("-")[3] + " td:nth-child(1)");
 		var title = prompt('New title of "' + jTitle.html() + '"');
@@ -230,6 +232,7 @@ $("document").ready(function() {
 			onFieldChangeEvent(this.id.split("-")[3]);
 		}
 	}
+
 	var onOptionDownClick = function() {
 		var clicked = $("#cfield-tr-selecttr-" + this.id.split("-")[3]);
 		if(clicked.nextAll().length > 0) {
@@ -239,15 +242,22 @@ $("document").ready(function() {
 			onFieldChangeEvent(this.id.split("-")[3]);
 		}
 	}
+
+    var onOptionDeleteClick = function() {
+        $("#cfield-tr-selecttr-" + this.id.split("-")[3]).remove();
+        bindActionsAgain();
+        onFieldChangeEvent(this.id.split("-")[3]);
+    }
+
+    var globalOptionIdCounter = 0;
 	$(".cfield-action-newoption").click(function() {
 		var id = this.id.split("-")[3];
 		var title = prompt("The title of your new option:");
 		if(title == undefined || title == null || title == "") {
 			return;
 		}
-		// Low chance of collision. But there /is/ a chance.
-		var rand = Math.floor(Math.random()*1000000);
-		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+rand+'"><td>'+title+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+rand+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+rand+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+rand+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+rand+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
+		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+title+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
+        globalOptionIdCounter++;
 		// Re-bind events to new elements
 		bindActionsAgain();
 		onFieldChangeEvent(id);

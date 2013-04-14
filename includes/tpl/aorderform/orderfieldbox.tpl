@@ -48,8 +48,8 @@
 				</tr>
 				<tr>
 					<td></td><td>
-						<div id="saveBtnDivGood-%ID%" class="saveBtnDivStatus-%ID% hiddenStyle"><span style="color: green;"><em><strong>Saved!</strong></em></span></div>
-						<div id="saveBtnDivBad-%ID%" class="hiddenStyle saveBtnDivStatus-%ID%"><span style="color: red;"><em><strong>An unknown error has occurred. :( Your changes may or may not have been saved.</strong></em></span></div>
+						<div id="saveBtnDivGood-%ID%" class="saveBtnDivStatus-%ID% hiddenStyle" style="color: green; font-weight: bold; font-style: italic;">Saved!</div>
+						<div id="saveBtnDivBad-%ID%" class="hiddenStyle saveBtnDivStatus-%ID%" style="color: red; font-weight: bold; font-style: italic;"></div>
 					</td>
 				</tr>
 			</table>
