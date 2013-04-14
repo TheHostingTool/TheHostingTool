@@ -423,9 +423,9 @@ class main {
 		$ch = curl_init("http://thehostingtool.com/updates/check.php");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$svn = $this->getSubversionRevision();
-		$cv['rev'] = $svn?$svn:null;
-		curl_setopt($ch, CURLOPT_USERAGENT, 'TheHostingTool/'.$cv['name'].' ('.$cv['code'].($svn?",$svn":'').')');
+		$git = $this->getGitRevision();
+		$cv['rev'] = $git?$git:null;
+		curl_setopt($ch, CURLOPT_USERAGENT, 'TheHostingTool/'.$cv['name'].' ('.$cv['code'].($git?",$git":'').')');
 		$data = curl_exec($ch);
 		if($data === false) {
 			$this->error(array('$main->checkVersion() Failed' => curl_error($ch)));
@@ -437,46 +437,19 @@ class main {
         $return = array('nv' => (array)$nv, 'cv' => $cv);
         $return['updateAvailable'] = ($nv->code > $cv['code']);
         $return["devTime"] = ($cv['code'] > $nv->code);
-        $this->cache['checkVersion'] = $return;
-        return $return;
+        return $this->cache['checkVersion'] = $return;
 	}
 
-    public function getSubversionRevision($cache = true) {
-    	if($cache && isset($this->cache['getSubversionRevision'])) {
-    		return $this->cache['getSubversionRevision'];
-    	}
-    	// This will work for Subverson 1.6 clients and below
-        if(file_exists("../.svn/entries")) {
-            $svn = File("../.svn/entries");
-            $this->cache['getSubversionRevision'] = (int)$svn[3];
-            return $this->cache['getSubversionRevision'];
+    public function getGitRevision($cache = true) {
+        if($cache && isset($this->cache['getGitRevision'])) {
+            return $this->cache['getGitRevision'];
         }
-		// Check the previous directories recursively looking for wc.db (Subversion 1.7)
-		$searchDepth = 3; // Max search depth. 3 should handle 99% of checkouts.
-		// Do we have PDO? And do we have the SQLite PDO driver?
-		if(!extension_loaded('PDO') || !extension_loaded('pdo_sqlite')) {
-			$searchDepth = 0; // Don't even bother...
-		}
-		for($i = 1; $i <= $searchDepth; $i++) {
-			$dotdot .= '../';
-			if(!@file_exists("$dotdot.svn/wc.db")) {
-				continue;
-			}
-			$wcdb = new PDO("sqlite:$dotdot.svn/wc.db");
-			$result = $wcdb->query('SELECT "changed_revision" FROM "NODES" WHERE "repos_path" = "'.basename(realpath('..')).'"');
-			$this->cache['getSubversionRevision'] = (int)$result->fetchColumn();
-		    return $this->cache['getSubversionRevision'];
-		}
-        if($this->canRun('exec')) {
-        	exec('svnversion ' . realpath('..'), $out, $return);
-        	// For this to work, svnversion must be in your PHP's PATH enviroment variable
-        	if($return === 0 && $out[0] != "Unversioned directory") {
-        		$this->cache['getSubversionRevision'] = (int)$out[0];
-        		return $this->cache['getSubversionRevision'];
-        	}
+        $git = realpath('..') . '/.git/';
+        if(file_exists($git)) {
+            $head = substr(file_get_contents($git . 'HEAD'), 5, -1);
+            return $this->cache['getGitRevision'] = trim(file_get_contents($git . $head));
         }
-        $this->cache['getSubversionRevision'] = false;
-        return false;
+        return $this->cache['getSubversionRevision'] = false;
     }
 
     // Make sure you use === with this!

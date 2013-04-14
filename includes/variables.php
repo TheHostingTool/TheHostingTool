@@ -67,8 +67,8 @@ if(INSTALL == 1) {
 	
 	 if($db->config("show_version_id") == 1) {
 		$version = $db->config('vname');
-		$r = $main->getSubversionRevision();
-		if($r) { $version .= " (<a target=\"_blank\" href=\"http://code.google.com/p/thehostingtool/source/detail?r=$r\">r$r</a>)"; }
+		$r = $main->getGitRevision();
+		if($r) { $version .= " (<a target=\"_blank\" href=\"https://github.com/TheHostingTool/TheHostingTool/commit/$r\">".substr($r, 0, 10)."</a>)"; }
 	}
 	else {
 		$version = '';
