@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS `%PRE%orderfields` (
   `description` text NOT NULL,
   `required` tinyint(1) NOT NULL DEFAULT '0',
   `regex` text NOT NULL,
+  `extra` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

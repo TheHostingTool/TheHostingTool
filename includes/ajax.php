@@ -1153,6 +1153,106 @@ class Ajax {
             echo '1';
         }
     }
+
+    function updateCustomField() {
+        if(!$_SESSION['logged'] || !isset($_POST['title']) || !isset($_POST['description']) ||
+        !isset($_POST['type']) || !isset($_POST['selectopt']) || !isset($_POST['defaultvalue']) ||
+        !isset($_POST['regex']) || !isset($_POST['required'])) {
+            return;
+        }
+
+        $title = $_POST['title'];
+        $desc = $_POST['description'];
+        $type = $_POST['type'];
+        $selopt = $_POST['selectopt'];
+        $defval = $_POST['defaultvalue'];
+        $regex = $_POST['regex'];
+        $required = $_POST['required'] == 'true';
+        $min = $_POST['min'];
+        $max = $_POST['max'];
+        $step = $_POST['step'];
+
+        if(empty($title)) {
+            echo json_encode(array('error' => true, 'msg' => 'Title cannot be blank.'));
+            return;
+        }
+
+        $possibleTypes = array('text', 'password', 'checkbox', 'select', 'number', 'tel', 'url', 'email', 'range', 'week');
+
+        if(!in_array($type, $possibleTypes)) {
+            echo json_encode(array('error' => true, 'msg' => 'Invalid type.'));
+            return;
+        }
+
+        if($regex != '') {
+            if(@preg_match($regex, '') === false) {
+                echo json_encode(array('error' => true, 'msg' => 'Invalid regular expression.'));
+                return;
+            }
+            if($defval != '' && @preg_match($regex, $defval) === 0) {
+                echo json_encode(array('error' => true, 'msg' => 'The default value doesn\'t match with the regex.'));
+                return;
+            }
+        }
+
+        if($type == "select") {
+            $xml = new SimpleXMLElement("<tbody>".$selopt."</tbody>");
+            if($xml === false) {
+                echo json_encode(array('error' => true, 'msg' => 'Failed to parse the select options.'));
+                return;
+            }
+            $selopt = array();
+            foreach($xml->tr as $tr) {
+                $selopt[] = htmlspecialchars_decode((string)$tr->td[0]);
+            }
+            unset($xml);
+            if(count($selopt) == 0) {
+                echo json_encode(array('error' => true, 'msg' => 'You have not defined any select options.'));
+                return;
+            }
+        }
+        else {
+            $selopt = null;
+        }
+
+        if($type == 'number' || $type == 'range') {
+            if(($min != '' && !is_numeric($min)) || ($max != '' && !is_numeric($max)) || ($step != '' && !is_numeric($step))) {
+                echo json_encode(array('error' => true, 'msg' => 'Min, Max, and Step must be empty or numbers.'));
+                return;
+            }
+            $min = $min == '' ? null : (float)$min;
+            $max = $max == '' ? null : (float)$max;
+            $step = $step == '' ? null : (float)$step;
+        }
+        elseif($type == 'week') {
+            $r = "/^\d{4}-W\d{2}$/";
+            if(($min != '' && preg_match($r, $min) === 0) || ($max != '' && preg_match($r, $max) === 0)) {
+                echo json_encode(array('error' => true, 'msg' => 'Min and Max must be formatted like this: YYYY-W## eg: '.date('o-\WW').'.'));
+                return;
+            }
+            if($step != '' && !is_numeric($step)) {
+                echo json_encode(array('error' => true, 'msg' => 'Step must be a number.'));
+                return;
+            }
+            $step = $step == '' ? null : (float)$step;
+        }
+        else {
+            $min = $max = $step = null;
+        }
+
+        $extra = array();
+
+        global $main, $db;
+        $db->query("UPDATE `<PRE>orderfields` SET `title` = '{$db->strip($title)}', `type` = '{$db->strip($type)}',
+        `default` = '{$db->strip($defval)}', `description` = '{$db->strip($desc)}', `required` = '{$db->strip($required)}',
+        `regex` = '{$db->strip($regex)}', `extra` = '{$db->strip(json_encode($extra))}' WHERE `id` = '{$main->postvar['id']}'");
+        if(mysql_affected_rows() == 0) {
+            echo json_encode(array('error' => true, 'msg' => 'That ID does not exist.'));
+            return;
+        }
+        echo json_encode(array('error' => false, 'msg' => null));
+    }
+
 }
 
 if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
