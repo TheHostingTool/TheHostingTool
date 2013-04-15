@@ -1171,6 +1171,7 @@ class Ajax {
         $min = $_POST['min'];
         $max = $_POST['max'];
         $step = $_POST['step'];
+        $defopt = $_POST['defaultopt'];
 
         if(empty($title)) {
             echo json_encode(array('error' => true, 'msg' => 'Title cannot be blank.'));
@@ -1210,9 +1211,15 @@ class Ajax {
                 echo json_encode(array('error' => true, 'msg' => 'You have not defined any select options.'));
                 return;
             }
+
+            if($defopt != '' && !in_array($defopt, $selopt)) {
+                echo json_encode(array('error' => true, 'msg' => 'Invalid default select option.'));
+                return;
+            }
+            $defval = $defopt;
         }
         else {
-            $selopt = null;
+            $selopt = $defopt = null;
         }
 
         if($type == 'number' || $type == 'range') {

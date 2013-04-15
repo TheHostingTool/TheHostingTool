@@ -174,7 +174,8 @@ $("document").ready(function() {
             required: $("#cfield-field-required-" + id).is(':checked'),
             min: $("#cfield-typeopt-min-" + id).val(),
             max: $("#cfield-typeopt-max-" + id).val(),
-            step: $("#cfield-typeopt-step-" + id).val()
+            step: $("#cfield-typeopt-step-" + id).val(),
+            defaultopt: $("#cfield-field-defaultoption-" + id).val()
         };
         json[csrfMagicName] = csrfMagicToken;
 		$.post("<AJAX>?function=updateCustomField", json, function(data) {
