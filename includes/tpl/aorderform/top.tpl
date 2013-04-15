@@ -106,10 +106,11 @@ $("document").ready(function() {
 		+ "This will also remove any user data associated with it.")) {
 			lockBox(id);
 			startSpin();
-			$.post("<AJAX>?function=deleteCustomField", {
-				"id": id,
-				__tht_csrf_magic: csrfMagicToken
-			}, function (data) {
+            var json = {
+                id: id
+            }
+            json[csrfMagicName] = csrfMagicToken;
+			$.post("<AJAX>?function=deleteCustomField", json, function (data) {
 				if(data == "1") {
 					$("#orderfieldbox-" + id).slideUp(function() {
 						$("#orderfieldbox-" + id).remove();
@@ -133,11 +134,12 @@ $("document").ready(function() {
 			$(".orderfieldbox").each(function(index) {
 				order[index] = $(this).attr('id').split("-")[1];
 			});
-			$.post("<AJAX>?function=setOrderOfRows", {
-				table: 'orderfields',
-				order: order.join(','),
-				__tht_csrf_magic: csrfMagicToken
-			}, function(data) {
+            var json = {
+                table: 'orderfields',
+                order: order.join(',')
+            }
+            json[csrfMagicName] = csrfMagicToken;
+			$.post("<AJAX>?function=setOrderOfRows", json, function(data) {
 				if(data == "1") {
 					$("#goodSavedDiv").show();
 				}
