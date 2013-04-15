@@ -44,7 +44,7 @@
 				<tr>
 					<td><div class="cfield-defaultval-td-%ID%"><strong>Default Value:</strong></div></td>
 					<td id="tddefaultval-%ID%" class="tddefaultval"><div class="cfield-defaultval-td-%ID%">
-						<input type="text" class="cfield-field cfield-field-%ID% cfield-field-defaultvalue hiddenStyle" name="cfield-field-defaultvalue-%ID%" id="cfield-field-defaultvalue-%ID%" value="%DEFAULTVALUE%" min="%MIN%" max="%MAX%" step="%STEP%" />
+						<input type="text" class="cfield-field cfield-field-%ID% cfield-field-defaultvalue hiddenStyle" name="cfield-field-defaultvalue-%ID%" id="cfield-field-defaultvalue-%ID%" value="%DEFAULTVALUE%" min="%MIN%" max="%MAX%" step="%STEP%" %CHECKED% />
                         <select class="cfield-field cfield-field-%ID% cfield-field-defaultoption hiddenStyle" id="cfield-field-defaultoption-%ID%">
                             <option value="" %DEFAULTSELECTED%>No Default</option>
                             %SELECTOPTIONS4REAL%

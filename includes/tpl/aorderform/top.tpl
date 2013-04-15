@@ -171,7 +171,8 @@ $("document").ready(function() {
             description: $("#cfield-field-description-" + id).val(),
             type: $("#cfield-field-typelist-" + id).val(),
             selectopt: $("#cfield-tbody-selectoptions-" + id).html(),
-            defaultvalue: $("#cfield-field-defaultvalue-" + id).val(),
+            defaultvalue: $("#cfield-field-defaultvalue-" + id).attr('type') == 'checkbox' ?
+                    $("#cfield-field-defaultvalue-" + id).is(':checked') : $("#cfield-field-defaultvalue-" + id).val(),
             regex: $("#cfield-field-regex-" + id).val(),
             required: $("#cfield-field-required-" + id).is(':checked'),
             min: $("#cfield-typeopt-min-" + id).val(),

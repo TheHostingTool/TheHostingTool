@@ -1254,6 +1254,10 @@ class Ajax {
             $min = $max = $step = null;
         }
 
+        if($type == 'checkbox') {
+            $defval = (int)($defval == "true");
+        }
+
         $extra = array('min' => $min, 'max' => $max, 'step' => $step, 'selectopt' => $selopt);
 
         global $main, $db;

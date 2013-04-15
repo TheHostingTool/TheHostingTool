@@ -96,6 +96,8 @@ class page {
                 }
             }
 
+            $pass["CHECKED"] = "";
+
 			// A lame solution but I don't feel like solving this problem at 5 AM...
 			$selected = array(false, false, false, false, false, false, false);
 			switch($arr["type"]) {
@@ -107,6 +109,7 @@ class page {
 					break;
 				case "checkbox":
 					$selected[2] = true;
+                    $pass["CHECKED"] = $arr["default"] == "1" ? "checked" : "";
 					break;
 				case "select":
 					$selected[3] = true;
