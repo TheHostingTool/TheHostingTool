@@ -245,7 +245,7 @@ $("document").ready(function() {
 			alert("The title cannot be blank.");
 			return;
 		}
-		jTitle.html(title);
+		jTitle.text(title);
 		onFieldChangeEvent(this.id.split("-")[3]);
 	}
 
