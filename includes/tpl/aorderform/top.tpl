@@ -316,7 +316,7 @@ $("document").ready(function() {
 			return;
 		}
 		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+escapeHtml(title)+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
-        $("#cfield-field-defaultoption-" + id).append('<option id="cfield-field-defaultoption-option-'+id+'" value="'+escapeHtml(title)+'">'+escapeHtml(title)+'</option>');
+        $("#cfield-field-defaultoption-" + id).append('<option id="cfield-field-defaultoption-option-'+globalOptionIdCounter+'" value="'+escapeHtml(title)+'">'+escapeHtml(title)+'</option>');
         globalOptionIdCounter++;
 		// Re-bind events to new elements
 		bindActionsAgain();
