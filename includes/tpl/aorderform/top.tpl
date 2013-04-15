@@ -60,6 +60,10 @@ $("document").ready(function() {
 		$("#cfield-field-regex-" + id).attr("readonly", "readonly");
 		$("#cfield-field-required-" + id).attr("disabled", "disabled");
 		$("#saveBtn-" + id).attr("disabled", "disabled");
+        $("#cfield-field-description-" + id).attr("readonly", "readonly");
+        $("#cfield-typeopt-min-" + id).attr("readonly", "readonly");
+        $("#cfield-typeopt-max-" + id).attr("readonly", "readonly");
+        $("#cfield-typeopt-step-" + id).attr("readonly", "readonly");
 	}
 	
 	var unlockBox = function(id) {
@@ -175,7 +179,9 @@ $("document").ready(function() {
         json[csrfMagicName] = csrfMagicToken;
 		$.post("<AJAX>?function=updateCustomField", json, function(data) {
 			if(!data.error) {
-			    $("#saveBtnDivGood-" + id).slideDown();
+                $("#saveBtnDivGood-" + id).slideUp(function() {
+                    $("#saveBtnDivGood-" + id).html(data.msg != null ? data.msg : "Saved!").slideDown();
+                });
                 if($("#cfield-field-title-" + id).val() != $("#orderTitle-"+id+" a").html()) {
                     $("#orderTitle-"+id+" a").fadeOut(function() {
                         $("#orderTitle-"+id+" a").text($("#cfield-field-title-" + id).val()).fadeIn();
@@ -203,24 +209,32 @@ $("document").ready(function() {
 			document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", "text");
 			$(".cfield-selectstuff-optdiv-" + id).slideUp();
             $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
-			$(".cfield-defaultval-td-" + id).slideDown();
+            $("#cfield-field-defaultoption-" + id).fadeOut(function() {
+                $("#cfield-field-defaultvalue-" + id).fadeIn();
+            });
 		}
 		else if(this.value == "select") {
 			$(".cfield-selectstuff-optdiv-" + id).slideDown();
-			$(".cfield-defaultval-td-" + id).slideUp();
+            $("#cfield-field-defaultvalue-" + id).fadeOut(function() {
+                $("#cfield-field-defaultoption-" + id).fadeIn();
+            });
             $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
 		}
         else if(this.value == "number" || this.value == "range" || this.value == "week") {
             document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
             $(".cfield-selectstuff-optdiv-" + id).slideUp();
             $(".cfield-typeopt-typeoptdiv-" + id).slideDown();
-            $(".cfield-defaultval-td-" + id).slideDown();
+            $("#cfield-field-defaultoption-" + id).fadeOut(function() {
+                $("#cfield-field-defaultvalue-" + id).fadeIn();
+            });
         }
 		else {
 			document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
 			$(".cfield-selectstuff-optdiv-" + id).slideUp();
             $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
-			$(".cfield-defaultval-td-" + id).slideDown();
+            $("#cfield-field-defaultoption-" + id).fadeOut(function() {
+                $("#cfield-field-defaultvalue-" + id).fadeIn();
+            });
 		}
 	});
 	$(".cfield-field-typelist").change();
@@ -236,7 +250,8 @@ $("document").ready(function() {
 	}
 
 	var onOptionRenameClick = function() {
-		var jTitle = $("#cfield-tr-selecttr-" + this.id.split("-")[3] + " td:nth-child(1)");
+        var id = this.id.split("-")[3];
+		var jTitle = $("#cfield-tr-selecttr-" + id + " td:nth-child(1)");
 		var title = prompt('New title of "' + jTitle.html() + '"');
 		if(title == undefined || title == null) {
 			return;
@@ -246,6 +261,7 @@ $("document").ready(function() {
 			return;
 		}
 		jTitle.text(title);
+        $("#cfield-field-defaultoption-option-" + id).text(title);
 		onFieldChangeEvent(this.id.split("-")[3]);
 	}
 
@@ -270,12 +286,14 @@ $("document").ready(function() {
 	}
 
     var onOptionDeleteClick = function() {
-        $("#cfield-tr-selecttr-" + this.id.split("-")[3]).remove();
+        var id = this.id.split("-")[3];
+        $("#cfield-tr-selecttr-" + id).remove();
+        $("#cfield-field-defaultoption-option-" + id).remove();
         bindActionsAgain();
         onFieldChangeEvent(this.id.split("-")[3]);
     }
 
-    var globalOptionIdCounter = 0;
+    var globalOptionIdCounter = %GLOBALSELECTOPTIONCOUNTER%;
 	$(".cfield-action-newoption").click(function() {
 		var id = this.id.split("-")[3];
 		var title = prompt("The title of your new option:");
@@ -283,6 +301,7 @@ $("document").ready(function() {
 			return;
 		}
 		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+escapeHtml(title)+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
+        $("#cfield-field-defaultoption-" + id).append('<option id="cfield-field-defaultoption-option-'+id+'" value="'+escapeHtml(title)+'">'+escapeHtml(title)+'</option>');
         globalOptionIdCounter++;
 		// Re-bind events to new elements
 		bindActionsAgain();
@@ -304,9 +323,12 @@ $("document").ready(function() {
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
     }
+    bindActionsAgain();
+    $(".cfield-field-typelist").change();
 });
 //]]>
 </script>
 
 <a href="javascript:void(0)" id="newCustomFieldLink"><strong><img src="<ICONDIR>add.png" /> New Custom Field</strong></a>
 <div id="orderSpinnerDiv" class="hiddenStyle"><a id="orderSpinner" class="orderSpinner"></a></div>
+<div id="sortableDiv">

@@ -24,9 +24,9 @@
                     <td><div class="cfield-typeopt-typeoptdiv-%ID% hiddenStyle"><strong>Type Options:</strong></div></td>
                     <td><div class="cfield-typeopt-typeoptdiv-%ID% hiddenStyle">
                             <table><tbody>
-                                <tr><td><label for=cfield-typeopt-min-%ID%">Min:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-min-%ID%" type="text" size="10"></td></tr>
-                                <tr><td><label for="cfield-typeopt-max-%ID%">Max:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-max-%ID%" type="text" size="10"></td></tr>
-                                <tr><td><label for="cfield-typeopt-step-%ID%">Step:</label></td><td><input class="cfield-field cfield-typeopt-input" id="cfield-typeopt-step-%ID%" type="text" size="10"></td></tr>
+                                <tr><td><label for=cfield-typeopt-min-%ID%">Min:</label></td><td><input class="cfield-field cfield-field-%ID% cfield-typeopt-input" id="cfield-typeopt-min-%ID%" type="text" size="10" value="%MIN%"></td></tr>
+                                <tr><td><label for="cfield-typeopt-max-%ID%">Max:</label></td><td><input class="cfield-field cfield-field-%ID% cfield-typeopt-input" id="cfield-typeopt-max-%ID%" type="text" size="10" value="%MAX%"></td></tr>
+                                <tr><td><label for="cfield-typeopt-step-%ID%">Step:</label></td><td><input class="cfield-field cfield-field-%ID% cfield-typeopt-input" id="cfield-typeopt-step-%ID%" type="text" size="10" value="%STEP%"></td></tr>
                             </tr></tbody></table>
                     </div></td>
                 </tr>
@@ -36,7 +36,7 @@
 						<a href="javascript:void(0);" id="cfield-action-newoption-%ID%" class="cfield-action cfield-action-newoption cfield-action-%ID%">New Option</a>
 						<div>
 							<table width="100%" border="0" cellspacing="2" cellpadding="0"><tbody id="cfield-tbody-selectoptions-%ID%">
-								
+								%SELECTOPTIONS%
 							</tbody></table>
 						</div>
 					</div></td>
@@ -44,8 +44,13 @@
 				<tr>
 					<td><div class="cfield-defaultval-td-%ID%"><strong>Default Value:</strong></div></td>
 					<td id="tddefaultval-%ID%" class="tddefaultval"><div class="cfield-defaultval-td-%ID%">
-						<input type="text" class="cfield-field cfield-field-%ID% cfield-field-defaultvalue" name="cfield-field-defaultvalue-%ID%" id="cfield-field-defaultvalue-%ID%" value="%DEFAULTVALUE%" /><td width="50%"><a href="javascript:void(0);"><img class="tooltip" title="The value that will be placed in the field when the order form loads." src="<ICONDIR>information.png" /></a></td>
+						<input type="text" class="cfield-field cfield-field-%ID% cfield-field-defaultvalue hiddenStyle" name="cfield-field-defaultvalue-%ID%" id="cfield-field-defaultvalue-%ID%" value="%DEFAULTVALUE%" min="%MIN%" max="%MAX%" step="%STEP%" />
+                        <select class="cfield-field cfield-field-%ID% cfield-field-defaultoption hiddenStyle" id="cfield-field-defaultoption-%ID%">
+                            <option value="" %DEFAULTSELECTED%>No Default</option>
+                            %SELECTOPTIONS4REAL%
+                        </select>
 					</div></td>
+                    <td width="50%"><a href="javascript:void(0);"><img class="tooltip" title="The value that will be placed in the field when the order form loads." src="<ICONDIR>information.png" /></a></td>
 				</tr>
 				<tr>
 					<td><strong>Regular Expression:</strong><td><textarea id="cfield-field-regex-%ID%" class="cfield-field cfield-field-%ID% cfield-field-regex">%REGEX%</textarea></td></td><td width="50%"><a href="javascript:void(0);"><img class="tooltip" title="Must be a PCRE (Perl Compatible Regular Expressions). This will be checked against what the client inputs for this custom field to verify its integrity. If the client's input matches the regex, then the input will be accepted. Check out regxlib.com for some prefab expressions." src="<ICONDIR>information.png" /></a></td>

@@ -1,3 +1,4 @@
+</div>
 <div id="atBottomDiv" style="text-align: center;">
 	<div id="saveOrderChangesDiv" class="hiddenStyle"><button id="saveOrderChangesBtn">Save Order Changes</button></div>
 	<div id="goodSavedDiv" class="savedDiv hiddenStyle">The order of your fields have been saved!</div>

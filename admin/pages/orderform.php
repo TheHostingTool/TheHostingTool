@@ -42,13 +42,14 @@ class page {
 	
 	public function _customf() {
 		global $db, $style;
-		echo $style->replaceVar("tpl/aorderform/top.tpl");
 		$query = $db->query("SELECT * FROM `<PRE>orderfields` ORDER BY `order` ASC");
 		if($db->num_rows($query) == 0) {
+            echo $style->replaceVar("tpl/aorderform/top.tpl");
 			echo "<center>".$style->notice(false, "You don't have any custom fields defined!")."</center>";
 			return;
 		}
-		echo '<div id="sortableDiv">';
+        $boxes = "";
+        $globalSelectOptCounter = 0;
 		while($arr = mysql_fetch_assoc($query)) {
 			if(isset($pass)) { unset($pass); }
 			$pass["ID"] = $arr["id"];
@@ -61,6 +62,40 @@ class page {
 			else {
 				$pass["REQ"] = "";
 			}
+            $pass["MIN"] = "";
+            $pass["MAX"] = "";
+            $pass["STEP"] = "";
+            $pass["SELECTOPTIONS"] = "";
+            if($arr['extra'] != '') {
+                $extra = json_decode($arr['extra']);
+                $pass["MIN"] = $extra->min != null ? $extra->min : "";
+                $pass["MAX"] = $extra->max != null ? $extra->max : "";
+                $pass["STEP"] = $extra->step != null ? $extra->step : "";
+                if($extra->selectopt != null) {
+                    $usedSelected = false;
+                    foreach($extra->selectopt as $s) {
+                        $pass["SELECTOPTIONS"] .= '
+<tr id="cfield-tr-selecttr-'.$globalSelectOptCounter.'">
+    <td>'.htmlspecialchars($s).'</td>
+    <td><div style="text-align:right;font-weight:bold;width:100%;">
+    <a id="cfield-action-upoption-'.$globalSelectOptCounter.'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a>
+    <a id="cfield-action-downoption-'.$globalSelectOptCounter.'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a>
+    <a id="cfield-action-renameoption-'.$globalSelectOptCounter.'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a>
+    <a id="cfield-action-deleteoption-'.$globalSelectOptCounter.'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a>
+    </div></td>
+</tr>';
+                        $insert = "";
+                        if(!$usedSelected && $s == $arr["default"]) {
+                            $usedSelected = true;
+                            $insert = "selected";
+                        }
+                        $pass["SELECTOPTIONS4REAL"] .= '<option id="cfield-field-defaultoption-option-'.$globalSelectOptCounter.'" value="'.htmlspecialchars($s).'" '.$insert.'>'.htmlspecialchars($s).'</option>';
+                        $globalSelectOptCounter++;
+                    }
+                    $pass["DEFAULTSELECTED"] = $usedSelected ? "" : "selected";
+                }
+            }
+
 			// A lame solution but I don't feel like solving this problem at 5 AM...
 			$selected = array(false, false, false, false, false, false, false);
 			switch($arr["type"]) {
@@ -113,9 +148,10 @@ class page {
 			);
 			$pass["DEFAULTVALUE"] = htmlspecialchars($arr["default"]);
 			$pass["REGEX"] = htmlspecialchars($arr["regex"]);
-			echo $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
+			$boxes .= $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
 		}
-		echo '</div>';
+        echo $style->replaceVar("tpl/aorderform/top.tpl", array("GLOBALSELECTOPTIONCOUNTER" => $globalSelectOptCounter));
+        echo $boxes;
 		echo $style->replaceVar("tpl/aorderform/bottom.tpl");
 	}
 	
