@@ -101,7 +101,7 @@ $("document").ready(function() {
 	
 	$(".orderDelBtn").click(function() {
 		var id = this.id.split("-")[1];
-		var name = $("#orderTitle-" + id).html();
+		var name = $("#orderTitle-" + id + " a").html();
 		if(confirm("Are you sure you want to delete the \""+name+"\" field?\n"
 		+ "This will also remove any user data associated with it.")) {
 			lockBox(id);
