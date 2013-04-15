@@ -215,6 +215,7 @@ $("document").ready(function() {
             $("#cfield-field-defaultoption-" + id).fadeOut(function() {
                 $("#cfield-field-defaultvalue-" + id).fadeIn();
             });
+            $(".tdregexpdiv-" + id).slideDown();
 		}
 		else if(this.value == "select") {
 			$(".cfield-selectstuff-optdiv-" + id).slideDown();
@@ -222,6 +223,7 @@ $("document").ready(function() {
                 $("#cfield-field-defaultoption-" + id).fadeIn();
             });
             $(".cfield-typeopt-typeoptdiv-" + id).slideUp();
+            $(".tdregexpdiv-" + id).slideUp();
 		}
         else if(this.value == "number" || this.value == "range" || this.value == "week") {
             document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
@@ -230,6 +232,11 @@ $("document").ready(function() {
             $("#cfield-field-defaultoption-" + id).fadeOut(function() {
                 $("#cfield-field-defaultvalue-" + id).fadeIn();
             });
+            if(this.value == "range") {
+                $(".tdregexpdiv-" + id).slideUp();
+                return;
+            }
+            $(".tdregexpdiv-" + id).slideDown();
         }
 		else {
 			document.getElementById("cfield-field-defaultvalue-" + id).setAttribute("type", this.value);
@@ -238,6 +245,11 @@ $("document").ready(function() {
             $("#cfield-field-defaultoption-" + id).fadeOut(function() {
                 $("#cfield-field-defaultvalue-" + id).fadeIn();
             });
+            if(this.value == "checkbox") {
+                $(".tdregexpdiv-" + id).slideUp();
+                return;
+            }
+            $(".tdregexpdiv-" + id).slideDown();
 		}
 	});
 	$(".cfield-field-typelist").change();
