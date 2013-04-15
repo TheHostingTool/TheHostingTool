@@ -1212,6 +1212,13 @@ class Ajax {
                 return;
             }
 
+            foreach(array_count_values($selopt) as $k => $v) {
+                if($v > 1) {
+                    echo json_encode(array('error' => true, 'msg' => 'Duplicate select option: ' . $k));
+                    return;
+                }
+            }
+
             if($defopt != '' && !in_array($defopt, $selopt)) {
                 echo json_encode(array('error' => true, 'msg' => 'Invalid default select option.'));
                 return;
