@@ -25,6 +25,11 @@
 label {
     font-weight: bold;
 }
+.disabledGrey {
+    -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+    filter: gray; /* IE6-9 */
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+}
 </style>
 <script type="text/javascript">
 //<![CDATA[
@@ -40,6 +45,8 @@ $("document").ready(function() {
 		shadow: false // Whether to render a shadow
 	};
 	$.fn.htmlInclusive = function() { return $('<div />').append($(this).clone()).html(); }
+
+    var startup = true;
 	
 	var startSpin = function() {
 		$("#orderSpinner").spin(spinnerOpts);
@@ -73,6 +80,9 @@ $("document").ready(function() {
 	}
 	
 	var onFieldChangeEvent = function(paramId) {
+        if(startup) {
+            return;
+        }
 		var id;
 		if(!isNaN(parseFloat(paramId)) && isFinite(paramId)) {
 			id = paramId;
@@ -84,7 +94,8 @@ $("document").ready(function() {
 		$("#saveBtnDiv-" + id).slideDown();
 	}
 	$("#newCustomFieldLink").click(function() {
-		
+        $("#hiddenFieldBox-new").show();
+		$("#orderfieldbox-new").slideToggle();
 	});
 	$("#sortableDiv").sortable({
 		change: function(event, ui) {
@@ -101,6 +112,9 @@ $("document").ready(function() {
 	
 	$(".orderDelBtn").click(function() {
 		var id = this.id.split("-")[1];
+        if(id == "new") {
+            return;
+        }
 		var name = $("#orderTitle-" + id + " a").html();
 		if(confirm("Are you sure you want to delete the \""+name+"\" field?\n"
 		+ "This will also remove any user data associated with it.")) {
@@ -183,6 +197,9 @@ $("document").ready(function() {
         json[csrfMagicName] = csrfMagicToken;
 		$.post("<AJAX>?function=updateCustomField", json, function(data) {
 			if(!data.error) {
+                if(id == "new") {
+                    // Do something different for new fields...
+                }
                 $("#saveBtnDivGood-" + id).slideUp(function() {
                     $("#saveBtnDivGood-" + id).html(data.msg != null ? data.msg : "Saved!").slideDown();
                 });
@@ -253,7 +270,6 @@ $("document").ready(function() {
             $(".tdregexpdiv-" + id).slideDown();
 		}
 	});
-	$(".cfield-field-typelist").change();
 	var bindActionsAgain = function() {
 		$(".cfield-action-upoption").unbind('click');
 		$(".cfield-action-downoption").unbind('click');
@@ -340,11 +356,19 @@ $("document").ready(function() {
                 .replace(/'/g, "&#039;");
     }
     bindActionsAgain();
-    $(".cfield-field-typelist").change();
+    var typelistlength = $(".cfield-field-typelist").length;
+    $(".cfield-field-typelist").each(function(index) {
+        $(this).change();
+        if(index == typelistlength - 1) {
+            startup = false;
+        }
+    });
+    $("#orderfieldbox-new").removeClass("sortableHandle");
 });
 //]]>
 </script>
 
 <a href="javascript:void(0)" id="newCustomFieldLink"><strong><img src="<ICONDIR>add.png" /> New Custom Field</strong></a>
 <div id="orderSpinnerDiv" class="hiddenStyle"><a id="orderSpinner" class="orderSpinner"></a></div>
+%NEWBOX%
 <div id="sortableDiv">

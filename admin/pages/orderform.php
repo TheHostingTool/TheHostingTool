@@ -60,7 +60,7 @@ class page {
 				$pass["REQC"] = " checked=\"yes\"";
 			}
 			else {
-				$pass["REQ"] = "";
+				$pass["REQ"] = $pass["REQC"] = "";
 			}
             $pass["MIN"] = "";
             $pass["MAX"] = "";
@@ -133,30 +133,43 @@ class page {
                     $selected[9] = true;
                     break;
 			}
-			$pass["TYPELIST"] = $style->createInput('select', 'cfield-field-typelist-'.$arr["id"], '', array('id' => 'cfield-field-typelist-'.$arr["id"], 'class' => 'cfield-field cfield-field-'.$arr["id"].' cfield-field-typelist'),
-				array(
-					array('text' => '--- Standard ---', 'value' => 'standard', 'disabled' => true),
-					array('text' => 'Text', 'value' => 'text', 'selected' => $selected[0]),
-					array('text' => 'Password', 'value' => 'password', 'selected' => $selected[1]),
-					array('text' => 'Checkbox', 'value' => 'checkbox', 'selected' => $selected[2]),
-					array('text' => 'Select Box', 'value' => 'select', 'selected' => $selected[3]),
-					array('text' => '--- HTML5 ---', 'value' => 'html5', 'disabled' => true),
-                    array('text' => 'Number', 'value' => 'number', 'selected' => $selected[9]),
-					array('text' => 'Telephone #', 'value' => 'tel', 'selected' => $selected[4]),
-					array('text' => 'URL', 'value' => 'url', 'selected' => $selected[5]),
-					array('text' => 'Email', 'value' => 'email', 'selected' => $selected[6]),
-					array('text' => 'Range', 'value' => 'range', 'selected' => $selected[7]),
-                    array('text' => 'Week', 'value' => 'week', 'selected' => $selected[8])
-				)
-			);
+			$pass["TYPELIST"] = $this->buildTypeList($arr["id"], $selected);
 			$pass["DEFAULTVALUE"] = htmlspecialchars($arr["default"]);
 			$pass["REGEX"] = htmlspecialchars($arr["regex"]);
+            $pass["DELETEDISABLED"] = $pass["HIDDEN"] =  "";
 			$boxes .= $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
 		}
-        echo $style->replaceVar("tpl/aorderform/top.tpl", array("GLOBALSELECTOPTIONCOUNTER" => $globalSelectOptCounter));
+        $newbox = array("ID" => "new", "TITLE" => "New Field", "REQ" => "", "REQC" => "", "MIN" => "", "MAX" => "",
+            "STEP" => "", "SELECTOPTIONS" => "", "SELECTOPTIONS4REAL" => "", "DEFAULTSELECTED" => " selected",
+            "CHECKED" => "", "DEFAULTVALUE" => "", "REGEX" => "", "DESCRIPTION" => "", "DELETEDISABLED" => "disabledGrey",
+            "HIDDEN" => "hiddenStyle");
+        $newbox["TYPELIST"] = $this->buildTypeList("new", array(false,false,false,false,false,false,false,false,false,false));
+        $top = array("NEWBOX" => $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $newbox),
+            "GLOBALSELECTOPTIONCOUNTER" => $globalSelectOptCounter);
+        echo $style->replaceVar("tpl/aorderform/top.tpl", $top);
         echo $boxes;
 		echo $style->replaceVar("tpl/aorderform/bottom.tpl");
 	}
+
+    private function buildTypeList($id, $selected) {
+        global $style;
+        return $style->createInput('select', 'cfield-field-typelist-'.$id, '', array('id' => 'cfield-field-typelist-'.$id, 'class' => 'cfield-field cfield-field-'.$id.' cfield-field-typelist'),
+            array(
+                array('text' => '--- Standard ---', 'value' => 'standard', 'disabled' => true),
+                array('text' => 'Text', 'value' => 'text', 'selected' => $selected[0]),
+                array('text' => 'Password', 'value' => 'password', 'selected' => $selected[1]),
+                array('text' => 'Checkbox', 'value' => 'checkbox', 'selected' => $selected[2]),
+                array('text' => 'Select Box', 'value' => 'select', 'selected' => $selected[3]),
+                array('text' => '--- HTML5 ---', 'value' => 'html5', 'disabled' => true),
+                array('text' => 'Number', 'value' => 'number', 'selected' => $selected[9]),
+                array('text' => 'Telephone #', 'value' => 'tel', 'selected' => $selected[4]),
+                array('text' => 'URL', 'value' => 'url', 'selected' => $selected[5]),
+                array('text' => 'Email', 'value' => 'email', 'selected' => $selected[6]),
+                array('text' => 'Range', 'value' => 'range', 'selected' => $selected[7]),
+                array('text' => 'Week', 'value' => 'week', 'selected' => $selected[8])
+            )
+        );
+    }
 	
 }
 

@@ -1,11 +1,11 @@
-<div class="orderfieldbox subborder sortableHandle" id="orderfieldbox-%ID%">
+<div class="orderfieldbox subborder sortableHandle %HIDDEN%" id="orderfieldbox-%ID%">
 	<div class="sub">
 		<table width="100%" border="0" cellspacing="2" cellpadding="0">
 			<tr>
 				<td><div style="font-weight: bold;" id="orderTitle-%ID%" class="orderTitle"><a href="javascript:void(0);">%TITLE%</a><div style="display: inline; color: red;" id="orderTitle-Req-%ID%">%REQ%</div></div></td>
 				<td rowspan="2" align="right">
 					<a id="orderEditBtn-%ID%" class="orderEditBtn tooltip" href="javascript:void(0);" title="Edit Details for the %TITLE% field."><img src="<ICONDIR>pencil.png" /></a>
-					<a id="orderDelBtn-%ID%" class="orderDelBtn tooltip" href="javascript:void(0);" title="Delete the %TITLE% field."><img src="<ICONDIR>delete.png" /></a>
+					<a id="orderDelBtn-%ID%" class="orderDelBtn tooltip %DELETEDISABLED%" href="javascript:void(0);" title="Delete the %TITLE% field."><img src="<ICONDIR>delete.png" /></a>
 				</td>
 			</tr>
 		</table>
