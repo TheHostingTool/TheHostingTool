@@ -62,10 +62,8 @@ class page {
 			else {
 				$pass["REQ"] = $pass["REQC"] = "";
 			}
-            $pass["MIN"] = "";
-            $pass["MAX"] = "";
-            $pass["STEP"] = "";
-            $pass["SELECTOPTIONS"] = "";
+            $pass["MIN"] = $pass["MAX"] = $pass["STEP"] = $pass["SELECTOPTIONS"] = $pass["SELECTOPTIONS4REAL"] =
+                $pass["DEFAULTSELECTED"] = "";
             if($arr['extra'] != '') {
                 $extra = json_decode($arr['extra']);
                 $pass["MIN"] = $extra->min != null ? $extra->min : "";
