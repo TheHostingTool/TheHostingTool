@@ -52,7 +52,7 @@ class db {
 
 	// mysql_insert_id
 	public function insert_id() {
-		return @mysql_insert_id($sql);
+		return @mysql_insert_id();
 	}
 	
 	public function num_rows($sql) { # Runs a query and returns the rows
