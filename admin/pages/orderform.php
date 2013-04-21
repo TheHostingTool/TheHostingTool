@@ -9,7 +9,7 @@
 // Check if called by script
 if(THT != 1){die();}
 
-define("PAGE", "Order Form");
+if(!class_exists("Ajax")) { define("PAGE", "Order Form"); }
 
 class page {
 	
@@ -52,90 +52,8 @@ class page {
         $globalSelectOptCounter = 0;
 		while($arr = mysql_fetch_assoc($query)) {
 			if(isset($pass)) { unset($pass); }
-			$pass["ID"] = $arr["id"];
-			$pass["TITLE"] = htmlspecialchars($arr["title"]);
-			$pass["DESCRIPTION"] = htmlspecialchars($arr["description"]);
-			if($arr["required"] == 1) {
-				$pass["REQ"] = "*";
-				$pass["REQC"] = " checked=\"yes\"";
-			}
-			else {
-				$pass["REQ"] = $pass["REQC"] = "";
-			}
-            $pass["MIN"] = $pass["MAX"] = $pass["STEP"] = $pass["SELECTOPTIONS"] = $pass["SELECTOPTIONS4REAL"] =
-                $pass["DEFAULTSELECTED"] = "";
-            if($arr['extra'] != '') {
-                $extra = json_decode($arr['extra']);
-                $pass["MIN"] = $extra->min != null ? $extra->min : "";
-                $pass["MAX"] = $extra->max != null ? $extra->max : "";
-                $pass["STEP"] = $extra->step != null ? $extra->step : "";
-                if($extra->selectopt != null) {
-                    $usedSelected = false;
-                    foreach($extra->selectopt as $s) {
-                        $pass["SELECTOPTIONS"] .= '
-<tr id="cfield-tr-selecttr-'.$globalSelectOptCounter.'">
-    <td>'.htmlspecialchars($s).'</td>
-    <td><div style="text-align:right;font-weight:bold;width:100%;">
-    <a id="cfield-action-upoption-'.$globalSelectOptCounter.'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a>
-    <a id="cfield-action-downoption-'.$globalSelectOptCounter.'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a>
-    <a id="cfield-action-renameoption-'.$globalSelectOptCounter.'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a>
-    <a id="cfield-action-deleteoption-'.$globalSelectOptCounter.'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a>
-    </div></td>
-</tr>';
-                        $insert = "";
-                        if(!$usedSelected && $s == $arr["default"]) {
-                            $usedSelected = true;
-                            $insert = "selected";
-                        }
-                        $pass["SELECTOPTIONS4REAL"] .= '<option id="cfield-field-defaultoption-option-'.$globalSelectOptCounter.'" value="'.htmlspecialchars($s).'" '.$insert.'>'.htmlspecialchars($s).'</option>';
-                        $globalSelectOptCounter++;
-                    }
-                    $pass["DEFAULTSELECTED"] = $usedSelected ? "" : "selected";
-                }
-            }
-
-            $pass["CHECKED"] = "";
-
-			// A lame solution but I don't feel like solving this problem at 5 AM...
-			$selected = array(false, false, false, false, false, false, false);
-			switch($arr["type"]) {
-				case "text":
-					$selected[0] = true;
-					break;
-				case "password":
-					$selected[1] = true;
-					break;
-				case "checkbox":
-					$selected[2] = true;
-                    $pass["CHECKED"] = $arr["default"] == "1" ? "checked" : "";
-					break;
-				case "select":
-					$selected[3] = true;
-					break;
-				case "tel":
-					$selected[4] = true;
-					break;
-				case "url":
-					$selected[5] = true;
-					break;
-				case "email":
-					$selected[6] = true;
-					break;
-				case "range":
-					$selected[7] = true;
-					break;
-                case "week":
-                    $selected[8] = true;
-                    break;
-                case "number":
-                    $selected[9] = true;
-                    break;
-			}
-			$pass["TYPELIST"] = $this->buildTypeList($arr["id"], $selected);
-			$pass["DEFAULTVALUE"] = htmlspecialchars($arr["default"]);
-			$pass["REGEX"] = htmlspecialchars($arr["regex"]);
-            $pass["DELETEDISABLED"] = $pass["HIDDEN"] =  "";
-			$boxes .= $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
+			$boxes .= $this->buildFieldBox($arr["id"], $arr["title"], $arr["type"], $arr["default"], $arr["description"],
+                $arr["required"], $arr["regex"], $arr["extra"], $globalSelectOptCounter);
 		}
         $newbox = array("ID" => "new", "TITLE" => "New Field", "REQ" => "", "REQC" => "", "MIN" => "", "MAX" => "",
             "STEP" => "", "SELECTOPTIONS" => "", "SELECTOPTIONS4REAL" => "", "DEFAULTSELECTED" => " selected",
@@ -148,6 +66,95 @@ class page {
         echo $boxes;
 		echo $style->replaceVar("tpl/aorderform/bottom.tpl");
 	}
+
+    // Referenced by ajax.php!
+    public function buildFieldBox($id, $title, $type, $default, $description, $required, $regex, $extra, &$globalSelectOptCounter) {
+        $pass["ID"] = $id;
+        $pass["TITLE"] = htmlspecialchars($title);
+        $pass["DESCRIPTION"] = htmlspecialchars($description);
+        if($required == 1) {
+            $pass["REQ"] = "*";
+            $pass["REQC"] = " checked=\"yes\"";
+        }
+        else {
+            $pass["REQ"] = $pass["REQC"] = "";
+        }
+        $pass["MIN"] = $pass["MAX"] = $pass["STEP"] = $pass["SELECTOPTIONS"] = $pass["SELECTOPTIONS4REAL"] =
+        $pass["DEFAULTSELECTED"] = "";
+        if($extra != '') {
+            $extra = json_decode($extra);
+            $pass["MIN"] = $extra->min != null ? $extra->min : "";
+            $pass["MAX"] = $extra->max != null ? $extra->max : "";
+            $pass["STEP"] = $extra->step != null ? $extra->step : "";
+            if($extra->selectopt != null) {
+                $usedSelected = false;
+                foreach($extra->selectopt as $s) {
+                    $pass["SELECTOPTIONS"] .= '
+<tr id="cfield-tr-selecttr-'.$globalSelectOptCounter.'">
+    <td>'.htmlspecialchars($s).'</td>
+    <td><div style="text-align:right;font-weight:bold;width:100%;">
+    <a id="cfield-action-upoption-'.$globalSelectOptCounter.'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a>
+    <a id="cfield-action-downoption-'.$globalSelectOptCounter.'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a>
+    <a id="cfield-action-renameoption-'.$globalSelectOptCounter.'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a>
+    <a id="cfield-action-deleteoption-'.$globalSelectOptCounter.'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a>
+    </div></td>
+</tr>';
+                    $insert = "";
+                    if(!$usedSelected && $s == $default) {
+                        $usedSelected = true;
+                        $insert = "selected";
+                    }
+                    $pass["SELECTOPTIONS4REAL"] .= '<option id="cfield-field-defaultoption-option-'.$globalSelectOptCounter.'" value="'.htmlspecialchars($s).'" '.$insert.'>'.htmlspecialchars($s).'</option>';
+                    $globalSelectOptCounter++;
+                }
+                $pass["DEFAULTSELECTED"] = $usedSelected ? "" : "selected";
+            }
+        }
+
+        $pass["CHECKED"] = "";
+
+        // A lame solution but I don't feel like solving this problem at 5 AM...
+        $selected = array(false, false, false, false, false, false, false);
+        switch($type) {
+            case "text":
+                $selected[0] = true;
+                break;
+            case "password":
+                $selected[1] = true;
+                break;
+            case "checkbox":
+                $selected[2] = true;
+                $pass["CHECKED"] = $default == "1" ? "checked" : "";
+                break;
+            case "select":
+                $selected[3] = true;
+                break;
+            case "tel":
+                $selected[4] = true;
+                break;
+            case "url":
+                $selected[5] = true;
+                break;
+            case "email":
+                $selected[6] = true;
+                break;
+            case "range":
+                $selected[7] = true;
+                break;
+            case "week":
+                $selected[8] = true;
+                break;
+            case "number":
+                $selected[9] = true;
+                break;
+        }
+        $pass["TYPELIST"] = $this->buildTypeList($id, $selected);
+        $pass["DEFAULTVALUE"] = htmlspecialchars($default);
+        $pass["REGEX"] = htmlspecialchars($regex);
+        $pass["DELETEDISABLED"] = $pass["HIDDEN"] =  "";
+        global $style;
+        return $style->replaceVar("tpl/aorderform/orderfieldbox.tpl", $pass);
+    }
 
     private function buildTypeList($id, $selected) {
         global $style;

@@ -78,6 +78,16 @@ $("document").ready(function() {
 		$(".cfield-field-" + id).removeAttr("disabled");
 		$(".cfield-field-" + id).removeAttr("readonly");
 	}
+
+    var doTypelistLoop = function() {
+        var typelistlength = $(".cfield-field-typelist").length;
+        $(".cfield-field-typelist").each(function(index) {
+            $(this).change();
+            if(index == typelistlength - 1) {
+                startup = false;
+            }
+        });
+    }
 	
 	var onFieldChangeEvent = function(paramId) {
         if(startup) {
@@ -102,42 +112,40 @@ $("document").ready(function() {
 			$("#saveOrderChangesDiv").slideDown();
 		}
 	});
-	
-	$(".orderEditBtn").click(editOrderBtnClickEvent);
-	$(".orderTitle").click(editOrderBtnClickEvent);
-	function editOrderBtnClickEvent(event) {
+
+	var editOrderBtnClickEvent = function() {
 		var id = this.id.split("-")[1];
 		$("#hiddenFieldBox-"+id).slideToggle();
 	}
-	
-	$(".orderDelBtn").click(function() {
-		var id = this.id.split("-")[1];
+
+    var delOrderBtnClickEvent = function() {
+        var id = this.id.split("-")[1];
         if(id == "new") {
             return;
         }
-		var name = $("#orderTitle-" + id + " a").html();
-		if(confirm("Are you sure you want to delete the \""+name+"\" field?\n"
-		+ "This will also remove any user data associated with it.")) {
-			lockBox(id);
-			startSpin();
+        var name = $("#orderTitle-" + id + " a").html();
+        if(confirm("Are you sure you want to delete the \""+name+"\" field?\n"
+                + "This will also remove any user data associated with it.")) {
+            lockBox(id);
+            startSpin();
             var json = {
                 id: id
             }
             json[csrfMagicName] = csrfMagicToken;
-			$.post("<AJAX>?function=deleteCustomField", json, function (data) {
-				if(data == "1") {
-					$("#orderfieldbox-" + id).slideUp(function() {
-						$("#orderfieldbox-" + id).remove();
-						stopSpin();
-					});
-				}
-				else {
-					unlockBox(id);
-					stopSpin();
-				}
-			});
-		}
-	});
+            $.post("<AJAX>?function=deleteCustomField", json, function (data) {
+                if(data == "1") {
+                    $("#orderfieldbox-" + id).slideUp(function() {
+                        $("#orderfieldbox-" + id).remove();
+                        stopSpin();
+                    });
+                }
+                else {
+                    unlockBox(id);
+                    stopSpin();
+                }
+            });
+        }
+    }
 	
 	$("#saveOrderChangesBtn").click(function() {
 		$(this).attr("disabled", "disabled");
@@ -166,64 +174,8 @@ $("document").ready(function() {
 			});
 		});
 	});
-	$(".saveBtn").click(function() {
-		var id = this.id.split("-")[1];
-		$(".saveBtnDivStatus-" + id).slideUp();
-		
-		if($("#cfield-field-title-" + id).val() == "") {
-			alert("A title is required.");
-			return;
-		}
-		
-		$(this).attr("disabled", "disabled");
-		$(this).html("Saving...");
-		lockBox(id);
-		startSpin();
-        var json = {
-            id: id,
-            title: $("#cfield-field-title-" + id).val(),
-            description: $("#cfield-field-description-" + id).val(),
-            type: $("#cfield-field-typelist-" + id).val(),
-            selectopt: $("#cfield-tbody-selectoptions-" + id).html(),
-            defaultvalue: $("#cfield-field-defaultvalue-" + id).attr('type') == 'checkbox' ?
-                    $("#cfield-field-defaultvalue-" + id).is(':checked') : $("#cfield-field-defaultvalue-" + id).val(),
-            regex: $("#cfield-field-regex-" + id).val(),
-            required: $("#cfield-field-required-" + id).is(':checked'),
-            min: $("#cfield-typeopt-min-" + id).val(),
-            max: $("#cfield-typeopt-max-" + id).val(),
-            step: $("#cfield-typeopt-step-" + id).val(),
-            defaultopt: $("#cfield-field-defaultoption-" + id).val()
-        };
-        json[csrfMagicName] = csrfMagicToken;
-		$.post("<AJAX>?function=updateCustomField", json, function(data) {
-			if(!data.error) {
-                if(id == "new") {
-                    // Do something different for new fields...
-                }
-                $("#saveBtnDivGood-" + id).slideUp(function() {
-                    $("#saveBtnDivGood-" + id).html(data.msg != null ? data.msg : "Saved!").slideDown();
-                });
-                if($("#cfield-field-title-" + id).val() != $("#orderTitle-"+id+" a").html()) {
-                    $("#orderTitle-"+id+" a").fadeOut(function() {
-                        $("#orderTitle-"+id+" a").text($("#cfield-field-title-" + id).val()).fadeIn();
-                    });
-                }
-                var star = $("#cfield-field-required-" + id).is(':checked');
-                if((star && $("#orderTitle-Req-" + id).html() != "*") || (!star && $("#orderTitle-Req-" + id).html() == "*")) {
-                    $("#orderTitle-Req-" + id).fadeOut(function() {
-                        $("#orderTitle-Req-" + id).html($("#cfield-field-required-" + id).is(':checked') ? "*" : "").fadeIn();
-                    });
-                }
-		    }
-			else {
-				$("#saveBtnDivBad-" + id).html(data.error ? data.msg : "An unknown error has occurred. :( Your changes may or may not have been saved.").fadeIn();
-			}
-			$("#saveBtn-" + id).html("Save Changes");
-			unlockBox(id);
-			stopSpin();
-		}, "json");
-	});
-	$(".cfield-field-typelist").change(function() {
+
+	var onFieldTypelistChange = function() {
 		var id = this.id.split("-")[3];
 		// Needs testing with IE. Bypassing jQuery for compatibility
 		if(this.value == "password") {
@@ -269,17 +221,42 @@ $("document").ready(function() {
             }
             $(".tdregexpdiv-" + id).slideDown();
 		}
-	});
+	};
+
+    var onTypeOptInputChangeEvent = function() {
+        var split = this.id.split("-");
+        $("#cfield-field-defaultvalue-" + split[3]).attr(split[2], $(this).val());
+    }
+
 	var bindActionsAgain = function() {
 		$(".cfield-action-upoption").unbind('click');
 		$(".cfield-action-downoption").unbind('click');
 		$(".cfield-action-renameoption").unbind('click');
 		$(".cfield-action-deleteoption").unbind('click');
+        $(".cfield-action-newoption").unbind('click');
 		$(".cfield-action-upoption").click(onOptionUpClick);
 		$(".cfield-action-downoption").click(onOptionDownClick);
 		$(".cfield-action-renameoption").click(onOptionRenameClick);
 		$(".cfield-action-deleteoption").click(onOptionDeleteClick);
+        $(".cfield-action-newoption").click(onOptionNewClick);
 	}
+
+    var bindEssentialActionsAgain = function() {
+        $(".orderEditBtn").unbind('click');
+        $(".orderTitle").unbind('click');
+        $(".orderDelBtn").unbind('click');
+        $(".cfield-field").unbind('change');
+        $(".cfield-typeopt-input").unbind('change');
+        $(".cfield-field-typelist").unbind('change');
+        $(".saveBtn").unbind('click');
+        $(".orderEditBtn").click(editOrderBtnClickEvent);
+        $(".orderTitle").click(editOrderBtnClickEvent);
+        $(".orderDelBtn").click(delOrderBtnClickEvent);
+        $(".cfield-field").change(onFieldChangeEvent);
+        $(".cfield-typeopt-input").change(onTypeOptInputChangeEvent);
+        $(".cfield-field-typelist").change(onFieldTypelistChange);
+        $(".saveBtn").click(onSaveButtonClick);
+    }
 
 	var onOptionRenameClick = function() {
         var id = this.id.split("-")[3];
@@ -326,26 +303,95 @@ $("document").ready(function() {
     }
 
     var globalOptionIdCounter = %GLOBALSELECTOPTIONCOUNTER%;
-	$(".cfield-action-newoption").click(function() {
-		var id = this.id.split("-")[3];
-		var title = prompt("The title of your new option:");
-		if(title == undefined || title == null || title == "") {
-			return;
-		}
-		$("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+escapeHtml(title)+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
+
+    var onOptionNewClick = function() {
+        var id = this.id.split("-")[3];
+        var title = prompt("The title of your new option:");
+        if(title == undefined || title == null || title == "") {
+            return;
+        }
+        $("#cfield-tbody-selectoptions-" + id).append('<tr id="cfield-tr-selecttr-'+globalOptionIdCounter+'"><td>'+escapeHtml(title)+'</td><td><div style="text-align:right;font-weight:bold;width:100%;"><a id="cfield-action-upoption-'+globalOptionIdCounter+'" class="cfield-action-upoption" href="javascript:void(0);">[Up]</a> <a id="cfield-action-downoption-'+globalOptionIdCounter+'" class="cfield-action-downoption" href="javascript:void(0);">[Down]</a> <a id="cfield-action-renameoption-'+globalOptionIdCounter+'" class="cfield-action-renameoption" href="javascript:void(0);">[Rename]</a> <a id="cfield-action-deleteoption-'+globalOptionIdCounter+'" class="cfield-action-deleteoption" href="javascript:void(0);">[Delete]</a></div></td></tr>');
         $("#cfield-field-defaultoption-" + id).append('<option id="cfield-field-defaultoption-option-'+globalOptionIdCounter+'" value="'+escapeHtml(title)+'">'+escapeHtml(title)+'</option>');
         globalOptionIdCounter++;
-		// Re-bind events to new elements
-		bindActionsAgain();
-		onFieldChangeEvent(id);
-	});
-	$(".cfield-field").change(onFieldChangeEvent);
-
-    var onTypeOptInputChangeEvent = function() {
-        var split = this.id.split("-");
-        $("#cfield-field-defaultvalue-" + split[3]).attr(split[2], $(this).val());
+        // Re-bind events to new elements
+        bindActionsAgain();
+        onFieldChangeEvent(id);
     }
-    $(".cfield-typeopt-input").change(onTypeOptInputChangeEvent);
+
+
+    var onSaveButtonClick = function() {
+        var id = this.id.split("-")[1];
+        $(".saveBtnDivStatus-" + id).slideUp();
+
+        if($("#cfield-field-title-" + id).val() == "") {
+            alert("A title is required.");
+            return;
+        }
+
+        $(this).attr("disabled", "disabled");
+        $(this).html("Saving...");
+        lockBox(id);
+        startSpin();
+        var json = {
+            id: id,
+            title: $("#cfield-field-title-" + id).val(),
+            description: $("#cfield-field-description-" + id).val(),
+            type: $("#cfield-field-typelist-" + id).val(),
+            selectopt: $("#cfield-tbody-selectoptions-" + id).html(),
+            defaultvalue: $("#cfield-field-defaultvalue-" + id).attr('type') == 'checkbox' ?
+                    $("#cfield-field-defaultvalue-" + id).is(':checked') : $("#cfield-field-defaultvalue-" + id).val(),
+            regex: $("#cfield-field-regex-" + id).val(),
+            required: $("#cfield-field-required-" + id).is(':checked'),
+            min: $("#cfield-typeopt-min-" + id).val(),
+            max: $("#cfield-typeopt-max-" + id).val(),
+            step: $("#cfield-typeopt-step-" + id).val(),
+            defaultopt: $("#cfield-field-defaultoption-" + id).val(),
+            counter: globalOptionIdCounter
+        };
+        json[csrfMagicName] = csrfMagicToken;
+        $.post("<AJAX>?function=updateCustomField", json, function(data) {
+            if(!data.error) {
+                if(id == "new") {
+                    $("#orderfieldbox-new").slideUp(function() {
+                        // Restore new box
+                        $("#orderfieldbox-new").html(newBoxHtml);
+                        bindActionsAgain();
+                        bindEssentialActionsAgain();
+                        $("#cfield-field-typelist-new").change();
+                        doTooltip("#orderfieldbox-new");
+                    });
+                    globalOptionIdCounter = data.counter;
+                    $("<div></div>").prependTo("#sortableDiv").hide().prepend(data.newbox).slideDown();
+                    bindActionsAgain();
+                    bindEssentialActionsAgain();
+                    $("#cfield-field-typelist-" + data.id).change();
+                    doTooltip("#orderfieldbox-" + data.id);
+                }
+                else {
+                    $("#saveBtnDivGood-" + id).slideUp(function() {
+                        $("#saveBtnDivGood-" + id).html(data.msg != null ? data.msg : "Saved!").slideDown();
+                    });
+                    if($("#cfield-field-title-" + id).val() != $("#orderTitle-"+id+" a").html()) {
+                        $("#orderTitle-"+id+" a").fadeOut(function() {
+                            $("#orderTitle-"+id+" a").text($("#cfield-field-title-" + id).val()).fadeIn();
+                        });
+                    }
+                    var star = $("#cfield-field-required-" + id).is(':checked');
+                    if((star && $("#orderTitle-Req-" + id).html() != "*") || (!star && $("#orderTitle-Req-" + id).html() == "*")) {
+                        $("#orderTitle-Req-" + id).fadeOut(function() {
+                            $("#orderTitle-Req-" + id).html($("#cfield-field-required-" + id).is(':checked') ? "*" : "").fadeIn();
+                        });
+                    }
+                }
+            }
+            else {
+                $("#saveBtnDivBad-" + id).html(data.error ? data.msg : "An unknown error has occurred. :( Your changes may or may not have been saved.").fadeIn();
+            }
+            $("#saveBtn-" + id).html("Save Changes");
+            unlockBox(id);
+            stopSpin();
+        }, "json");
+    }
 
     function escapeHtml(unsafe) {
         return unsafe
@@ -355,14 +401,10 @@ $("document").ready(function() {
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
     }
+    var newBoxHtml = $("#orderfieldbox-new").html();
     bindActionsAgain();
-    var typelistlength = $(".cfield-field-typelist").length;
-    $(".cfield-field-typelist").each(function(index) {
-        $(this).change();
-        if(index == typelistlength - 1) {
-            startup = false;
-        }
-    });
+    bindEssentialActionsAgain();
+    doTypelistLoop();
     $("#orderfieldbox-new").removeClass("sortableHandle");
 });
 //]]>

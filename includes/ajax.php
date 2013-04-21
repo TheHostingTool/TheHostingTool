@@ -1261,18 +1261,32 @@ class Ajax {
         $extra = array('min' => $min, 'max' => $max, 'step' => $step, 'selectopt' => $selopt);
 
         global $main, $db;
-        if($db->num_rows($db->query("SELECT `id` FROM `<PRE>orderfields` WHERE `id` = '{$main->postvar['id']}'")) == 0) {
+        if($_POST["id"] != "new" && $db->num_rows($db->query("SELECT `id` FROM `<PRE>orderfields` WHERE `id` = '{$main->postvar['id']}'")) == 0) {
             echo json_encode(array('error' => true, 'msg' => 'That ID does not exist.'));
             return;
         }
-        $db->query("UPDATE `<PRE>orderfields` SET `title` = '{$db->strip($title)}', `type` = '{$db->strip($type)}',
-        `default` = '{$db->strip($defval)}', `description` = '{$db->strip($desc)}', `required` = '{$db->strip($required)}',
-        `regex` = '{$db->strip($regex)}', `extra` = '{$db->strip(json_encode($extra))}' WHERE `id` = '{$main->postvar['id']}'");
+        $extra = json_encode($extra);
+        $db->query(($_POST["id"] == "new" ? "INSERT INTO" : "UPDATE") . " `<PRE>orderfields` SET `title` = '{$db->strip($title)}',
+            `type` = '{$db->strip($type)}', `default` = '{$db->strip($defval)}', `description` = '{$db->strip($desc)}',
+            `required` = '{$db->strip($required)}', `regex` = '{$db->strip($regex)}', `extra` = '{$db->strip($extra)}'"
+            . ($_POST["id"] == "new" ? "" : "WHERE `id` = '{$main->postvar['id']}'"));
         if(mysql_affected_rows() == 0) {
             echo json_encode(array('error' => false, 'msg' => 'No changes have been made.'));
             return;
         }
-        echo json_encode(array('error' => false, 'msg' => null));
+
+        $newbox = null;
+        $counter = (int)$_POST["counter"];
+        $id = $_POST["id"];
+        if($_POST["id"] == "new") {
+            // Let's hope a "page" class hasn't already been defined...
+            require_once(LINK . "../admin/pages/orderform.php");
+            $admin = new page();
+            global $db;
+            $id = $db->insert_id();
+            $newbox = $admin->buildFieldBox($id, $title, $type, $defval, $desc, $required, $regex, $extra, $counter);
+        }
+        echo json_encode(array('error' => false, 'msg' => null, 'id' => $id, 'newbox' => $newbox, 'counter' => $counter));
     }
 
 }
