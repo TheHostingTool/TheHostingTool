@@ -6,22 +6,22 @@
 // Released under the GNU-GPL
 //////////////////////////////
 
-//Compile THT
+// Compile THT
 define("LINK", "../includes/");
 define("CRON", 0);
 include(LINK ."compiler.php");
 
-//THT Variables
+// THT Variables
 define("PAGE", "Admin Area");
 
-//Main ACP Function - Creates the ACP basically
+// Main ACP Function - Creates the ACP basically
 function acp() {
 	global $main;
 	global $db;
 	global $style;
 	global $type;
 	global $email;
-	ob_start(); # Stop the output buffer
+	ob_start(); // Stop the output buffer
 
 	if(!$main->getvar['page']) { 
 		$main->getvar['page'] = "home";
@@ -66,7 +66,7 @@ function acp() {
 					$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
 				}
 			}
-			# Types Navbar
+			// Types Navbar
 			/*
 			 * When Working on the navbar, to make a spacer use this:
 			 * $array['LINKS'] .= $style->replaceVar("tpl/spacer.tpl");
@@ -156,13 +156,13 @@ function acp() {
 					$html = ob_get_clean();
 				}
 				elseif($content->navlist) {
-					$html .= $content->description(); # First, we gotta get the page description.
-                    $html .= "<br /><br />"; # Break it up
+					$html .= $content->description(); // First, we gotta get the page description.
+                    $html .= "<br /><br />"; // Break it up
                     // Now we should prepend some stuff here
                     $subsidebar2 .= "<strong>Page Submenu</strong><div class='break'></div>";
                     $subsidebar2 .= $subsidebar;
                     // Done, now output it in a sub() table
-                    $html .= $main->sub($subsidebar2, NULL); # Initial implementation, add the SubSidebar(var) into the description, basically append it 
+                    $html .= $main->sub($subsidebar2, NULL); // Initial implementation, add the SubSidebar(var) into the description, basically append it
 					if(isset($content->defaultNav)) {
 						header("Location: ?page=".$main->getvar['page']."&sub=".$content->navlist[$content->defaultNav][2]);
 						die();
@@ -197,7 +197,7 @@ function acp() {
 	
 	$data = ob_get_clean();
 	
-	return $data; # Return the HTML
+	return $data; // Return the HTML
 }
 
 if(!$_SESSION['logged']) {
@@ -239,7 +239,7 @@ if(!$_SESSION['logged']) {
 	else{
 		define("SUB", "Login");
 		define("INFO", " ");
-		if($_POST) { # If user submitts form
+		if($_POST) { // If user submitts form
 		if($main->staffLogin($main->postvar['user'], $main->postvar['pass'])) {
 			$queryString = $_SERVER["QUERY_STRING"];
 			if($queryString == "") {
@@ -272,6 +272,6 @@ if(!$_SESSION['logged']) {
 	echo $style->get("footer.tpl");
 }
 
-//End the sctipt
+// End the script
 include(LINK ."output.php");
 ?>
