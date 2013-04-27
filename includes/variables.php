@@ -110,9 +110,8 @@ $data = preg_replace("/<MENU>/si", $navigation, $data);
 $data = preg_replace("/<URL>/si", URL, $data);
 $data = preg_replace("/<AJAX>/si", URL."includes/ajax.php", $data);
 $data = preg_replace("/<IMG>/si", URL . "themes/". THEME ."/images/", $data);
-$data = preg_replace("/<ICONDIR>/si", URL . "themes/icons/", $data);
 $data = preg_replace("/<PAGEGEN>/si", $pagegen, $data); #Page Generation Time
-
+$data = preg_replace("/<ICONDIR>/si", URL . "themes/icons/", $data);
 $data = preg_replace("/<COPYRIGHT>/si", '<div id="footer">Powered by <a href="http://thehostingtool.com/" target="_blank">TheHostingTool</a> '. $version .'</div>', $data);
 global $main;
 $data = preg_replace("/<ERRORS>/si", '<span class="errors">'.$main->errors().'</span>', $data);

@@ -24,7 +24,7 @@ class style {
 		}
 	}
 
-	private function getFile($name, $prepare = 1, $override = 0) { # Returns the content of a file
+	private function getFile($name, $prepare = 0, $override = 0) { # Returns the content of a file
 		global $db;
 		$link = LINK ."../themes/". THEME . "/" . $name;
 		if(!file_exists($link) || $override != 0) {
