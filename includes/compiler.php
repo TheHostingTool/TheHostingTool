@@ -181,11 +181,6 @@ if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we insta
         header("Location: $installURL");
 }
 
-
-// Resets the error.
-$_SESSION['ecount'] = 0;
-$_SESSION['errors'] = 0;
-
 // If payment..
 if(FOLDER == "client" && $main->getvar['page'] == "invoices" && $main->getvar['iid'] && $_SESSION['clogged'] == 1) {
 	$invoice->pay($main->getvar['iid'], "client/index.php?page=invoices");
