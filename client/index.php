@@ -124,8 +124,7 @@ function client() {
 				else {
 					ob_start();
 					$content->content();
-					$html = ob_get_contents(); // Retrieve the HTML
-					ob_clean(); // Flush the HTML	
+					$html = ob_get_clean();
 				}
 			}
 		}
@@ -159,8 +158,7 @@ function client() {
 	echo $main->table($header, $html);
 	echo '</div>';
 	
-	$data = ob_get_contents(); # Retrieve the HTML
-	ob_clean(); # Flush the HTML
+	$data = ob_get_clean();
 	
 	return $data; # Return the HTML
 }

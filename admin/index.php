@@ -22,7 +22,7 @@ function acp() {
 	global $type;
 	global $email;
 	ob_start(); # Stop the output buffer
-	
+
 	if(!$main->getvar['page']) { 
 		$main->getvar['page'] = "home";
 	}
@@ -153,8 +153,7 @@ function acp() {
 				if(isset($main->getvar['sub'])) {
 					ob_start();
 					$content->content();
-					$html = ob_get_contents(); # Retrieve the HTML
-					ob_clean(); # Flush the HTML
+					$html = ob_get_clean();
 				}
 				elseif($content->navlist) {
 					$html .= $content->description(); # First, we gotta get the page description.
@@ -172,8 +171,7 @@ function acp() {
 				else {
 					ob_start();
 					$content->content();
-					$html = ob_get_contents(); # Retrieve the HTML
-					ob_clean(); # Flush the HTML
+					$html = ob_get_clean();
 				}
 			}
 		}
@@ -197,8 +195,7 @@ function acp() {
 	echo $main->table($header, $html);
 	echo '</div>';
 	
-	$data = ob_get_contents(); # Retrieve the HTML
-	ob_clean(); # Flush the HTML
+	$data = ob_get_clean();
 	
 	return $data; # Return the HTML
 }
