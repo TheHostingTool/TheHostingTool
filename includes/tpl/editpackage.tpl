@@ -57,6 +57,13 @@
     <td>
       <input name="direct" type="text" size="60" id="direct" value="%URL%order/index.php?id=%ID%" readonly /> <a title="A link to order the package directly without showing other packages. (Allows ordering hidden packages.)" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
+    <tr>
+        <td valign="top">Custom Fields:</td>
+        <td>
+            <select name="cfields[]" multiple="multiple">
+                %SELECTFIELDLISTING%
+            </select> <a title="Select the custom fields you wish to be used for this package." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+    </tr>
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>

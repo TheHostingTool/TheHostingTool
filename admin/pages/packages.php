@@ -30,7 +30,7 @@ class page {
 	}
 
 	private function isAdditional($key) {
-		return $key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin" && $key != $GLOBALS['csrf']['input-name'] && $key != "direct" && $key != "add";
+		return $key != "name" && $key != "backend" && $key != "description" && $key != "type" && $key != "server" && $key != "admin" && $key != $GLOBALS['csrf']['input-name'] && $key != "direct" && $key != "add" && $key != "cfields";
 	}
 	
 	public function content() { # Displays the page 
@@ -56,7 +56,14 @@ class page {
 								$n++;
 							}
 						}
-						$db->query("INSERT INTO `<PRE>packages` (name, backend, description, type, server, admin, is_hidden, is_disabled, additional, reseller) VALUES('{$main->postvar['name']}', '{$main->postvar['backend']}', '{$main->postvar['description']}', '{$main->postvar['type']}', '{$main->postvar['server']}', '{$main->postvar['admin']}', '{$main->postvar['hidden']}', '{$main->postvar['disabled']}', '{$additional}', '{$main->postvar['reseller']}')");
+                        $cfields = array();
+                        if(isset($_POST['cfields'])) {
+                            foreach($_POST['cfields'] as $field) {
+                                $cfields[] = (int)$field;
+                            }
+                        }
+                        $cfields = json_encode($cfields);
+						$db->query("INSERT INTO `<PRE>packages` (name, backend, description, type, server, admin, is_hidden, is_disabled, additional, reseller, custom_fields) VALUES('{$main->postvar['name']}', '{$main->postvar['backend']}', '{$main->postvar['description']}', '{$main->postvar['type']}', '{$main->postvar['server']}', '{$main->postvar['admin']}', '{$main->postvar['hidden']}', '{$main->postvar['disabled']}', '{$additional}', '{$main->postvar['reseller']}', '{$db->strip($cfields)}')");
 						$main->errors("Package has been added!");
 					}
 				}
@@ -69,6 +76,14 @@ class page {
 					$values[] = array($data['name'], $data['id']);	
 				}
 				$array['SERVER'] = $main->dropDown("server", $values);
+                $cfields = $db->query("SELECT `id`,`title` FROM `<PRE>orderfields` ORDER BY `order` ASC");
+                while($field = $db->fetch_array($cfields)) {
+                    $array['SELECTFIELDLISTING'] .= '<option value="'.$field['id'].'">'
+                        .htmlspecialchars($field['title']).'</option>';
+                }
+                if($array['SELECTFIELDLISTING'] == '') {
+                    $array['SELECTFIELDLISTING'] = '<option disabled="disabled">No Fields Defined</option>';
+                }
 				echo $style->replaceVar("tpl/addpackage.tpl", $array);
 				break;
 				
@@ -96,6 +111,13 @@ class page {
 										$n++;
 									}
 								}
+                                $cfields = array();
+                                if(isset($_POST['cfields'])) {
+                                    foreach($_POST['cfields'] as $field) {
+                                        $cfields[] = (int)$field;
+                                    }
+                                }
+                                $cfields = json_encode($cfields);
 								$db->query("UPDATE `<PRE>packages` SET
 										   `name` = '{$main->postvar['name']}',
 										   `backend` = '{$main->postvar['backend']}',
@@ -105,7 +127,8 @@ class page {
 										   `additional` = '{$additional}',
 										   `reseller` = '{$main->postvar['reseller']}',
 										   `is_hidden` = '{$main->postvar['hidden']}',
-										   `is_disabled` = '{$main->postvar['disabled']}'
+										   `is_disabled` = '{$main->postvar['disabled']}',
+										   `custom_fields` = '{$db->strip($cfields)}'
 										   WHERE `id` = '{$main->getvar['do']}'");
 								$main->errors("Package has been edited!");
 								$main->done();
@@ -150,10 +173,24 @@ class page {
 						global $type;
 						$array['FORM'] = $type->acpPedit($data['type'], $cform);
 						$query = $db->query("SELECT * FROM `<PRE>servers`");
-						while($data = $db->fetch_array($query)) {
-							$values[] = array($data['name'], $data['id']);	
+						while($serverData = $db->fetch_array($query)) {
+							$values[] = array($serverData['name'], $serverData['id']);
 						}
 						$array['SERVER'] = $array['THEME'] = $main->dropDown("server", $values, $serverId);
+                        $array['SELECTFIELDLISTING'] = '';
+                        $selectedFields = json_decode($data['custom_fields']);
+                        if($selectedFields == null) {
+                            $selectedFields = array();
+                        }
+                        $cfields = $db->query("SELECT `id`,`title` FROM `<PRE>orderfields` ORDER BY `order` ASC");
+                        while($field = $db->fetch_array($cfields)) {
+                            $array['SELECTFIELDLISTING'] .= '<option value="'.$field['id'].'" '
+                                .(in_array((int)$field['id'], $selectedFields)?' selected="selected"':'').'>'
+                                .htmlspecialchars($field['title']).'</option>';
+                        }
+                        if($array['SELECTFIELDLISTING'] == '') {
+                            $array['SELECTFIELDLISTING'] = '<option disabled="disabled">No Fields Defined</option>';
+                        }
 						echo $style->replaceVar("tpl/editpackage.tpl", $array);
 					}
 				}

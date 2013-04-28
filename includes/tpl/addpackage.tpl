@@ -61,6 +61,13 @@
     <td>
       <input name="disabled" type="checkbox" id="disabled" value="1" /><a title="Are new orders disabled for this package?" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
   </tr>
+    <tr>
+        <td valign="top">Custom Fields:</td>
+        <td>
+            <select name="cfields[]" multiple="multiple">
+                %SELECTFIELDLISTING%
+            </select> <a title="Select the custom fields you wish to be used for this package." class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
+    </tr>
 </table>
 <table width="100%" border="0" cellspacing="2" cellpadding="0">
   <tr>
