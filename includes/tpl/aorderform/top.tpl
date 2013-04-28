@@ -153,8 +153,12 @@ $("document").ready(function() {
 		$("#atBottomDiv").slideUp(function() {
 			$(".savedDiv").hide();
 			var order = [];
+            var orderi = 0;
 			$(".orderfieldbox").each(function(index) {
-				order[index] = $(this).attr('id').split("-")[1];
+                var ofbid = $(this).attr('id').split("-")[1];
+                if(ofbid != "new") {
+                    order[orderi++] = ofbid;
+                }
 			});
             var json = {
                 table: 'orderfields',
