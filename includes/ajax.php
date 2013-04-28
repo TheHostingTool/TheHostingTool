@@ -1289,6 +1289,33 @@ class Ajax {
         echo json_encode(array('error' => false, 'msg' => null, 'id' => $id, 'newbox' => $newbox, 'counter' => $counter));
     }
 
+    function deleteCustomField() {
+        if(!$_SESSION['logged'] || !isset($_POST['id'])) {
+            return;
+        }
+        global $main, $db;
+        $id = (int)$main->postvar["id"];
+        $db->query("DELETE FROM `<PRE>orderfields` WHERE `id` = {$id}");
+        if(mysql_affected_rows() === 0) {
+            echo "0";
+            return;
+        }
+        $query = $db->query("SELECT `id`,`custom_fields` FROM `<PRE>packages` WHERE `custom_fields` != '' AND `custom_fields` != '[]'");
+        while($package = $db->fetch_array($query)) {
+            $fields = json_decode($package['custom_fields']);
+            if($fields == null) {
+                continue;
+            }
+            $key = array_search($id, $fields);
+            if($key !== false) {
+                unset($fields[$key]);
+                $fields = array_values($fields); // Reset the keys
+                $db->query("UPDATE `<PRE>packages` SET `custom_fields` = '{$db->strip(json_encode($fields))}' WHERE `id` = '{$db->strip($package["id"])}'");
+            }
+        }
+        echo "1";
+    }
+
 }
 
 if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
