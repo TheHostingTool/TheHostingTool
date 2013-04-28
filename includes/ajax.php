@@ -1157,7 +1157,7 @@ class Ajax {
     function updateCustomField() {
         if(!$_SESSION['logged'] || !isset($_POST['title']) || !isset($_POST['description']) ||
         !isset($_POST['type']) || !isset($_POST['selectopt']) || !isset($_POST['defaultvalue']) ||
-        !isset($_POST['regex']) || !isset($_POST['required'])) {
+        !isset($_POST['regex']) || !isset($_POST['required']) || !isset($_POST['id'])) {
             return;
         }
 
