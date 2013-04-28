@@ -1289,6 +1289,9 @@ class Ajax {
         echo json_encode(array('error' => false, 'msg' => null, 'id' => $id, 'newbox' => $newbox, 'counter' => $counter));
     }
 
+
+    // This will delete the field from the database, remove all references to it from the packages table,
+    // and purge any user data associated with it.
     function deleteCustomField() {
         if(!$_SESSION['logged'] || !isset($_POST['id'])) {
             return;
