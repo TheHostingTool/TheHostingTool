@@ -194,17 +194,27 @@ function checkForDependencies() {
 	if(version_compare(PHP_VERSION, '5.2.0', '<')) {
 		die("PHP Version 5.2 or greater is required! You're currently running: " . PHP_VERSION);
 	}
-	if(!function_exists("curl_init")) {
+    // Check for a few extensions that are commonly unavailable
+	if(!extension_loaded("curl")) {
 		$needed[] = "cURL";
 	}
-	if(!function_exists("mysql_connect")) {
+	if(!extension_loaded("mysql")) {
 		$needed[] = "MySQL";
 	}
+    if(!extension_loaded("gd")) {
+        $needed[] = "GD";
+    }
+    if(!extension_loaded("json")) {
+        $needed[] = "JSON";
+    }
+    if(!extension_loaded("SimpleXML")) {
+        $needed[] = "SimpleXML";
+    }
 	if(count($needed) == 0) {
 		return true;
 	}
 	else {
-		$output = "The following function".(count($needed)==1?" is":"s are")." needed for
+		$output = "The following extension".(count($needed)==1?" is":"s are")." needed for
 		TheHostingTool to run properly: <ul>";
 		foreach($needed as $key => $value) {
 			$output .= "<li>$value</li>";
