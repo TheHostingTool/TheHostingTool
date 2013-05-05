@@ -40,17 +40,12 @@ class page {
 		}
 	}
 	
-	public function _customf() {
+	private function _customf() {
 		global $db, $style;
 		$query = $db->query("SELECT * FROM `<PRE>orderfields` ORDER BY `order` ASC");
-		if($db->num_rows($query) == 0) {
-            echo $style->replaceVar("tpl/aorderform/top.tpl");
-			echo "<center>".$style->notice(false, "You don't have any custom fields defined!")."</center>";
-			return;
-		}
         $boxes = "";
         $globalSelectOptCounter = 0;
-		while($arr = mysql_fetch_assoc($query)) {
+		while($arr = $db->fetch_array($query)) {
 			if(isset($pass)) { unset($pass); }
 			$boxes .= $this->buildFieldBox($arr["id"], $arr["title"], $arr["type"], $arr["default"], $arr["description"],
                 $arr["required"], $arr["regex"], $arr["extra"], $globalSelectOptCounter);
