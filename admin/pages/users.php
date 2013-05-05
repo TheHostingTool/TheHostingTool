@@ -20,6 +20,7 @@ class page {
 		$this->navlist[] = array("Client Statistics", "book.png", "stats");
 		$this->navlist[] = array("Admin Validation", "user_suit.png", "validate");
 		$this->navlist[] = array("Email Confirmation", "email.png", "emailconfirm");
+        $this->navlist[] = array("New Client", "user_add.png", "new");
 	}
 	
 	public function description() {
@@ -384,7 +385,44 @@ class page {
 					echo $style->replaceVar("tpl/admineconfirmentry.tpl", $replace);
 				}
 				break;
+            case "new":
+                $this->newClientPage();
+                break;
 		}
 	}
+
+    private function newClientPage() {
+        global $main, $db, $style;
+
+        if($_POST) {
+            return;
+        }
+
+        $vars = array();
+        $dbServers = $db->query("SELECT `id`,`name` FROM `<PRE>servers`");
+        while($dbServer = $db->fetch_array($dbServers)) {
+            $srvname = htmlspecialchars($dbServer["name"]);
+            $dbSubdomains = $db->query("SELECT * FROM `<PRE>subdomains` WHERE `server` = '{$db->strip($dbServer['id'])}'");
+            if($db->num_rows($dbSubdomains) !== 0) {
+                $vars["SUBDOMAINS"] .= "<option disabled=\"disabled\">$srvname</option>";
+                while($dbSubdomain = $db->fetch_array($dbSubdomains)) {
+                    $id = htmlspecialchars($dbSubdomain["id"]);
+                    $name = htmlspecialchars($dbSubdomain["subdomain"]);
+                    $vars["SUBDOMAINS"] .= "<option value=\"$id\">.$name</option>";
+                }
+            }
+            $dbPackages = $db->query("SELECT `id`,`name`,`backend` FROM `<PRE>packages` WHERE `server` = '{$db->strip($dbServer['id'])}'");
+            if(!$db->num_rows($dbPackages)) {
+                continue;
+            }
+            $vars["PACKAGES"] .= "<option disabled=\"disabled\">$srvname</option>";
+            while($dbPackage = $db->fetch_array($dbPackages)) {
+                $id = htmlspecialchars($dbPackage['id']);
+                $name = htmlspecialchars($dbPackage['name']);
+                $backend = htmlspecialchars($dbPackage['backend']);
+                $vars["PACKAGES"] .= "<option value=\"$id\">$name ($backend)</option>";
+            }
+        }
+        echo $style->replaceVar("tpl/admin/users/newclient.tpl", $vars);
+    }
 }
-?>
