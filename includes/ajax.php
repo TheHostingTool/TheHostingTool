@@ -1328,5 +1328,3 @@ if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {
         require(LINK . "output.php");
     }
 }
-
-?>
