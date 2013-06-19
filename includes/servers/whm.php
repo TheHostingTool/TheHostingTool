@@ -255,30 +255,24 @@ class whm {
 			}
 		}
 	}
-	
-	public function testConnection($serverId = null) {
-		if(!is_null($serverId)) {
-			$this->server = (int)$serverId;
-		}
-		
-		$command = $this->remote("/xml-api/version", 0, false, true);
-		if((is_object($command)) and (get_class($command) == "SimpleXMLElement")) {
-			if(isset($command->version)) {
-				return true;
-			}
-			else {
-				if(isset($command->data->reason)) {
-					return $command->data->reason;
-				}
-				else {
-					return print_r($command, true);
-				}
-			}
-		}
-		else {
-			return $command;
-		}
-	}
-}
 
-?>
+    public function testConnection($serverId = null) {
+        if(!is_null($serverId)) {
+            $this->server = (int)$serverId;
+        }
+
+        $command = $this->remote("/xml-api/version", 0, false, true);
+        if((is_object($command)) and (get_class($command) == "SimpleXMLElement")) {
+            if(isset($command->version)) {
+                return true;
+            }
+            if(isset($command->data->reason)) {
+                return $command->data->reason;
+            }
+            return print_r($command, true);
+        }
+        else {
+            return $command;
+        }
+    }
+}
