@@ -660,19 +660,14 @@ class server {
 		if($db->num_rows($query) == 0) {
 			return "There is no server with an id of {$serverId}";
 		}
-		else {
-				$data = $db->fetch_array($query);
-				$type = $data["type"];
-				$link = LINK."servers/".$type.".php";
-				if(!file_exists($link)) {
-					return "The server {$type}.php doesn't exist!";
-				}
-				else {
-					require_once($link);
-					$server = new $type($serverId);
-					return $server->testConnection();
-				}
-		}
+        $data = $db->fetch_array($query);
+        $type = $data["type"];
+        $link = LINK."servers/".$type.".php";
+        if(!file_exists($link)) {
+            return "The server {$type}.php doesn't exist!";
+        }
+        require_once($link);
+        $server = new $type($serverId);
+        return $server->testConnection();
 	}
 }
-?>
