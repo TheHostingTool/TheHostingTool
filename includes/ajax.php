@@ -1136,7 +1136,7 @@ class Ajax {
     }
 
     // Sets the order of the rows in a table.
-    // $_POST["order"] should be a comma seperated list of IDs for $_POST["table"]
+    // $_POST["order"] should be a comma separated list of IDs for $_POST["table"]
     // $_POST["table"] should NOT include the table prefix.
     function setOrderOfRows() {
         if($_SESSION['logged'] && isset($_POST["table"]) && isset($_POST["order"])) {
