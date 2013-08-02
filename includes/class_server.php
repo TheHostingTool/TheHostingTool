@@ -15,7 +15,7 @@ class server {
 		global $type, $main;
 		$server = $type->determineServerType($type->determineServer($package)); // Determine server
 		if($this->servers[$server]) {
-			return;	
+			return;
 		}
 		$link = LINK."servers/".$server.".php";
 		if(!file_exists($link)) {
@@ -23,7 +23,7 @@ class server {
 			$array['Server ID'] = $server;
 			$array['Path'] = $link;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			include($link); // Get the server
@@ -53,7 +53,7 @@ class server {
 			else {
 				$data = explode(".",$main->getvar['cdom']);
 				if(!$data[1]) {
-					echo "Your domain is the wrong format!";	
+					echo "Your domain is the wrong format!";
 					return;
 				}
 				if ($db->config("tldonly")) { // Are we alowing TLD's Only?
@@ -104,7 +104,7 @@ class server {
 		   return;
 		}
 		if((!$main->check_email($main->getvar['email']))) {
-				echo "Your email is the wrong format!";	
+				echo "Your email is the wrong format!";
 				return;
 		}
 		else {
@@ -152,11 +152,11 @@ class server {
 		}
 		if ((!preg_match("/^([a-zA-Z\.\'\ \-])+$/",$main->getvar['firstname']))) {
 			echo "Please enter a valid first name!";
-			return;			
+			return;
 		}
 		if ((!preg_match("/^([a-zA-Z\.\'\ \-])+$/",$main->getvar['lastname']))) {
 			echo "Please enter a valid last name!";
-			return;			
+			return;
 		}
 		if ((!preg_match("/^([0-9a-zA-Z\.\ \-])+$/",$main->getvar['address']))) {
 			echo "Please enter a valid address!";
@@ -164,7 +164,7 @@ class server {
 		}
 		if ((!preg_match("/^([a-zA-Z ])+$/",$main->getvar['city']))) {
 			echo "Please enter a valid city!";
-			return;			
+			return;
 		}
 		if ((!preg_match("/^([a-zA-Z\.\ -])+$/",$main->getvar['state']))) {
 			echo "Please enter a valid state!";
@@ -191,7 +191,7 @@ class server {
 		if($type2->signup) {
 			$pass = $type2->signup();
 			if($pass) {
-				echo $pass;	
+				echo $pass;
 				return;
 			}
 		}
@@ -200,7 +200,7 @@ class server {
 			if($data[0] == "type") {
                 $additional = "";
 				if($n) {
-					$additional .= ",";	
+					$additional .= ",";
 				}
 				$additional .= $data[1]."=".$value;
 				$n++;
@@ -217,7 +217,7 @@ class server {
 			$salt = md5(rand(0,9999999));
 			$password = md5(md5($main->getvar['password']).md5($salt));
 			$UsrName = $main->getvar['username'];
-			$newusername = $main->getvar['username'];	
+			$newusername = $main->getvar['username'];
 			$db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone, status) VALUES(
 													  '{$main->getvar['username']}',
 													  '{$main->getvar['email']}',
@@ -282,7 +282,7 @@ class server {
 				global $email;
 				$url = $db->config("url");
 				$array['USER'] = $newusername;
-				$array['PASS'] = $main->getvar['password']; 
+				$array['PASS'] = $main->getvar['password'];
 				$array['EMAIL'] = $main->getvar['email'];
 				$array['DOMAIN'] = $main->getvar['fdom'];
 				$emailval = (bool)$db->config("emailval");
@@ -304,7 +304,7 @@ class server {
 					$emaildata = $db->emailTemplate($emailval?"newaccval":"newacc");
 					echo "<strong>Your account has been created!</strong><br />You may now use the client login bar to see your client area or proceed to your control panel. An email has been dispatched to the address on file.";
 					if($type->determineType($main->getvar['package']) == "paid") {
-						echo " This will apply only when you've made payment.";	
+						echo " This will apply only when you've made payment.";
 						$_SESSION['clogged'] = 1;
 						$_SESSION['cuser'] = $data['id'];
 					}
@@ -320,16 +320,16 @@ class server {
 						$donecorrectly = true;
 					}
 					else {
-						echo "Something with admin validation went wrong (suspend). Your account should be running but contact your host!";	
+						echo "Something with admin validation went wrong (suspend). Your account should be running but contact your host!";
 					}
 				}
 				else {
-					echo "Something with admin validation went wrong. Your account should be running but contact your host!";	
+					echo "Something with admin validation went wrong. Your account should be running but contact your host!";
 				}
 				$email->send($array['EMAIL'], $emaildata['subject'], $emaildata['content'], $array);
 			}
 			else {
-				echo "Your username doesn't exist in the DB meaning the query failed or it exists more than once!";	
+				echo "Your username doesn't exist in the DB meaning the query failed or it exists more than once!";
 			}
 			if($donecorrectly && $type->determineType($main->getvar['package']) == "paid") {
 				global $invoice;
@@ -382,7 +382,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return false;
 			}
 		}
 	}
@@ -422,7 +422,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return false;
 			}
 		}
 	}
@@ -462,7 +462,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return false;
 			}
 		}
 	}
@@ -582,7 +582,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return false;
 			}
 		}
 	}
@@ -620,7 +620,7 @@ class server {
 				return true;
 			}
 			else {
-				return false;	
+				return false;
 			}
 		}
 	}
