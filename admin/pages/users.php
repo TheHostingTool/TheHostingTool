@@ -391,11 +391,39 @@ class page {
 		}
 	}
 
+    private function newClientPagePost() {
+        global $main, $db, $type, $server;
+        if($_POST["password"] != $_POST["confirm"]) {
+            $main->errors("Passwords do not match.");
+            return;
+        }
+        $serverId = (int)$type->determineServer($_POST["package"]);
+        $domain = $_POST["domain"];
+        if($_POST["subdomain"] != "no") {
+            $query = $db->query("SELECT `subdomain`,`server` FROM `<PRE>subdomains` WHERE `id` = '{$db->strip($_POST["subdomain"])}'");
+            if($db->num_rows($query) == 0) {
+                $main->errors("That subdomain does not exist!");
+                return;
+            }
+            $subdomain = $db->fetch_array($query);
+            if($serverId != (int)$subdomain["server"]) {
+                $main->errors("Selected subdomain and package are from differing servers.");
+                return;
+            }
+            $domain .= "." . $subdomain["subdomain"];
+        }
+        $result = $server->createUser($_POST["username"], (int)$_POST["package"], $_POST["password"], $domain, $_POST["email"]);
+        if(is_int($result)) {
+            $main->redirect("?page=users&sub=search&do=$result");
+        }
+        $main->errors($result);
+    }
+
     private function newClientPage() {
-        global $main, $db, $style;
+        global $db, $style;
 
         if($_POST) {
-            return;
+            $this->newClientPagePost();
         }
 
         $vars = array();
@@ -408,7 +436,11 @@ class page {
                 while($dbSubdomain = $db->fetch_array($dbSubdomains)) {
                     $id = htmlspecialchars($dbSubdomain["id"]);
                     $name = htmlspecialchars($dbSubdomain["subdomain"]);
-                    $vars["SUBDOMAINS"] .= "<option value=\"$id\">.$name</option>";
+                    $selected = "";
+                    if(isset($_POST["subdomain"])) {
+                        $selected = $_POST["subdomain"] == $dbSubdomain["id"] ? "selected" : "";
+                    }
+                    $vars["SUBDOMAINS"] .= "<option value=\"$id\" $selected>.$name</option>";
                 }
             }
             $dbPackages = $db->query("SELECT `id`,`name`,`backend` FROM `<PRE>packages` WHERE `server` = '{$db->strip($dbServer['id'])}'");
@@ -420,9 +452,17 @@ class page {
                 $id = htmlspecialchars($dbPackage['id']);
                 $name = htmlspecialchars($dbPackage['name']);
                 $backend = htmlspecialchars($dbPackage['backend']);
-                $vars["PACKAGES"] .= "<option value=\"$id\">$name ($backend)</option>";
+                $selected = "";
+                if(isset($_POST["package"])) {
+                    $selected = $_POST["package"] == $dbPackage["id"] ? "selected" : "";
+                }
+                $vars["PACKAGES"] .= "<option value=\"$id\" $selected>$name ($backend)</option>";
             }
         }
+        $vars["USERNAME"] = isset($_POST["username"]) ? $_POST["username"] : "";
+        $vars["PASSWORD"] = isset($_POST["password"]) ? $_POST["password"] : "";
+        $vars["DOMAIN"] = isset($_POST["domain"]) ? $_POST["domain"] : "";
+        $vars["EMAIL"] = isset($_POST["email"]) ? $_POST["email"] : "";
         echo $style->replaceVar("tpl/admin/users/newclient.tpl", $vars);
     }
 }
