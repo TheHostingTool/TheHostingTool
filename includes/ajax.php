@@ -1331,7 +1331,8 @@ class Ajax {
         if(isset($_REQUEST["package"])) {
             $serverId = $type->determineType($_REQUEST["package"]);
         }
-        echo json_encode(array("strength" => $server->passwdStrength($serverId, $_REQUEST["passwd"])));
+        $result = $server->passwdStrength($serverId, $_REQUEST["passwd"]);
+        echo json_encode(array(is_string($result) ? "error" : "strength" => $result));
     }
 
 }
