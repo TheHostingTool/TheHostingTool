@@ -1319,6 +1319,21 @@ class Ajax {
         echo "1";
     }
 
+    function passwdStrength() {
+        global $server, $type;
+        if(!$_SESSION["logged"]) {
+            die(json_encode(array("error" => "Not logged in.")));
+        }
+        if(!isset($_REQUEST["passwd"]) || !(isset($_REQUEST["server"]) xor isset($_REQUEST["package"]))) {
+            die(json_encode(array("error" => "Invalid arguments.")));
+        }
+        $serverId = $_REQUEST["server"];
+        if(isset($_REQUEST["package"])) {
+            $serverId = $type->determineType($_REQUEST["package"]);
+        }
+        echo json_encode(array("strength" => $server->passwdStrength($serverId, $_REQUEST["passwd"])));
+    }
+
 }
 
 if(isset($_REQUEST['function']) and $_REQUEST['function'] != "") {

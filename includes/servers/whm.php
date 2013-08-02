@@ -36,7 +36,7 @@ class whm {
 		}
 	}
 	
-	private function remote($url, $xml = 0, $term = false, $returnErrors = false) {
+	private function remote($url, $xml = 0, $term = false, $returnErrors = false, $post = null) {
         global $db;
 		$data = $this->serverDetails($this->server);
 		$cleanaccesshash = preg_replace("'(\r|\n)'","",$data['accesshash']);
@@ -50,6 +50,10 @@ class whm {
 		else {
 			$fullUrl = "http://" . $data['host'] . ":2086" . $url;
 		}
+        if($post != null) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        }
 		curl_setopt($ch, CURLOPT_URL, $fullUrl);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -274,5 +278,13 @@ class whm {
         else {
             return $command;
         }
+    }
+
+    public function passwdStrength($passwd) {
+        $data = $this->serverDetails($this->server);
+        // The cPanel API is pretty nice. We can easily access internal APIs from the external one.
+        $result = $this->remote("/xml-api/cpanel", 0, false, false, array("cpanel_xmlapi_user" => $data["user"],
+            "cpanel_xmlapi_module" => "PasswdStrength", "cpanel_xmlapi_func" => "get_password_strength", "password" => $passwd));
+        return (int)$result->data->strength;
     }
 }

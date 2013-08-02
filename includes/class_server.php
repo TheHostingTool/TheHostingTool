@@ -744,4 +744,25 @@ class server {
         $server = new $type($serverId);
         return $server->testConnection();
 	}
+
+    public function passwdStrength($serverId, $password) {
+        global $db;
+        $serverId = (int)$serverId;
+        $query = $db->query("SELECT `type` FROM `<PRE>servers` WHERE `id` = '{$serverId}'");
+        if($db->num_rows($query) == 0) {
+            return "There is no server with an id of {$serverId}";
+        }
+        $data = $db->fetch_array($query);
+        $type = $data["type"];
+        $link = LINK."servers/".$type.".php";
+        if(!file_exists($link)) {
+            return "The server {$type}.php doesn't exist!";
+        }
+        require_once($link);
+        $server = new $type($serverId);
+        if(method_exists($server, "passwdStrength")) {
+            return $server->passwdStrength($password);
+        }
+        return false;
+    }
 }
