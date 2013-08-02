@@ -64,5 +64,9 @@ function check() {
   <tr>
     <td colspan="2" align="center"><input type="submit" name="edit2" id="edit2" value="Edit Details" /></td>
     </tr>
+    <tr style="%DISPLAY%"><td colspan="2" align="center">
+            <button style="%DISPLAY2%" onclick="window.location='?page=view&go=whm';return false;">WHM Login</button>
+            <button onclick="window.location='?page=view&go=cpanel';return false;">cPanel Login</button>
+        </td></tr>
 </table>
 </form>
