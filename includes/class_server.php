@@ -346,7 +346,81 @@ class server {
 			}
 		}
 	}
-	public function terminate($id, $reason = false, $returnErrors = false) { // Deletes a user account from the package ID
+
+    // A non-retarded signup function
+    public function createUser($username, $package, $passwd, $domain, $email) {
+        global $db, $type, $main;
+        if((!is_string($username) || $username == "") || (!is_string($passwd) || $passwd == "") ||
+            (!is_string($email) || $email == "") || (!is_int($package))) {
+            return "Bad arguments.";
+        }
+
+        $query = $db->query("SELECT `id` FROM `<PRE>users` WHERE `user` = '{$db->strip($username)}'");
+        if($db->num_rows($query) > 0) {
+            return "$username already exists in the database.";
+        }
+        $query = $db->query("SELECT `backend`,`reseller` FROM `<PRE>packages` WHERE `id` = '{$db->strip($package)}'");
+        if($db->num_rows($query) == 0) {
+            return "No package $package";
+        }
+        $query = $db->fetch_array($query);
+        $server = $this->createServer($package);
+        ignore_user_abort(true);
+        // SUPREME ULTRA HAX - This hurts me more than you
+        // (because our signup system sucks on some serious ass)
+        ob_start();
+        $main->getvar['fdom'] = $domain;
+        $main->getvar['fplan'] = $query['backend'];
+        $result = $server->signup($type->determineServer($package), $query['reseller'], $username, $email, $passwd);
+        $error = ob_get_clean();
+        // END SUPREME ULTRA HAX
+        if(!$result) {
+            return $error;
+        }
+        $date = time();
+        $ip = $_SERVER["REMOTE_ADDR"];
+        // Temporary as we're switching to bcrypt
+        $salt = md5(rand(0,9999999));
+        $passwd = md5(md5($passwd).md5($salt));
+        $db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone, status, emailval) VALUES(
+													  '{$db->strip($username)}',
+													  '{$db->strip($email)}',
+													  '{$passwd}',
+													  '{$salt}',
+													  '{$date}',
+													  '{$ip}',
+													  '',
+													  '',
+													  '',
+													  '',
+													  '',
+													  '',
+													  '',
+													  '',
+													  '1',
+													  '1')");
+        $id = (int)$db->insert_id();
+        $db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+													  '{$id}',
+													  '{$db->strip($username)}',
+													  '{$date}',
+													  'Registered.')");
+        $db->query("INSERT INTO `<PRE>user_packs` (userid, pid, domain, status, signup, additional) VALUES(
+													  '{$id}',
+													  '{$db->strip($package)}',
+													  '{$db->strip($domain)}',
+													  '1',
+													  '{$date}',
+													  '')");
+        $db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+													  '{$id}',
+													  '{$db->strip($username)}',
+													  '{$date}',
+													  'Package created ({$db->strip($domain)})')");
+        return $id;
+    }
+
+    public function terminate($id, $reason = false, $returnErrors = false) { // Deletes a user account from the package ID
 		global $db, $main, $type, $email;
 		ignore_user_abort(true);
 		$query = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `id` = '{$db->strip($id)}'");
