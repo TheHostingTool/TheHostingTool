@@ -1321,6 +1321,7 @@ class Ajax {
 
     function passwdStrength() {
         global $server, $type;
+        header("Content-type: application/json");
         if(!$_SESSION["logged"]) {
             die(json_encode(array("error" => "Not logged in.")));
         }
@@ -1329,7 +1330,7 @@ class Ajax {
         }
         $serverId = $_REQUEST["server"];
         if(isset($_REQUEST["package"])) {
-            $serverId = $type->determineType($_REQUEST["package"]);
+            $serverId = $type->determineServer($_REQUEST["package"]);
         }
         $result = $server->passwdStrength($serverId, $_REQUEST["passwd"]);
         echo json_encode(array(is_string($result) ? "error" : "strength" => $result));
