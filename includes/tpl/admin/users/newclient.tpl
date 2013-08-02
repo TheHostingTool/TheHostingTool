@@ -5,6 +5,23 @@ $(document).ready(function() {
         $("#newclientsubmit").attr("disabled", "disabled");
         $("#newclientsubmit").val("Please wait...");
     });
+    var updatestr = function() {
+        $("#txtstrength").html("Loading...");
+        var json = {
+            package: $("#packageinput").val(),
+            passwd: $("#txtpasswd").val()
+        }
+        json[csrfMagicName] = csrfMagicToken;
+        $.post("<AJAX>?function=passwdStrength", json, function(data) {
+            if(!data.error) {
+                $("#txtstrength").html(data.strength);
+                return;
+            }
+            $("#txtstrength").html(data.error);
+        }, "json");
+    }
+    $("#txtpasswd").change(updatestr);
+    $("#packageinput").change(updatestr);
 });
 </script>
 <form id="newclientform" action="" method="post" autocomplete="off">
@@ -15,7 +32,7 @@ $(document).ready(function() {
     </tr>
     <tr>
         <td>Password:</td>
-        <td><input name="password" type="password" autocomplete="off" required="required" value="%PASSWORD%"></td>
+        <td><input id="txtpasswd" name="password" type="password" autocomplete="off" required="required" value="%PASSWORD%"></td>
     </tr>
     <tr>
         <td>Re-type Password:</td>
@@ -23,7 +40,7 @@ $(document).ready(function() {
     </tr>
     <tr>
         <td>Strength:</td>
-        <td></td>
+        <td><div id="txtstrength"></div></td>
     </tr>
     <tr>
         <td width="20%">Domain:</td>
@@ -35,7 +52,7 @@ $(document).ready(function() {
     </tr>
     <tr>
         <td>Package:</td>
-        <td><select name="package">%PACKAGES%</select></td>
+        <td><select id="packageinput" name="package">%PACKAGES%</select></td>
     </tr>
     <tr>
         <td></td>

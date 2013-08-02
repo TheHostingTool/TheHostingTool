@@ -68,6 +68,14 @@ class whm {
 			return false;
 		}
 		curl_close($ch);
+        if(stripos($data, "Content-type: text/html") !== false) {
+            if($returnErrors) {
+                return "WHM returned HTML. Is it unlicensed?";
+            }
+            global $main;
+            $main->error(array("WHM Error" => "WHM returned HTML. Is it unlicensed?"));
+            return false;
+        }
 		//END
         if($term == true) {
 			return true;
@@ -283,8 +291,8 @@ class whm {
     public function passwdStrength($passwd) {
         $data = $this->serverDetails($this->server);
         // The cPanel API is pretty nice. We can easily access internal APIs from the external one.
-        $result = $this->remote("/xml-api/cpanel", 0, false, false, array("cpanel_xmlapi_user" => $data["user"],
+        $result = $this->remote("/xml-api/cpanel", 0, false, true, array("cpanel_xmlapi_user" => $data["user"],
             "cpanel_xmlapi_module" => "PasswdStrength", "cpanel_xmlapi_func" => "get_password_strength", "password" => $passwd));
-        return (int)$result->data->strength;
+        return is_string($result) ? $result : (int)$result->data->strength;
     }
 }
