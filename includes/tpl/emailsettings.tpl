@@ -64,9 +64,19 @@ $(window).load(function () {
       </tr>
     </table>
 </div>
-<table width="100%" border="0" cellspacing="1" cellpadding="0">
-      <tr>
-    <td colspan="2" align="center"><input type="submit" name="add" id="add" value="Edit Email Settings" /></td>
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <td width="20%"></td>
+    <td><input type="submit" name="add" id="add" value="Edit Email Settings" /></td>
   </tr>
+</table>
+</form>
+<form action="" method="post"><input type="hidden" name="testemail" value="1">
+<table width="100%" border="0" cellspacing="2" cellpadding="0">
+    <tr>
+        <td width="20%">Test Email:</td>
+        <td>
+            <input type="email" name="test_email" value="%TESTEMAIL%">
+            <input type="submit" name="send_test_email" value="Send Test Email"></td>
+    </tr>
 </table>
 </form>

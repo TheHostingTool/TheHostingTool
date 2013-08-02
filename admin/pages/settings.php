@@ -36,7 +36,17 @@ class page {
 		global $main;
 		global $style;
 		global $db;
-		if($_POST) {
+        global $email;
+        if(isset($_POST["testemail"])) {
+            if($email->send($_POST["test_email"], "TheHostingTool Email Config Test",
+                "This is a test email. If you're reading this then it's working!")) {
+                $e = htmlentities($_POST["test_email"]);
+                $main->errors("Email sent to $e");
+            } else {
+                $main->errors("Error sending email.");
+            }
+        }
+		elseif($_POST) {
 			foreach($main->postvar as $key => $value) {
 				if($value == "") {
 					$main->errors("Please fill in all fields!");
@@ -134,6 +144,8 @@ class page {
                 $array['SMTP_PASS'] = $db->config("smtp_password");
                 $array['SMTP_SECURE'] = (bool)$db->config("smtp_secure")?'checked="checked"':'';
                 $array['SMTP_PORT'] = $db->config("smtp_port");
+                $staff = $db->staff($_SESSION['user']);
+                $array['TESTEMAIL'] = $staff["email"];
                 echo $style->replaceVar("tpl/emailsettings.tpl", $array);
                 break;
         }
