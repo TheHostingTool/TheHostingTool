@@ -1142,8 +1142,9 @@ class Ajax {
         if($_SESSION['logged'] && isset($_POST["table"]) && isset($_POST["order"])) {
             global $main, $db;
             $i = 0;
+            $table = $db->strip($_POST["table"]);
             foreach(explode(',', $main->postvar["order"]) as $id) {
-                $q = $db->query("UPDATE `<PRE>orderfields` SET `order` =  '{$i}' WHERE `id` = {$id}");
+                $q = $db->query("UPDATE `<PRE>{$table}` SET `order` = '{$i}' WHERE `id` = {$id}");
                 if(!$q) {
                     echo '0';
                     return;
