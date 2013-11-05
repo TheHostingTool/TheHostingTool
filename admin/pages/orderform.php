@@ -19,6 +19,7 @@ class page {
 	public function __construct() {
 		$this->navtitle = "Order Form Actions";
 		$this->navlist[] = array("Custom Fields", "table_gear.png", "customf");
+        $this->navlist[] = array("Settings", "cog.png", "settings");
 	}
 	
 	public function description() {
@@ -61,6 +62,11 @@ class page {
         echo $boxes;
 		echo $style->replaceVar("tpl/aorderform/bottom.tpl");
 	}
+
+    private function _settings() {
+        global $main;
+        $main->redirect("?page=settings&sub=signup");
+    }
 
     // Referenced by ajax.php!
     public function buildFieldBox($id, $title, $type, $default, $description, $required, $regex, $extra, &$globalSelectOptCounter) {
