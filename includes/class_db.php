@@ -60,8 +60,8 @@ class db {
 		return $sql; # Return SQL
 	}
 	
-	public function fetch_array($sql) { # Gets a query and returns the rows/columns as array
-		$sql = @mysql_fetch_array($sql); # Fetch the SQL Array, all the data
+	public function fetch_array($sql, $resultType = MYSQL_BOTH) { # Gets a query and returns the rows/columns as array
+		$sql = @mysql_fetch_array($sql, $resultType); # Fetch the SQL Array, all the data
 		return $sql; # Return SQL
 	}
 	
