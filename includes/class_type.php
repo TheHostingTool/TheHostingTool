@@ -129,65 +129,65 @@ class type {
 		$this->classes = $classes;
 	}
 
-	public function determineType($id) { # Returns type of a package
+	public function determineType($id, $showErrors = true) { # Returns type of a package
 		global $db;
 		global $main;
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That package doesn't exist!";
-			$array['Package ID'] = $id;
-			$main->error($array);
-			return;
-		}
-		else {
-			$data = $db->fetch_array($query);
-			return $data['type'];
-		}
+            if($showErrors) {
+                $array['Error'] = "That package doesn't exist!";
+                $array['Package ID'] = $id;
+                $main->error($array);
+            }
+			return false;
+        }
+        $data = $db->fetch_array($query);
+        return $data['type'];
 	}
-	public function determineServer($id) { # Returns server of a package
+	public function determineServer($id, $showErrors = true) { # Returns server of a package
 		global $db;
 		global $main;
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That package doesn't exist!";
-			$array['Package ID'] = $id;
-			$main->error($array);
-			return;
-		}
-		else {
-			$data = $db->fetch_array($query);
-			return $data['server'];
-		}
+            if($showErrors) {
+                $array['Error'] = "That package doesn't exist!";
+                $array['Package ID'] = $id;
+                $main->error($array);
+            }
+			return false;
+        }
+        $data = $db->fetch_array($query);
+        return $data['server'];
 	}
-	public function determineServerType($id) { # Returns server of a package
+	public function determineServerType($id, $showErrors = true) { # Returns server of a package
 		global $db;
 		global $main;
 		$query = $db->query("SELECT * FROM `<PRE>servers` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That server doesn't exist!";
-			$array['Server ID'] = $id;
-			$main->error($array);
-			return;
+            if($showErrors) {
+                $array['Error'] = "That server doesn't exist!";
+                $array['Server ID'] = $id;
+                $main->error($array);
+            }
+			return false;
 		}
-		else {
-			$data = $db->fetch_array($query);
-			return $data['type'];
-		}
+        $data = $db->fetch_array($query);
+        return $data['type'];
 	}
-	public function determineBackend($id) { // Returns server of a package
+	public function determineBackend($id, $showErrors = true) { // Returns server of a package
 		global $db;
 		global $main;
 		$query = $db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'");
 		if($db->num_rows($query) == 0) {
-			$array['Error'] = "That package doesn't exist!";
-			$array['Package ID'] = $id;
-			$main->error($array);
-			return;
+            if($showErrors) {
+                $array['Error'] = "That package doesn't exist!";
+                $array['Package ID'] = $id;
+                $main->error($array);
+            }
+			return false;
 		}
-		else {
-			$data = $db->fetch_array($query);
-			return $data['backend'];
-		}
+        $data = $db->fetch_array($query);
+        return $data['backend'];
 	}
 
 	public function acpPedit($type, $values) { // Returns the type's acpForm[] content
