@@ -170,6 +170,9 @@ class page {
 				case "ui-theme":
 					$folder = LINK ."./css/";
 					foreach($main->folderFiles($folder) as $file) {
+                        if($file == "qtip.min.css") {
+                            continue;
+                        }
 						$files[] = array($file, $file);
 					}
 					$array['THEME'] = $main->dropDown("ui-theme", $files, $db->config("ui-theme"));

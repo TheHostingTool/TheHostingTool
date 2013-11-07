@@ -66,8 +66,9 @@ class style {
 		$css .= $this->prepareCSS($this->getFile("style.css", 0, 0));
 		$css .= '</style>' . "\n";
 		if(FOLDER != "install" && FOLDER != "includes") {
-	        $css .= '<link rel="stylesheet" href="'.URL.'includes/css/'.(INSTALL?$db->config('ui-theme'):'cupertino').'/jquery-ui.css" type="text/css" />';
+	        $css .= '<link rel="stylesheet" href="'.URL.'includes/css/'.(INSTALL?$db->config('ui-theme'):'cupertino').'/jquery-ui.min.css" type="text/css" />';
 		}
+        $css .= '<link rel="stylesheet" href="'.URL.'includes/css/qtip.min.css" type="text/css" />';
 		return $css;
 	}
 
