@@ -10,7 +10,7 @@ let us know exactly where we can improve!
 **Forum:** [thehostingtool.com/forum](https://thehostingtool.com/forum/)  
 **Twitter:** [@TheHostingTool](https://twitter.com/TheHostingTool)  
 **Facebook:** [facebook.com/TheHostingTool](https://www.facebook.com/TheHostingTool)  
-**Google+:** [gplus.to/TheHostingTool](http://gplus.to/TheHostingTool)  
+**Google+:** [google.com/+TheHostingTool](https://google.com/+TheHostingTool)  
 **GitHub:** [github.com/TheHostingTool/TheHostingTool](https://github.com/  TheHostingTool/TheHostingTool)
 
 
