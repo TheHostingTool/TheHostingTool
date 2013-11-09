@@ -58,7 +58,7 @@ else {
 		$array2['NAME'] = $data['name'];
 		$array2['DESCRIPTION'] = $data['description'];
 		$array2['ID'] = $data['id'];
-		$array['PACKAGES'] .= $style->replaceVar("tpl/orderpackages.tpl", $array2);	
+		$array['PACKAGES'] .= $style->replaceVar("tpl/order/orderpackages.tpl", $array2);
 		$n++;
 		if($n == 1) {
 			$array['PACKAGES'] .= '<td width="2%"></td>';	
@@ -92,7 +92,7 @@ else {
 		$content = $style->replaceVar("tpl/cdetails.tpl", $array);
 	}
 	if(!$maincontent) {
-		$maincontent = $style->replaceVar("tpl/orderform.tpl", $array);
+		$maincontent = $style->replaceVar("tpl/order/orderform.tpl", $array);
 	}
 
 	echo '<div>';
