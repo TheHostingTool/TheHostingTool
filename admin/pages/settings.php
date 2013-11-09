@@ -109,9 +109,11 @@ class page {
                 $values[] = array("Disabled", "0");
                 $array['MULTIPLE'] = $main->dropDown("multiple", $values, $db->config("multiple"));
                 $array['EMAILVAL'] = (bool)$db->config("emailval")?'checked="checked"':'';
+                $array['NEWEFFECT'] = (bool)$db->config("useNewOrderSlideEffect") ? 'checked="checked"' : '';
                 $array['TLDONLY'] = $main->dropDown("tldonly", $values, $db->config("tldonly"));
                 $array['GENERAL'] = $main->dropDown("general", $values, $db->config("general"));
                 $array['MESSAGE'] = $db->config("message");
+                $array['WELCOMEMSG'] = $db->config("welcomemsg");
                 echo $style->replaceVar("tpl/signupsettings.tpl", $array);
 
                 break;

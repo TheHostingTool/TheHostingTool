@@ -1,18 +1,19 @@
-<td width="49%" valign="top">
-	<br />
-	<div class="table">
-    	<div class="cat">
-        %NAME%
+<td width="49%" valign="top" style="padding-top: 18px;">
+    <div class="table" id="packageTable-%ID%">
+        <div class="cat">
+            %NAME%
         </div>
-        <div class="text">
-        <table width="100%" border="0" cellspacing="2" cellpadding="0">
-          <tr>
-            <td><div class="subborder"><div class="sub">%DESCRIPTION%</div></div></td>
-          </tr>
-          <tr>
-            <td align="right"><input name="order" id="order%ID%" type="button" value="Order" onclick="orderstepme('%ID%')" /></td>
-          </tr>
-        </table>
+        <div class="text" style="padding: 4px;">
+            <div class="subborder">
+                <div class="sub">
+                    <div class="subcontent" style="padding-bottom: 2px;">
+                        %DESCRIPTION%
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: right">
+                <input name="order" id="pkgOrderButton-%ID%" class="pkgOrderButton" type="button" value="Order" />
+            </div>
         </div>
     </div>
 </td>
