@@ -51,22 +51,15 @@ class style {
 		return $data;
 	}
 
-	private function prepareCSS($data) { # Returns the CSS with all tags removed
-		include(LINK . "css_variables.php");
-		return $data;
+	public function get($resource) { // Fetches a theme resource
+		return $this->getFile($resource);
 	}
 
-	public function get($template) { # Fetch a template
-		return $this->getFile($template);
-	}
-
-	public function css() { # Fetches the CSS and prepares it
+	public function css() { // Fetches the CSS and prepares it
         global $db;
-		$css = '<style type="text/css">';
-		$css .= $this->prepareCSS($this->getFile("style.css", 0, 0));
-		$css .= '</style>' . "\n";
+        $css = '<link rel="stylesheet" href="'.URL.'includes/css.php" type="text/css" />' . "\n";
 		if(FOLDER != "install" && FOLDER != "includes") {
-	        $css .= '<link rel="stylesheet" href="'.URL.'includes/css/'.(INSTALL?$db->config('ui-theme'):'cupertino').'/jquery-ui.min.css" type="text/css" />';
+	        $css .= '<link rel="stylesheet" href="'.URL.'includes/css/'.(INSTALL?$db->config('ui-theme'):'cupertino').'/jquery-ui.min.css" type="text/css" />' . "\n";
 		}
         $css .= '<link rel="stylesheet" href="'.URL.'includes/css/qtip.min.css" type="text/css" />';
 		return $css;
