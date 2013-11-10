@@ -13,6 +13,11 @@ var useNewSlide = %USENEWEFFECT%;
 
 $(document).ready(function() {
 
+    // Select sizing workaround
+    if(/webkit/.test(navigator.userAgent.toLowerCase())) {
+        $("#step-3 select").css("border-color", "#999");
+    }
+
     // Keeps track of the ToS checkbox
     var termsAgreed = false;
     $("#chkAgreeToS").change(function() {
@@ -110,6 +115,7 @@ $(document).ready(function() {
             $("#step-1").hide();
             $("#right").show();
             step = 2;
+            $("#chkAgreeToS").change();
         });
 
         //$("#packageTable-" + id).css("top", step1Offset.top + "px");
@@ -130,6 +136,81 @@ $(document).ready(function() {
          });
          });*/
     });
+
+    var changeValidity = function(selector, valid) {
+        if(valid) {
+            $(selector).switchClass("invalidField", "validField");
+            return;
+        }
+        $(selector).switchClass("validField", "invalidField");
+    }
+
+    var step3SpinOpts = {
+        lines: 12, // The number of lines to draw
+        length: 3, // The length of each line
+        width: 2, // The line thickness
+        radius: 4, // The radius of the inner circle
+        color: '#000', // #rbg or #rrggbb
+        speed: 2, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false // Whether to render a shadow
+    };
+
+    $(".step3Field").change(function() {
+        var isValid = null;
+        var $this = this;
+        switch(this.id.split("step3")[1].toLowerCase()) {
+            case "username":
+                startFieldSpinner("#step3UsernameSpin");
+                var json = {
+                    operation: "checkUsername",
+                    username: $($this).val()
+                };
+                json[csrfMagicName] = csrfMagicToken;
+                $.post("<AJAX>?function=orderForm", json, function(data) {
+                    changeValidity($this, data.valid);
+                    stopFieldSpinner("#step3UsernameSpin");
+                });
+                break;
+            case "password":
+                isValid = $($this).val() != "";
+                $("#step3Confirm").change();
+                break;
+            case "confirm":
+                isValid = $($this).val() == $("#step3Password").val() && $($this).val() != "";
+                break;
+            case "subdomainselect":
+                isValid = $($this).val() != "";
+                break;
+            case "email":
+                // Regex + RFC 2822 = bad
+                // Do better validation server-side
+                startFieldSpinner("#step3EmailSpin");
+                var json = {
+                    operation: "checkEmail",
+                    email: $($this).val()
+                };
+                json[csrfMagicName] = csrfMagicToken;
+                $.post("<AJAX>?function=orderForm", json, function(data) {
+                    changeValidity($this, data.valid);
+                    stopFieldSpinner("#step3EmailSpin");
+                });
+                break;
+        }
+        if(isValid != null) {
+            changeValidity(this, isValid);
+        }
+    });
+
+    var startFieldSpinner = function(selector) {
+        $(selector).spin(step3SpinOpts).fadeIn(150);
+    }
+
+    var stopFieldSpinner = function(selector) {
+        $(selector).fadeOut(150, function() {
+            $(this).spin(false);
+        });
+    }
 
     var startSpinner = function(selector) {
         $(selector).html($("#loadingSpinnerCopy").html());
@@ -358,6 +439,34 @@ function stopRKey(evt) {
         display: block;
         width: 100%;
     }
+    #step-3 table {
+        /* width: 60%; */
+        margin: 0 auto;
+    }
+    #step-3 tr td:first-child {
+        width: 35%;
+        text-align: right;
+    }
+    #step-3 label {
+        font-weight: bold;
+        font-size: 16px;
+        margin-right: 2.7em;
+    }
+    #step-3 input, select {
+        font-size: 16px;
+    }
+    .validField {
+        background-color: lightgreen;
+    }
+    .invalidField {
+        background-color: lightcoral;
+    }
+    .step3Spin {
+        position: relative;
+        top: -15px;
+        left: 180px;
+        display: none;
+    }
 </style>
 
 <div id="loadingSpinnerCopy">
@@ -368,47 +477,17 @@ function stopRKey(evt) {
 
 <div id="newLeft" class="left"></div>
 
-<form action="" method="post" name="order" id="order">
-    <div>
-        <div id="step-1">
-            <div class="table">
-                <div class="cat">Step One - Choose Package</div>
-                <div class="text" style="padding: 10px; min-height: 0px;">
-                    %WELCOMEMSG%
-                </div>
-            </div>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                %PACKAGES%
-            </table>
-        </div>
-        <div class="table" id="step-4" style="display:none">
-            <div class="cat">Step Four - Hosting Account</div>
-            <div class="text">
-                <table width="100%" border="0" cellspacing="2" cellpadding="0">
-                    <tr id="dom">
-                        <td width="20%" id="domtitle">Domain:</td>
-                        <td width="78%" id="domcontent">%DOMAIN%</td>
-                        <td width="2%" align="left" id="domaincheck"><a title="Your domain, this must be in the format: <strong>example.com</strong>" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
-                    </tr>
-                    <tr id="sub">
-                        <td width="20%" id="domtitle">Subdomain:</td>
-                        <td id="domcontent"><input name="csub" id="csub" type="text" />.<span id="dropdownboxsub"></span></td>
-                        <td id="domaincheck" align="left"><a title="Your subdomain, this must be in the format: <strong>subdomain.desiredsuffix.com</strong>" class="tooltip"><img src="<URL>themes/icons/information.png" /></a></td>
-                    </tr>
-                </table>
-                <div id="custom">
-                </div>
-            </div>
-        </div>
-        <div class="table" id="step-5" style="display:none">
-            <div class="cat">Step 5 - Create Account</div>
-            <div class="text" id="creation">
-                <div id="finished">
-                </div>
-            </div>
+<div id="step-1">
+    <div class="table">
+        <div class="cat">Step One - Choose Package</div>
+        <div class="text" style="padding: 10px; min-height: 0px;">
+            %WELCOMEMSG%
         </div>
     </div>
-</form>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        %PACKAGES%
+    </table>
+</div>
 
 <div id="left" style="display: none;">
     <div class="table">
@@ -437,135 +516,60 @@ function stopRKey(evt) {
         </div>
     </div>
     <div class="table" id="step-3" style="display: none;">
-        <div class="cat">Step Three - Client Account</div>
+        <div class="cat">Step Three - Basic Account Info</div>
         <div class="text">
-            <style>
-                #form_wrapper
-                {
-                    padding:14px;
-
-                }
-
-                .col-1
-                {
-
-                    width:30%;
-                    float:left;
-                }
-                .col-2
-                {
-                    width:65%;
-                    float:right;
-                }
-
-                #form_wrapper h1
-                {
-                    font-size:24px;
-                    font-weight:bold;
-                    margin-bottom:8px;
-                    text-align:center;
-                }
-                #form_wrapper p{
-                    font-size:12px;
-                    margin-bottom:20px;
-                    padding-bottom:10px;
-                    text-align:center;
-                }
-                #form_wrapper label{
-
-                    margin-bottom:18px;
-                    font-weight:bold;
-                    text-align:right;
-                    display:block;
-                }
-                #form_wrapper .small{
-                    font-size:11px;
-                    font-weight:normal;
-                    text-align:right;
-                    display:block;
-                }
-                #form_wrapper input{
-                    margin-bottom:15px;
-                    font-size:12px;
-                    padding:5px 2px;
-                    width:100%;
-                    font-weight:bold;
-                }
-
-                #form_wrapper input[type="radio"]
-                {
-                    margin-bottom:30px;
-
-                    border:1px solid black;
-                    width:15px;
-                }
-                #form_wrapper select
-                {
-                    padding:5px 2px;
-                    width:100%;
-                    margin-bottom:15px;
-                }
-
-                #form_wrapper button
-                {
-                    clear:both;
-                    margin-left:50px;
-                    width:125px;
-                    height:31px;
-                    text-align:center;
-                    line-height:31px;
-                    font-size:11px;
-                    font-weight:bold;
-                }
-            </style>
-            <div id="form_wrapper">
-                <form id="form" name="form" method="post" action="index.html">
-                    <div class="col-1">
-
-                        <label>Name
-                            <span class="small">Enter Full Name</span>
-                        </label>
-
-                        <label>Email
-                            <span class="small">Add a valid address</span>
-                        </label>
-
-                        <label >Password
-                            <span class="small">Min. size 6 chars</span>
-                        </label>
-
-                        <label >Gender
-                            <span class="small">Enter your gender</span>
-                        </label>
-
-                        <label >Country
-                            <span class="small">Enter your country</span>
-                        </label>
-                    </div>
-                    <div class="col-2">
-
-                        <input type="text" name="name" id="name" />
-
-                        <input type="text" name="email" id="email"   />
-
-                        <input type="text" name="password" id="password"/>
-
-                        <input type="radio" name="password" id="password"/> Male
-                        <input type="radio" name="password" id="password"/>Female
-
-                        <select>
-                            <option>Country1</option>
-                            <option>Country2</option>
+            <table><tbody>
+                <tr>
+                    <td>
+                        <label for="step3Username">Username:</label>
+                    </td>
+                    <td>
+                        <input name="step3Username" class="step3Field" id="step3Username" type="text" required>
+                        <div id="step3UsernameSpin" class="step3Spin"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="step3Password">Password:</label>
+                    </td>
+                    <td>
+                        <input type="password" class="step3Field" name="step3Password" id="step3Password" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="step3Confirm">Confirm Password:</label>
+                    </td>
+                    <td>
+                        <input type="password" class="step3Field" name="step3Confirm" id="step3Confirm" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="step3Domain">Domain:</label>
+                    </td>
+                    <td>
+                        <input type="text" class="step3Field" name="step3Domain" id="step3Domain" required>
+                        <select name="step3SubdomainSelect" id="step3SubdomainSelect" class="step3Field" required>
+                            <option disabled="disabled">Pick an option</option>
+                            <option>My own domain</option>
+                            <optgroup label="Subdomains">
+                                <option>.thehostingtool.com</option>
+                                <option>.versobit.com</option>
+                            </optgroup>
                         </select>
-                    </div>
-
-                    <center>
-                        <button type="submit">Sign-up</button>
-                    </center>
-
-                </form>
-
-            </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="step3Email">Email:</label>
+                    </td>
+                    <td>
+                        <input type="email" name="step3Email" class="step3Field" id="step3Email" required>
+                        <div id="step3EmailSpin" class="step3Spin"></div>
+                    </td>
+                </tr>
+            </tbody></table>
         </div>
     </div>
     <table width="100%" border="0" cellspacing="2" cellpadding="0" id="steps" style="display:none;">
