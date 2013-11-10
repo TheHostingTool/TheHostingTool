@@ -10,6 +10,8 @@ var packageId;
 var usingDomain;
 var packageSubdomains; // Array if subdomains, false if none
 var useNewSlide = %USENEWEFFECT%;
+var pkgTableOffset;
+var pkgTableWidth;
 
 $(document).ready(function() {
 
@@ -68,7 +70,8 @@ $(document).ready(function() {
         $(".footer").fadeOut();
 
         // Get offset and solidify element with absolute positioning
-        var pkgTableOffset = $("#packageTable-" + id).offset();
+        pkgTableOffset = $("#packageTable-" + id).offset();
+        pkgTableWidth = $("#packageTable-" + id).width();
         $("#packageTable-" + id).css("width", $("#packageTable-" + id).width() + "px")
                 .css("top", pkgTableOffset.top + "px")
                 .css("left", pkgTableOffset.left + "px")
@@ -79,7 +82,8 @@ $(document).ready(function() {
         var step1Offset = $("#step-1").offset();
 
         // The magic begins
-        $(".table").not("#packageTable-" + id).fadeOut();
+        $("#welcomeTable").fadeOut();
+        $(".packageTable").not("#packageTable-" + id).fadeOut();
         $("#packageTable-" + id).animate({ top: step1Offset.top, left: step1Offset.left }, null, function() {
             $(this).appendTo("#newLeft")
                     .css("position", "").css("top", "").css("left", "")
@@ -257,7 +261,50 @@ $(document).ready(function() {
 
     // When the user clicks the Previous Step button
     $("#previousStepButton").click(function() {
-        //
+        if(step != 2) {
+            gotoStep(step - 1);
+            return;
+        }
+
+        // Undo all that incredible shit we did
+        $("#step-2").slideUp(function() {
+            $("#right").hide();
+            $("#step-1").show();
+            var sidebarPkgOffset = $("#packageTable-" + packageId).offset();
+            $("#packageTable-" + packageId).css("width", $("#packageTable-" + packageId).width() + "px")
+                    .css("top", sidebarPkgOffset.top + "px")
+                    .css("left", sidebarPkgOffset.left + "px")
+                    .css("z-index", "9999")
+                    .css("position", "absolute");
+            $("#welcomeTable").fadeIn();
+            $(".packageTable").not("#packageTable-" + packageId).fadeIn();
+            $("#packageTable-" + packageId).animate({ top: pkgTableOffset.top, left: pkgTableOffset.left }, null, function() {
+                $(this).appendTo("#packageTd-" + packageId)
+                        .css("position", "").css("top", "").css("left", "")
+                        .animate({ width: pkgTableWidth + "px" }, function() {
+                            // Remove width property altogether. It was only for animation.
+                            $(this).css("width", "");
+                            $(".footer").fadeIn();
+                            $(".pkgOrderButton").val("Order").removeAttr('disabled');
+                            step = 1;
+                        });
+
+                var jsToggle = $("#packageTable-" + packageId + " .readmore-js-toggle");
+                if(jsToggle.length) {
+                    if(jsToggle.html().indexOf("More") != -1) {
+                        jsToggle.click();
+                    }
+
+                    $("#packageTable-" + packageId + " .readmore-js-toggle").slideUp(function() {
+                        $("#packageTable-" + packageId + " .subcontent").removeClass("readmore-js-section").removeData("plugin_readmore");
+                        $(this).remove();
+                    });
+                }
+            });
+        });
+        $("#steps").fadeOut();
+        $(".footer").fadeOut();
+        return;
     });
 });
 
@@ -478,7 +525,7 @@ function stopRKey(evt) {
 <div id="newLeft" class="left"></div>
 
 <div id="step-1">
-    <div class="table">
+    <div class="table" id="welcomeTable">
         <div class="cat">Step One - Choose Package</div>
         <div class="text" style="padding: 10px; min-height: 0px;">
             %WELCOMEMSG%
@@ -574,9 +621,9 @@ function stopRKey(evt) {
     </div>
     <table width="100%" border="0" cellspacing="2" cellpadding="0" id="steps" style="display:none;">
         <tr>
-            <td width="33%" align="center"><input type="button" name="previousStepButton" id="previousStepButton" value="Previous Step" disabled="disabled" /></td>
+            <td width="33%" align="center"><input type="button" name="previousStepButton" id="previousStepButton" value="Previous Step"></td>
             <td width="33%" align="center" id="verify">&nbsp;</td>
-            <td width="33%" align="center"><input type="button" name="nextStepButton" id="nextStepButton" value="Next Step" /></td>
+            <td width="33%" align="center"><input type="button" name="nextStepButton" id="nextStepButton" value="Next Step"></td>
         </tr>
     </table>
 </div>

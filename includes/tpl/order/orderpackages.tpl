@@ -1,5 +1,5 @@
-<td width="49%" valign="top" style="padding-top: 18px;">
-    <div class="table" id="packageTable-%ID%">
+<td width="49%" valign="top" style="padding-top: 18px;" id="packageTd-%ID%">
+    <div class="table packageTable" id="packageTable-%ID%">
         <div class="cat">
             %NAME%
         </div>
