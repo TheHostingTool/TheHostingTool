@@ -726,26 +726,8 @@ class server {
 											  'Account/E-mail Confirmed ({$data['email']})')");
 		return true;
 	}
-	
-	public function testConnection($serverId) {
-		global $db;
-		ignore_user_abort(true);
-		$query = $db->query("SELECT `type` FROM `<PRE>servers` WHERE `id` = {$serverId}");
-		if($db->num_rows($query) == 0) {
-			return "There is no server with an id of {$serverId}";
-		}
-        $data = $db->fetch_array($query);
-        $type = $data["type"];
-        $link = LINK."servers/".$type.".php";
-        if(!file_exists($link)) {
-            return "The server {$type}.php doesn't exist!";
-        }
-        require_once($link);
-        $server = new $type($serverId);
-        return $server->testConnection();
-	}
 
-    public function passwdStrength($serverId, $password) {
+    private function loadServerFromId($serverId) {
         global $db;
         $serverId = (int)$serverId;
         $query = $db->query("SELECT `type` FROM `<PRE>servers` WHERE `id` = '{$serverId}'");
@@ -759,7 +741,23 @@ class server {
             return "The server {$type}.php doesn't exist!";
         }
         require_once($link);
-        $server = new $type($serverId);
+        return new $type($serverId);
+    }
+	
+	public function testConnection($serverId) {
+		ignore_user_abort(true);
+        $server = $this->loadServerFromId($serverId);
+        if(is_string($server)) {
+            return $server;
+        }
+        return $server->testConnection();
+	}
+
+    public function passwdStrength($serverId, $password) {
+        $server = $this->loadServerFromId($serverId);
+        if(is_string($server)) {
+            return $server;
+        }
         if(method_exists($server, "passwdStrength")) {
             return $server->passwdStrength($password);
         }
