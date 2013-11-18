@@ -14,6 +14,9 @@ class da {
 	public $hash = false; # Password or Access Hash?
 	
 	private $server;
+
+    // Valid username regex
+    private static $validUsernameRegex = "/^[a-z][a-z0-9]{3,9}$/";
 	
 	public function __construct($serverId = null) {
 		if(!is_null($serverId)) {
@@ -172,6 +175,13 @@ class da {
 			return "D";
 		}
 	}
-}
 
-?>
+    // http://forum.directadmin.com/showthread.php?t=789&p=4101#post4101 (unsure if this has changed since 2003)
+    public function checkUsername($username) {
+        // We're not going to check with the actual server because that's an expensive (time) operation
+        if(!preg_match(self::$validUsernameRegex, $username)) {
+            return "Username must be alphanumeric, cannot start with a number, lowercase, and between 4 and 10 characters.";
+        }
+        return true;
+    }
+}

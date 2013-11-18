@@ -14,7 +14,15 @@ class whm {
 	public $hash = true; # Password or Access Hash?
 	
 	private $server;
-	
+
+    // Specifically reserved usernames
+    private static $reservedUsernames = array("cpldap", "leechprotect", "modsec", "munin", "root", "postgres", "horde",
+        "cphulkd", "eximstats", "roundcube", "logaholic", "virtfs", "spamassassin", "all", "dovecot", "tomcat",
+        "mailman", "proftpd", "cpbackup", "files", "dirs", "tmp", "toor");
+
+    // Valid username regex
+    private static $validUsernameRegex = "/^[a-z][a-z0-9]{0,7}$/";
+
 	public function __construct($serverId = null) {
 		if(!is_null($serverId)) {
 			$this->server = (int)$serverId;
@@ -294,5 +302,23 @@ class whm {
         $result = $this->remote("/xml-api/cpanel", 0, false, true, array("cpanel_xmlapi_user" => $data["user"],
             "cpanel_xmlapi_module" => "PasswdStrength", "cpanel_xmlapi_func" => "get_password_strength", "password" => $passwd));
         return is_string($result) ? $result : (int)$result->data->strength;
+    }
+
+    public function checkUsername($username) {
+        // We're not going to check with the actual server because that's an expensive (time) operation
+        // cPanel only allows >8 char usernames in very specific instances
+        if(!preg_match(self::$validUsernameRegex, $username)) {
+            return "Username must be alphanumeric, cannot start with a number, lowercase, and between 1 and 8 characters.";
+        }
+        if(in_array($username, self::$reservedUsernames, true)) {
+            return "Reserved username.";
+        }
+        if(strlen($username) >= 4 && substr($username, 0, 4) == "test") {
+            return "Username cannot begin with \"test\"";
+        }
+        if(strlen($username) >= 7 && substr($username, -7) == "assword") {
+            return "Username cannot end with \"assword\"";
+        }
+        return true;
     }
 }

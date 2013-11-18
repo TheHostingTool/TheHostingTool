@@ -763,4 +763,14 @@ class server {
         }
         return false;
     }
+
+    // Returns true if username is valid and a string (error message) if invalid
+    // It's up to the server type to determine what valid means
+    public function checkUsername($serverId, $username) {
+        $server = $this->loadServerFromId($serverId);
+        if(is_string($server)) {
+            return $server;
+        }
+        return $server->checkUsername($username);
+    }
 }
