@@ -265,6 +265,17 @@ class Ajax {
                 }
                 echo json_encode(array("valid" => true, "msg" => null));
                 return;
+            case "checkEmail":
+                if(!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(array("valid" => false, "msg" => "Invalid email."));
+                    return;
+                }
+                if($db->num_rows($db->query("SELECT * FROM `<PRE>users` WHERE `email` = '{$db->strip($_POST['email'])}'")) != 0) {
+                    echo json_encode(array("valid" => false, "msg" => "That email is unavailable."));
+                    return;
+                }
+                echo json_encode(array("valid" => true, "msg" => null));
+                return;
         }
     }
     

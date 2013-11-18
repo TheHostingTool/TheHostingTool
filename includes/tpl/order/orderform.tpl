@@ -147,7 +147,22 @@ $(document).ready(function() {
             return;
         }
         $(selector).switchClass("validField", "invalidField");
-    }
+    };
+
+    var invalidErrorMsgHandler = function(selector, valid, msg) {
+        var error = $(selector);
+        if(error.is(":visible")) {
+            if(valid) {
+                error.slideUp();
+            } else if(error.html() != msg) {
+                error.slideUp(function() {
+                    error.html(msg).slideDown();
+                });
+            }
+        } else if(!valid) {
+            error.html(msg).slideDown();
+        }
+    };
 
     var step3SpinOpts = {
         lines: 12, // The number of lines to draw
@@ -174,18 +189,7 @@ $(document).ready(function() {
                 json[csrfMagicName] = csrfMagicToken;
                 $.post("<AJAX>?function=orderForm", json, function(data) {
                     changeValidity($this, data.valid);
-                    var error = $("#step3UsernameError");
-                    if(error.is(":visible")) {
-                        if(data.valid) {
-                            error.slideUp();
-                        } else if(error.html() != data.msg) {
-                            error.slideUp(function() {
-                                error.html(data.msg).slideDown();
-                            });
-                        }
-                    } else if(!data.valid) {
-                        error.html(data.msg).slideDown();
-                    }
+                    invalidErrorMsgHandler("#step3UsernameError", data.valid, data.msg);
                     stopFieldSpinner("#step3UsernameSpin");
                 });
                 break;
@@ -210,6 +214,7 @@ $(document).ready(function() {
                 json[csrfMagicName] = csrfMagicToken;
                 $.post("<AJAX>?function=orderForm", json, function(data) {
                     changeValidity($this, data.valid);
+                    invalidErrorMsgHandler("#step3EmailError", data.valid, data.msg);
                     stopFieldSpinner("#step3EmailSpin");
                 });
                 break;
@@ -634,6 +639,7 @@ function stopRKey(evt) {
                     <td>
                         <input type="email" name="step3Email" class="step3Field" id="step3Email" required>
                         <div id="step3EmailSpin" class="step3Spin"></div>
+                        <div id="step3EmailError" class="step3Error"></div>
                     </td>
                 </tr>
             </tbody></table>
