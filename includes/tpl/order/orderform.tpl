@@ -168,11 +168,24 @@ $(document).ready(function() {
                 startFieldSpinner("#step3UsernameSpin");
                 var json = {
                     operation: "checkUsername",
+                    package: packageId,
                     username: $($this).val()
                 };
                 json[csrfMagicName] = csrfMagicToken;
                 $.post("<AJAX>?function=orderForm", json, function(data) {
                     changeValidity($this, data.valid);
+                    var error = $("#step3UsernameError");
+                    if(error.is(":visible")) {
+                        if(data.valid) {
+                            error.slideUp();
+                        } else if(error.html() != data.msg) {
+                            error.slideUp(function() {
+                                error.html(data.msg).slideDown();
+                            });
+                        }
+                    } else if(!data.valid) {
+                        error.html(data.msg).slideDown();
+                    }
                     stopFieldSpinner("#step3UsernameSpin");
                 });
                 break;
@@ -514,6 +527,12 @@ function stopRKey(evt) {
         left: 180px;
         display: none;
     }
+    .step3Error {
+        display: none;
+        color: red;
+        font-weight: bold;
+        font-style: italic;
+    }
 </style>
 
 <div id="loadingSpinnerCopy">
@@ -570,9 +589,10 @@ function stopRKey(evt) {
                     <td>
                         <label for="step3Username">Username:</label>
                     </td>
-                    <td>
+                    <td style="max-width: 0px;">
                         <input name="step3Username" class="step3Field" id="step3Username" type="text" required>
                         <div id="step3UsernameSpin" class="step3Spin"></div>
+                        <div id="step3UsernameError" class="step3Error"></div>
                     </td>
                 </tr>
                 <tr>

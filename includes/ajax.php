@@ -244,12 +244,28 @@ class Ajax {
         global $server;
         $server->signup();
     }
-    
+
+    // Primary ajax order form endpoint
     public function orderForm() {
-        global $type;
-        global $main;
-        $ptype = $type->determineType($main->getvar['package']);
-        echo $type->orderForm($ptype);
+        global $db, $server, $type;
+        if(empty($_POST["operation"])) {
+            return;
+        }
+        header("Content-type: application/json");
+        switch($_POST["operation"]) {
+            case "checkUsername":
+                $result = $server->checkUsername($type->determineServer((int)$_POST["package"]), $_POST["username"]);
+                if($result !== true) {
+                    echo json_encode(array("valid" => false, "msg" => $result));
+                    return;
+                }
+                if($db->num_rows($db->query("SELECT * FROM `<PRE>users` WHERE `user` = '{$db->strip($_POST['username'])}'")) != 0) {
+                    echo json_encode(array("valid" => false, "msg" => "That username is not available."));
+                    return;
+                }
+                echo json_encode(array("valid" => true, "msg" => null));
+                return;
+        }
     }
     
     public function cancelacc() {
