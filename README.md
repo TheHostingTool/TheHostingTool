@@ -11,7 +11,7 @@ let us know exactly where we can improve!
 **Twitter:** [@TheHostingTool](https://twitter.com/TheHostingTool)  
 **Facebook:** [facebook.com/TheHostingTool](https://www.facebook.com/TheHostingTool)  
 **Google+:** [google.com/+TheHostingTool](https://google.com/+TheHostingTool)  
-**GitHub:** [github.com/TheHostingTool/TheHostingTool](https://github.com/  TheHostingTool/TheHostingTool)
+**GitHub:** [github.com/TheHostingTool/TheHostingTool](https://github.com/TheHostingTool/TheHostingTool)
 
 
 ## Our Team
@@ -54,4 +54,4 @@ channel on irc.expertec.co.uk
 
 # Copyright Information
 Copyright © 2008-2013 TheHostingTool Development Team and Contributors
-TheHostingTool is licensed under the GNU-GPLv3. See COPYING.md for license details.
+TheHostingTool is licensed under the GNU-GPLv3. See `COPYING.md` for license details.
