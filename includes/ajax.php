@@ -276,6 +276,39 @@ class Ajax {
                 }
                 echo json_encode(array("valid" => true, "msg" => null));
                 return;
+            case "checkDomain":
+                $domainRegex = "/^([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}$/";
+                $subdomain = (int)$_POST["subdomain"];
+                if($subdomain == -1) {
+                    if(!preg_match($domainRegex, $_POST["domain"])) {
+                        echo json_encode(array("valid" => false, "msg" => "Invalid domain."));
+                        return;
+                    }
+                    if($db->num_rows($db->query("SELECT `id` FROM `<PRE>user_packs` WHERE `domain` = '{$db->strip($_POST["domain"])}'")) != 0) {
+                        echo json_encode(array("valid" => false, "msg" => "That domain is already in use."));
+                        return;
+                    }
+                    echo json_encode(array("valid" => true, "msg" => null));
+                    return;
+                }
+                $sdquery = $db->query("SELECT `subdomain` FROM `<PRE>subdomains` WHERE `id` = '{$db->strip($subdomain)}'");
+                if($db->num_rows($sdquery) == 0) {
+                    echo json_encode(array("valid" => false, "msg" => "No such subdomain."));
+                    return;
+                }
+                $sdarray = $db->fetch_array($sdquery);
+                $fulldomain = $_POST["domain"] . '.' . $sdarray[0];
+                if(!preg_match($domainRegex, $fulldomain)) {
+                    echo json_encode(array("valid" => false, "msg" => "Invalid subdomain."));
+                    return;
+                }
+                if($db->num_rows($db->query("SELECT `id` FROM `<PRE>user_packs` WHERE `domain` = '{$db->strip($fulldomain)}'")) != 0) {
+                    echo json_encode(array("valid" => false, "msg" => "That subdomain is already in use."));
+                    return;
+                }
+                echo json_encode(array("valid" => true, "msg" => null));
+                return;
+                break;
         }
     }
     

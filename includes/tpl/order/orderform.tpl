@@ -200,8 +200,22 @@ $(document).ready(function() {
             case "confirm":
                 isValid = $($this).val() == $("#step3Password").val() && $($this).val() != "";
                 break;
+            case "domain":
             case "subdomainselect":
-                isValid = $($this).val() != "";
+                if($("#step3SubdomainSelect").val() == null) {
+                    break;
+                }
+                var json = {
+                    operation: "checkDomain",
+                    domain: $("#step3Domain").val(),
+                    subdomain: $("#step3SubdomainSelect").val()
+                };
+                json[csrfMagicName] = csrfMagicToken;
+                $.post("<AJAX>?function=orderForm", json, function(data) {
+                    changeValidity($("#step3Domain"), data.valid);
+                    changeValidity($("#step3SubdomainSelect"), data.valid);
+                    invalidErrorMsgHandler("#step3DomainError", data.valid, data.msg);
+                });
                 break;
             case "email":
                 // Regex + RFC 2822 = bad
@@ -623,13 +637,14 @@ function stopRKey(evt) {
                     <td>
                         <input type="text" class="step3Field" name="step3Domain" id="step3Domain" required>
                         <select name="step3SubdomainSelect" id="step3SubdomainSelect" class="step3Field" required>
-                            <option disabled="disabled">Pick an option</option>
-                            <option>My own domain</option>
+                            <option value="pick" disabled="disabled">Pick an option</option>
+                            <option value="-1">My own domain</option>
                             <optgroup label="Subdomains">
-                                <option>.thehostingtool.com</option>
-                                <option>.versobit.com</option>
+                                <option value="1">.thehostingtool.com</option>
+                                <option value="2">.versobit.com</option>
                             </optgroup>
                         </select>
+                        <div id="step3DomainError" class="step3Error"></div>
                     </td>
                 </tr>
                 <tr>
