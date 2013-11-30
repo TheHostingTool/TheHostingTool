@@ -9,6 +9,11 @@
 define("LINK", "./");
 require(LINK . "compiler.php");
 
+// For install when no URL is present
+if(!defined("URL")) {
+    define("URL", "../");
+}
+
 $cssVars = array(
     "URL" => URL,
     "IMG" => URL . "themes/" . THEME . "/images/"
