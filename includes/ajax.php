@@ -308,7 +308,30 @@ class Ajax {
                 }
                 echo json_encode(array("valid" => true, "msg" => null));
                 return;
-                break;
+            case "checkPassword":
+                if(!isset($_POST["password"]) || empty($_POST["package"])) {
+                    return;
+                }
+                $password = $_POST["password"];
+                $package = (int)$_POST["package"];
+                global $server;
+                $result = $server->passwdStrength($type->determineServer($package), $password);
+                if(is_string($result)) {
+                    echo json_encode(array("valid" => false, "msg" => $result));
+                    return;
+                }
+                if(is_array($result)) {
+                    if($result["strength"] >= $result["required"]) {
+                        echo json_encode(array("valid" => true, "msg" => null));
+                        return;
+                    }
+                    // Avoid revealing raw required password strength (if that matters)
+                    echo json_encode(array("valid" => false, "msg" => "That password isn't strong enough. " .
+                        (int)(($result['strength']/$result['required']) * 100) . "/100"));
+                    return;
+                }
+                echo json_encode(array("valid" => true, "msg" => null));
+                return;
         }
     }
     

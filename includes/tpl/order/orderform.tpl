@@ -194,8 +194,19 @@ $(document).ready(function() {
                 });
                 break;
             case "password":
-                isValid = $($this).val() != "";
                 $("#step3Confirm").change();
+                startFieldSpinner("#step3PasswordSpin");
+                var json = {
+                    operation: "checkPassword",
+                    password: $($this).val(),
+                    package: packageId
+                };
+                json[csrfMagicName] = csrfMagicToken;
+                $.post("<AJAX>?function=orderForm", json, function(data) {
+                    changeValidity($this, data.valid);
+                    invalidErrorMsgHandler("#step3PasswordError", data.valid, data.msg);
+                    stopFieldSpinner("#step3PasswordSpin")
+                });
                 break;
             case "confirm":
                 isValid = $($this).val() == $("#step3Password").val() && $($this).val() != "";
@@ -620,6 +631,8 @@ function stopRKey(evt) {
                     </td>
                     <td>
                         <input type="password" class="step3Field" name="step3Password" id="step3Password" required>
+                        <div id="step3PasswordSpin" class="step3Spin"></div>
+                        <div id="step3PasswordError" class="step3Error"></div>
                     </td>
                 </tr>
                 <tr>

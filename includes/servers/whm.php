@@ -299,9 +299,17 @@ class whm {
     public function passwdStrength($passwd) {
         $data = $this->serverDetails($this->server);
         // The cPanel API is pretty nice. We can easily access internal APIs from the external one.
-        $result = $this->remote("/xml-api/cpanel", 0, false, true, array("cpanel_xmlapi_user" => $data["user"],
+        $strength = $this->remote("/xml-api/cpanel", 0, false, true, array("cpanel_xmlapi_user" => $data["user"],
             "cpanel_xmlapi_module" => "PasswdStrength", "cpanel_xmlapi_func" => "get_password_strength", "password" => $passwd));
-        return is_string($result) ? $result : (int)$result->data->strength;
+        $required = $this->remote("/xml-api/cpanel", 0, false, true, array("cpanel_xmlapi_user" => $data["user"],
+            "cpanel_xmlapi_module" => "PasswdStrength", "cpanel_xmlapi_func" => "get_required_strength", "app" => "createacct"));
+        if(is_string($strength)) {
+            return $strength;
+        }
+        if(is_string($required)) {
+            return $required;
+        }
+        return array("strength" => (int)$strength->data->strength, "required" => (int)$required->data->strength);
     }
 
     public function checkUsername($username) {
