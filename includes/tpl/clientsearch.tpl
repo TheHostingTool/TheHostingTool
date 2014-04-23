@@ -45,13 +45,13 @@ var suspendIconClick = function() {
       });
     }
     else if(status == "<a href='?page=users&sub=validate'>Validate</a>") {
-      window.location = "%URL%/admin/?page=users&sub=validate";
+      window.location = "%URL%/%ADMINDIR%/?page=users&sub=validate";
     }
     else if(status == "Cancelled") {
-      window.location = "%URL%/admin/none.php";
+      window.location = "%URL%/%ADMINDIR%/none.php";
     }
     else {
-      window.location = "%URL%/admin/?page=users&sub=validate";
+      window.location = "%URL%/%ADMINDIR%/?page=users&sub=validate";
     }
 }
 

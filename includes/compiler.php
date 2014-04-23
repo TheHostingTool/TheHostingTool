@@ -75,7 +75,6 @@ if ($handle = opendir($folder)) { # Open the folder
 	}
 }
 closedir($handle); #Close the folder
-
 if(INSTALL == 1) {
     date_default_timezone_set($db->config("timezone")); // Sets the default timezone
 	define("THEME", $db->config("theme")); // Set the default theme
@@ -120,9 +119,11 @@ if(INSTALL == 1) {
 	}
 	define('URL', $url);
 	define("NAME", $db->config("name")); // Sets the name of the website
+	define("ADMINDIR", $db->config("admindir")); // Sets the Admin Directory
 }
 else {
 	define("THEME", "Reloaded2");
+	define("ADMINDIR", "admin");
 }
 // Converts the $_POST global array into $main->postvar - DB Friendly.
 if(isset($_POST)) {

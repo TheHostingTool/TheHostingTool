@@ -271,7 +271,7 @@ $(window).load(function () {
             </table>
              </div>
              <div id="step5" style="display:none;">
-             All the steps have been completed! You can now use your script as per usual. You can login in to your staff area <a href="../admin/">here</a>.
+             All the steps have been completed! You can now use your script as per usual. You can login in to your staff area <a href="../%ADMINDIR%/">here</a>.
              </div>
         </div>
     </div>

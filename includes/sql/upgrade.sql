@@ -15,4 +15,5 @@ CREATE TABLE IF NOT EXISTS `%PRE%orderfields` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('useNewOrderSlideEffect', '0'),
+('adminurl', 'admin'),
 ('welcomemsg', '<p><strong>Welcome to TheHostingTool! Select a package to get started.</strong></p>');
