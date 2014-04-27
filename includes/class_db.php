@@ -18,19 +18,10 @@ class db {
 	public function __construct() { # Connect SQL as class is called
 		include(LINK."conf.inc.php"); # Get the config
 		$this->sql = $sql; # Assign the settings to DB Class
-		$this->con = @mysql_connect($this->sql['host'], $this->sql['user'], $this->sql['pass']); #Connect to SQL
-		if(!$this->con) { # If SQL didn't connect
-			die("Fatal: Coudn't connect to MySQL, please check your details!");
-		}
-		else {
-			$this->db = @mysql_select_db($this->sql['db'], $this->con); # Select the MySQL DB
-			if(!$this->db) {
-				die("Fatal: Couldn't select the database, check your db setting!");
-			}
-			else {
-				$this->prefix = $this->sql['pre'];
-			}
-		}
+		$this->db = new PDO("mysql:host={$this->sql['host']};dbname={$this->sql['db']};", $this->sql['user'], $this->sql['pass']); #Connect to SQL
+    $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $this->prefix = $this->sql['pre'];
 	}
 	
 	private function error($name, $mysqlerror, $func) { #Shows a SQL error from main class
@@ -41,31 +32,38 @@ class db {
 		$main->error($error);
 	}
 	
-	public function query($sql) { # Run any query and return the results
+	public function query($sql, $params=null) { # Run any query and return the results
 		$sql = preg_replace("/<PRE>/si", $this->prefix, $sql); #Replace prefix variable with right value
-		$sql = @mysql_query($sql, $this->con); # Run query
-		if(!$sql) {
-			$this->error("MySQL Query Failed", mysql_error(), __FUNCTION__); # Call Error
-		}
+    try{
+      if(is_array($params)){
+        $sql = $this->db->prepare($sql); # Run query
+        $sql->execute($params); # Add Parameters
+      }else{
+        $sql = $this->db->query($sql);
+      }
+    }catch(PDOException $ex){
+      $this->error("MySQL Query Failed", $ex->getMessage(), __FUNCTION__); # CALL ERROR
+    }
 		return $sql; # Return SQL
 	}
 
 	// mysql_insert_id
 	public function insert_id() {
-		return @mysql_insert_id();
+		return $this->db->lastInsertId();
 	}
 	
 	public function num_rows($sql) { # Runs a query and returns the rows
-		$sql = mysql_num_rows($sql); # Run query
+		return $sql->rowCount(); # Return SQL
+	}
+	
+	public function fetch_array($sql, $all=false, $resultType = PDO::FETCH_ASSOC) { # Gets a query and returns the rows/columns as array
+    if($all) $sql = $sql->fetchAll($resultType);
+    else $sql = $sql->fetch($resultType);
 		return $sql; # Return SQL
 	}
 	
-	public function fetch_array($sql, $resultType = MYSQL_BOTH) { # Gets a query and returns the rows/columns as array
-		$sql = @mysql_fetch_array($sql, $resultType); # Fetch the SQL Array, all the data
-		return $sql; # Return SQL
-	}
-	
-	public function strip($value) { # Gets a string and returns a value without SQL Injection
+  ### DEPRECATED! ### DO NOT USE!!!
+  public function strip($value) { # Gets a string and returns a value without SQL Injection
 		if(is_array($value)) {
 			$array = array();
 			foreach($value as $k => $v) {
@@ -76,12 +74,12 @@ class db {
 					if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
 						  $v = stripslashes($v); 
 					}
-					if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
-						  $v = mysql_real_escape_string($v);
-					} 
-					else { # If all else fails..
-						  $v = addslashes($v);
-					}
+					#if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
+					#	  $v = mysql_real_escape_string($v);
+					#} 
+					#else { # If all else fails..
+					#	  $v = addslashes($v);
+					#}
 					$array[$k] = $v;
 				}
 			}
@@ -91,19 +89,18 @@ class db {
 			if(get_magic_quotes_gpc()) { # Check if Magic Quotes are on
 				  $value = stripslashes($value); 
 			}
-			if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
-				  $value = mysql_real_escape_string($value);
-			} 
-			else { # If all else fails..
-				  $value = addslashes($value);
-			}
+			#if(function_exists("mysql_real_escape_string")) { # Does mysql real escape string exist?
+			#	  $value = mysql_real_escape_string($value);
+			#} 
+			#else { # If all else fails..
+			#	  $value = addslashes($value);
+			#}
 			return $value;
 		}
 
 	}
-	
 	public function config($name) { # Returns a value of a config variable
-		$query = $this->query("SELECT * FROM `<PRE>config` WHERE `name` = '{$name}'");
+		$query = $this->query("SELECT * FROM `<PRE>config` WHERE `name` = ?", array($name));
 		if($this->num_rows($query) == 0) {
 			// Legacy version support
 			if(strtolower($name) == "vname") {
@@ -115,13 +112,13 @@ class db {
 			$main->error($error);
 		}
 		else {
-			$value = $this->fetch_array($query);
+			$value = $this->fetch_array($query, false);
 			return $value['value'];
 		}
 	}
 	
 	public function resources($name) { # Returns a value of a resource variable
-		$query = $this->query("SELECT * FROM `<PRE>resources` WHERE `resource_name` = '{$name}'");
+		$query = $this->query("SELECT * FROM `<PRE>resources` WHERE `resource_name` = ?", array($name));
 		if($this->num_rows($query) == 0) {
 			$error['Error'] = "Couldn't Retrieve resource value!";
 			$error['Resource Name'] = $name;
@@ -129,14 +126,14 @@ class db {
 			$main->error($error);
 		}
 		else {
-			$value = $this->fetch_array($query);
+			$value = $this->fetch_array($query, false);
 			return $value['resource_value'];
 		}
 	}
 	
 	public function staff($id) { # Returns values of a id
 		$id = $this->strip($id);
-		$query = $this->query("SELECT * FROM `<PRE>staff` WHERE `id` = '{$id}'");
+		$query = $this->query("SELECT * FROM `<PRE>staff` WHERE `id` = ?", array($id));
 		if($this->num_rows($query) == 0) {
 			$error['Error'] = "Couldn't retrieve staff data!";
 			$error['Username'] = $name;
@@ -144,14 +141,14 @@ class db {
 			$main->error($error);
 		}
 		else {
-			$value = $this->fetch_array($query);
+			$value = $this->fetch_array($query, false);
 			return $value;
 		}
 	}
 	
 	public function client($id, $returnErrors = false) { # Returns values of a id
 		$id = $this->strip($id);
-		$query = $this->query("SELECT * FROM `<PRE>users` WHERE `id` = '{$id}'");
+		$query = $this->query("SELECT * FROM `<PRE>users` WHERE `id` = ?", array($id));
 		if($this->num_rows($query) == 0) {
 			if($returnErrors) {
 				return false;
@@ -163,8 +160,8 @@ class db {
 		}
 		else {
 			$value = $this->fetch_array($query);
-			$query = $this->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$value['id']}'");
-			$data = $this->fetch_array($query);
+			$query = $this->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = ?", array($id));
+			$data = $this->fetch_array($query, false);
 			$value['domain'] = $data['domain'];
 			$value['status'] = $data['status'];
 			return $value;
@@ -175,23 +172,23 @@ class db {
 		// Who actually wrote this?!
 		$name = $this->strip($name);
 		$value = $this->strip($value);
-		$query = $this->query("UPDATE `<PRE>config` SET `value` = '{$value}' WHERE `name` = '{$name}'");
+		$query = $this->query("UPDATE `<PRE>config` SET `value` = ? WHERE `name` = ?", array($value, $name));
 	}
 	
 	public function updateResource($name, $value) { # Updates a config value
 		// Does not expect input to be safe so we sanitize it.
-		$name = $this->strip($name);
-		$value = $this->strip($value);
-		$query = $this->query("UPDATE `<PRE>resources` SET `resource_value` = '{$value}' WHERE `resource_name` = '{$name}'");
+		# DEP: $name = $this->strip($name);
+		# DEP: $value = $this->strip($value);
+		$query = $this->query("UPDATE `<PRE>resources` SET `resource_value` = ? WHERE `resource_name` = ?", array($value, $name));
 	}
 	
 	public function emailTemplate($name = 0, $id = 0) { # Retrieves a email template with name or id
 		global $main, $db;
 		if($name) {
-			$query = $db->query("SELECT * FROM `<PRE>templates` WHERE `name` = '{$this->strip($name)}'");	
+			$query = $db->query("SELECT * FROM `<PRE>templates` WHERE `name` = ?", array($name));	
 		}
 		elseif($id) {
-			$query = $db->query("SELECT * FROM `<PRE>templates` WHERE `id` = '{$this->strip($id)}'");		
+			$query = $db->query("SELECT * FROM `<PRE>templates` WHERE `id` = ?", array($id));		
 		}
 		else {
 			$array['Error'] = "No name/id was sent onto the reciever!";
@@ -204,7 +201,7 @@ class db {
 			$main->error($array);
 		}
 		else {
-			return $db->fetch_array($query);	
+			return $db->fetch_array($query, false);	
 		}
 	}
 }
