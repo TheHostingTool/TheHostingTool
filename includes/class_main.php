@@ -232,7 +232,24 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'Login successful ($ip)')");
+					$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+					$db->query("UPDATE `<PRE>users` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
+					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+														'{$data['id']}',
+														'{$main->postvar['user']}',
+														'{$date}',
+														'Password Hashed to BCrypt ($ip)')");
 					return true;
+				}
+				elseif (password_verify($main->postvar['pass'], $data['password'])) {
+					$_SESSION['clogged'] = 1;
+					$_SESSION['cuser'] = $data['id'];
+					$date = time();
+					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+														'{$data['id']}',
+														'{$main->postvar['user']}',
+														'{$date}',
+														'Login successful ($ip)')");
 				}
 				else {
 					$date = time();
@@ -269,7 +286,25 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'STAFF LOGIN SUCCESSFUL ($ip)')");
+					$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+					$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
+					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+														'{$data['id']}',
+														'{$main->postvar['user']}',
+														'{$date}',
+														'Staff Password Hashed to BCrypt ($ip)')");
 					return true;
+				}
+				elseif (password_verify($main->postvar['pass'], $data['password'])){
+					$_SESSION['logged'] = 1;
+					$_SESSION['user'] = $data['id'];
+					$date = time();
+					$ip = $_SERVER['REMOTE_ADDR'];
+					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
+														'{$data['id']}',
+														'{$main->postvar['user']}',
+														'{$date}',
+														'STAFF LOGIN SUCCESSFUL ($ip)')");					
 				}
 				else {
 					$date = time();
@@ -352,7 +387,7 @@ class main {
 		 */
 		mt_srand((int)microtime(true));
 		$salt = md5(mt_rand());
-		$password = md5(md5($newpass) . md5($salt));
+		$password = password_hash($newpass, PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
 		$db->query("UPDATE `<PRE>users` SET `password` = '{$password}' WHERE `id` = '{$db->strip($clientid)}'");
 		$db->query("UPDATE `<PRE>users` SET `salt` = '{$salt}' WHERE `id` = '{$db->strip($clientid)}'");
 		

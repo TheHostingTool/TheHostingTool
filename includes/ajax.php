@@ -344,7 +344,8 @@ class Ajax {
             echo "That account doesn't exist!";
         } else {
             $data = $db->fetch_array($query);
-            if(md5(md5($pass) . md5($data['salt'])) == $data['password']) {
+            if(password_verify($pass, $data['password'])) {
+            #if(md5(md5($pass) . md5($data['salt'])) == $data['password']) {
                 $query2 = $db->query("SELECT * FROM `<PRE>user_packs` WHERE `userid` = '{$db->strip($user)}'");
                 $data2  = $db->fetch_array($query2);
                 if($server->cancel($data2['id'])) {
@@ -768,7 +769,8 @@ class Ajax {
             if(!$n) {
                 $db->query("UPDATE `<PRE>config` SET `value` = '{$main->getvar['url']}' WHERE `name` = 'url'");
                 $salt     = md5(rand(0, 99999));
-                $password = md5(md5($main->getvar['pass']) . md5($salt));
+                #$password = md5(md5($main->getvar['pass']) . md5($salt));
+                $password = password_hash($main->getvar['pass'], PASSWORD_BCRYPT, array('count'=>PASSWORD_COST));
                 $db->query("INSERT INTO `<PRE>staff` (user, email, password, salt, name) VALUES(
                                                                                   '{$main->getvar['user']}',
                                                                                   '{$main->getvar['email']}',

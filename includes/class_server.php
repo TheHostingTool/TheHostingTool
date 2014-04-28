@@ -215,7 +215,8 @@ class server {
 			$date = time();
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$salt = md5(rand(0,9999999));
-			$password = md5(md5($main->getvar['password']).md5($salt));
+			#$password = md5(md5($main->getvar['password']).md5($salt));
+			$password = password_hash($main->getvar['password'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
 			$UsrName = $main->getvar['username'];
 			$newusername = $main->getvar['username'];
 			$db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone, status) VALUES(
@@ -381,7 +382,8 @@ class server {
         $ip = $_SERVER["REMOTE_ADDR"];
         // Temporary as we're switching to bcrypt
         $salt = md5(rand(0,9999999));
-        $passwd = md5(md5($passwd).md5($salt));
+        #$passwd = md5(md5($passwd).md5($salt));
+	$passwd = password_hash($passwd, PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
         $db->query("INSERT INTO `<PRE>users` (user, email, password, salt, signup, ip, firstname, lastname, address, city, state, zip, country, phone, status, emailval) VALUES(
 													  '{$db->strip($username)}',
 													  '{$db->strip($email)}',

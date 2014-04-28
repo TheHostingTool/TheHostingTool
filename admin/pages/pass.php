@@ -39,6 +39,16 @@ class page {
 							$main->errors("Password changed!");
 						}
 					}
+					elseif (password_verify($main->postvar['old'], $data['password'])){
+						if($main->postvar['new'] != $main->postvar['confirm']) {
+							$main->errors("Your passwords don't match!");
+						}
+						else {
+							$newpass = 	password_hash($main->postvar['new'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+							$db->query("UPDATE `<PRE>staff` SET `password` = '{$newpass}' WHERE `id` = '{$_SESSION['user']}'");
+							$main->errors("Password changed!");
+						}
+					}
 					else {
 						$main->errors("Your old password was wrong!");
 					}

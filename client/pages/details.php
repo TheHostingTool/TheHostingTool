@@ -106,6 +106,19 @@ class page {
 						else {
 							$main->errors("Your passwords don't match!");		
 						}
+					}elseif (password_verify($main->postvar['currentpass'], $data['password'])){
+						if($main->postvar['newpass'] === $main->postvar['cpass']) {
+						$cmd = $main->changeClientPassword($_SESSION['cuser'], $main->postvar['newpass']);
+						if($cmd === true) {
+							$main->errors("Details updated!");
+						}
+						else {
+							$main->errors((string)$cmd);
+						}
+					}
+						else {
+							$main->errors("Your passwords don't match!");		
+						}
 					}
 					else {
 						$main->errors("Your current password is incorrect.");

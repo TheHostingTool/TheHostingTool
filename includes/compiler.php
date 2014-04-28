@@ -48,6 +48,10 @@ if(file_exists(LINK."/conf.inc.php")) {
 }
 else {
 	define("NOCONFIG", true);
+	define("PASSWORD_COST", 11);
+}
+if($sec['cost']) {
+	define("PASSWORD_COST", $sec['cost']);
 }
 if($sql['install']) {
 	define("INSTALL", true);
@@ -56,6 +60,7 @@ if($sql['install']) {
 }
 else {
     define("INSTALL", false);
+    define("PASSWORD_COST", 11);
 }
 
 $folder = LINK;
