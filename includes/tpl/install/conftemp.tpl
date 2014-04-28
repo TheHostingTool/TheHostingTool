@@ -19,7 +19,7 @@ $sql['pre'] = '%PRE%'; #The MySQL Prefix, usually default unless otherwise
 //Password Configuration
 //Passwords use BCrypt for added security. Below is the cost factor configuration setting.
 //It is recommended that you do not change this setting unless you know what you are doing.
-$sql['cost'] = 11;
+$sec['cost'] = 11;
 
 //LEAVE
 $sql['install'] = %TRUE%;
