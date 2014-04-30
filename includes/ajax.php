@@ -1001,127 +1001,97 @@ class Ajax {
             }
         }
     }
-    
+
     function acpPackages() {
-        global $main, $db, $type;
-        if($_SESSION['logged']) {
-            $P           = $_POST;
-            $G           = $_GET;
-            $R           = $_REQUEST;
-            $action      = $R['action'];
-            $id          = $main->postvar['id'];
-            $name        = $main->postvar['name'];
-            $backend     = $main->postvar['backend'];
-            $description = $main->postvar['description'];
-            $type2       = $main->postvar['type'];
-            $val         = $main->postvar['val'];
-            $reseller    = $main->postvar['reseller'];
-            $order       = $main->postvar['order'];
-            $additional  = $main->postvar['additional'];
-            $server      = $main->postvar['server'];
-            
-            if(isset($P['action']) or $G['action']) {
-                switch($action) {
-                    case "edit":
-                        if(empty($P['additional']) or $P['additional'] == "undefined") {
-                            $db->query("UPDATE `<PRE>packages` SET
-                            `name` = '{$name}',
-                            `backend` = '{$backend}',
-                            `description` = '{$description}',
-                            `admin` = '{$val}',
-                            `reseller` = '{$reseller}'
-                            WHERE `id` = '{$id}'");
-                        } else {
-                            $db->query("UPDATE `<PRE>packages` SET
-                            `name` = '{$name}',
-                            `backend` = '{$backend}',
-                            `description` = '{$description}',
-                            `admin` = '{$val}',
-                            `reseller` = '{$reseller}',
-                            `additional` = '{$additional}'
-                            WHERE `id` = '{$id}'");
-                        }
-                        break;
-                    
-                    case "add":
-                        if(empty($P['additional']) or $P['additional'] == "undefined") {
-                            $db->query("INSERT INTO <PRE>packages
-                               (
-                               `name`,
-                               `backend`,
-                               `description`,
-                               `type`,
-                               `server`,
-                               `admin`,
-                               `reseller`
-                               )
-                               VALUES
-                               (
-                               '{$name}',
-                               '{$backend}',
-                               '{$description}',
-                               '{$type2}',
-                               '{$server}',
-                               '{$val}',
-                               '{$reseller}'
-                               );
-                                ");
-                        } else {
-                            $db->query("INSERT INTO <PRE>packages
-                               (
-                               `name`,
-                               `backend`,
-                               `description`,
-                               `type`,
-                               `server`,
-                               `admin`,
-                               `reseller`,
-                               `additional`
-                               )
-                               VALUES
-                               (
-                               '{$name}',
-                               '{$backend}',
-                               '{$description}',
-                               '{$type2}',
-                               '{$server}',
-                               '{$val}',
-                               '{$reseller}',
-                               '{$additional}'
-                               );
-                                ");
-                        }
-                        break;
-                    
-                    case "delete":
-                        if(isset($G['id'])) {
-                            $db->query("DELETE FROM `<PRE>packages` WHERE `id` = '{$main->getvar['id']}'");
-                        }
-                        break;
-                    
-                    
-                    case "order":
-                        if(isset($P['order'])) {
-                            $ids = explode("-", $order);
-                            $i   = 0;
-                            foreach($ids as $id) {
-                                $db->query("UPDATE `<PRE>packages` SET `order` = '{$i}' WHERE `id` = '{$id}'");
-                                $i++;
-                            }
-                        }
-                        break;
-                    
-                    case "typeInfo":
-                        if(isset($G['type'])) {
-                            echo $type->acpPadd($G['type']);
-                        }
-                        break;
-                }
-            }
+        if(!$_SESSION['logged']) {
+            return;
         }
-        
+        global $db;
+        switch($_POST["operation"]) {
+            case "new":
+            case "edit":
+                //print_r($_POST);
+                header("Content-type: application/json");
+                if(
+                    // Can be new0 or 0
+                    (!isset($_POST["id"]) || (preg_match("/^(?:new)?[0-9]+$/", $_POST["id"]) === false)) ||
+                    // Just can't be empty
+                    (!isset($_POST["name"]) || $_POST["name"] == "") ||
+                    (!isset($_POST["backend"]) || $_POST["backend"] == "") ||
+                    (!isset($_POST["desc"]) || $_POST["desc"] == "") ||
+                    (!isset($_POST["type"]) || $_POST["type"] == "") ||
+                    // Must be integer
+                    (!isset($_POST["server"]) || !is_numeric($_POST["server"])) ||
+                    // Boolean (check later)
+                    (!isset($_POST["admin"]) || $_POST["admin"] == "") ||
+                    (!isset($_POST["reseller"]) || $_POST["reseller"] == "") ||
+                    (!isset($_POST["domain"]) || $_POST["domain"] == "") ||
+                    (!isset($_POST["hidden"]) || $_POST["hidden"] == "") ||
+                    (!isset($_POST["disabled"]) || $_POST["disabled"] == "")
+                ) {
+                    echo json_encode(false);
+                    return;
+                }
+                $id = $_POST["id"];
+                $name = $_POST["name"];
+                $backend = $_POST["backend"];
+                $desc = $_POST["desc"];
+                $type = $_POST["type"];
+                $server = (int)$_POST["server"];
+                $admin = $_POST["admin"] === "true";
+                $reseller = $_POST["reseller"] === "true";
+                $domain = $_POST["domain"] === "true";
+                $hidden = $_POST["hidden"] === "true";
+                $disabled = $_POST["disabled"] === "true";
+                if(!mysql_num_rows($db->query("SELECT `id` FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'"))) {
+                    echo json_encode(false);
+                }
+                if($_POST["operation"] != "new") {
+                    // Do not allow "new0" ids
+                    if(!is_numeric($id)) {
+                        echo json_encode(false);
+                        return;
+                    }
+                    $id = abs((int)$id);
+                    $db->query("UPDATE `<PRE>packages` SET `name` = '{$db->strip($name)}', `backend` = '{$db->strip($backend)}',
+                        `description` = '{$db->strip($desc)}', `type` = '{$db->strip($type)}', `server` = '{$db->strip($server)}', `admin` = '{$db->strip((int)$admin)}',
+                        `reseller` = '{$db->strip((int)$reseller)}', `is_hidden` = '{$db->strip((int)$hidden)}', `is_disabled` = '{$db->strip((int)$disabled)}',
+                        `custom_fields` = '[]', `allow_domains` = '{$db->strip((int)$domain)}' WHERE `id` = '{$db->strip($id)}'");
+                    echo json_encode(true);
+                    return;
+                }
+                $db->query("INSERT INTO `<PRE>packages` (`id`, `name`, `backend`, `description`, `type`, `server`, `admin`, `reseller`,
+                    `additional`, `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`)
+                    VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($type)}',
+                    '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '', '0',
+                    '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '[]', '{$db->strip((int)$domain)}')");
+                echo json_encode(array($id, $db->insert_id()));
+                return;
+            case "delete":
+                header("Content-type: application/json");
+                if(!isset($_POST["id"]) || !is_numeric($_POST["id"])) {
+                    echo json_encode(false);
+                    return;
+                }
+                $id = (int)$_POST["id"];
+                echo json_encode($db->query("DELETE FROM `<PRE>packages` WHERE `id` = '{$db->strip($id)}'"));
+                return;
+            case "order":
+                header("Content-type: application/json");
+                $orders = $_POST["order"];
+                if(!is_array($orders)) {
+                    echo json_encode(false);
+                    return;
+                }
+                for($i = 0; $i < count($orders); $i++) {
+                    $id = (int)$orders[$i];
+                    $db->query("UPDATE `<PRE>packages` SET `order` = '{$i}' WHERE `id` = '{$id}'");
+                }
+                echo json_encode(true);
+                return;
+        }
     }
-    
+
     function uiThemeChange() {
         global $main, $db;
         if($_SESSION['logged']) {

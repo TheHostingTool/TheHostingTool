@@ -583,3 +583,4 @@ CREATE TABLE IF NOT EXISTS `%PRE%orderfields` (
 INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('useNewOrderSlideEffect', '0'),
 ('welcomemsg', '<p><strong>Welcome to TheHostingTool! Select a package to get started.</strong></p>');
+ALTER TABLE `%PRE%packages` ADD `allow_domains` BOOLEAN NOT NULL DEFAULT TRUE ;
