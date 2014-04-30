@@ -152,8 +152,12 @@ $(document).ready(function() {
     for(var i = 0; i < Math.ceil(initialCFields.length / 3); i++) {
         var tr = $("<tr>");
         for(var innerI = 0; innerI < 3; innerI++) {
+            var cfIndex = i * 3 + innerI;
+            if(!initialCFields.hasOwnProperty(cfIndex)) {
+                break;
+            }
             var td = $("<td>");
-            td.append($("<label>").text(initialCFields[i * 3 + innerI].name));
+            td.append($("<label>").text(initialCFields[cfIndex].name));
             td.append($("<input>", {type: "checkbox"}));
             tr.append(td);
         }
