@@ -1354,7 +1354,7 @@ class Ajax {
         $extra = json_encode($extra);
         $db->query(($_POST["id"] == "new" ? "INSERT INTO" : "UPDATE") . " `<PRE>orderfields` SET `title` = '{$db->strip($title)}',
             `type` = '{$db->strip($type)}', `default` = '{$db->strip($defval)}', `description` = '{$db->strip($desc)}',
-            `required` = '{$db->strip($required)}', `regex` = '{$db->strip($regex)}', `extra` = '{$db->strip($extra)}'"
+            `required` = '{$db->strip((int)$required)}', `regex` = '{$db->strip($regex)}', `extra` = '{$db->strip($extra)}'"
             . ($_POST["id"] == "new" ? "" : "WHERE `id` = '{$main->postvar['id']}'"));
         if(mysql_affected_rows() == 0) {
             echo json_encode(array('error' => false, 'msg' => 'No changes have been made.'));
