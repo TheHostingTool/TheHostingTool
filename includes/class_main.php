@@ -232,7 +232,7 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'Login successful ($ip)')");
-					$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+					$newpass = password_hash($_POST['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
 					$db->query("UPDATE `<PRE>users` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
 					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 														'{$data['id']}',
@@ -241,7 +241,7 @@ class main {
 														'Password Hashed to BCrypt ($ip)')");
 					return true;
 				}
-				elseif (password_verify($main->postvar['pass'], $data['password'])) {
+				elseif (password_verify($_POST['pass'], $data['password'])) {
 					$_SESSION['clogged'] = 1;
 					$_SESSION['cuser'] = $data['id'];
 					$date = time();
@@ -250,8 +250,8 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'Login successful ($ip)')");
-					if(password_needs_rehash($data['password'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST))){
-						$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+					if(password_needs_rehash($_POST['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST))){
+						$newpass = password_hash($_POST['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
 						$db->query("UPDATE `<PRE>users` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
 						$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 							'{$data['id']}',
@@ -296,7 +296,7 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'STAFF LOGIN SUCCESSFUL ($ip)')");
-					$newpass = password_hash($_POST["pass"], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
+					$newpass = password_hash($_POST['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
 					$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `id` = ?", array($newpass, $data['id']));
 					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 														'{$data['id']}',
@@ -305,7 +305,7 @@ class main {
 														'Staff Password Hashed to BCrypt ($ip)')");
 					return true;
 				}
-				elseif (password_verify($_POST["pass"], $data['password'])){
+				elseif (password_verify($_POST['pass'], $data['password'])){
 					$_SESSION['logged'] = 1;
 					$_SESSION['user'] = $data['id'];
 					$date = time();
@@ -316,7 +316,7 @@ class main {
 														'{$date}',
 														'STAFF LOGIN SUCCESSFUL ($ip)')");
 					if(password_needs_rehash($data['password'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST))){
-						$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
+						$newpass = password_hash($_POST['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
 						$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
 						$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 							'{$data['id']}',
