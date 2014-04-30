@@ -21,13 +21,13 @@
     vertical-align: middle;
     padding-left: 5px;
 }
-.packagebox label, a {
+.packagebox label, .packagebox a {
     font-family: "Arial" !important;
 }
 .packagebox td {
     font-size: 12px;
 }
-.hiddenFieldBox input[type=text], textarea {
+.hiddenFieldBox input[type=text], .hiddenFieldBox textarea {
     font-size: 12px;
     width: 82%;
 }
@@ -79,7 +79,7 @@
 
     width: 60%;
 }
-.pkgEditorLeftChkbxTable input, a {
+.pkgEditorLeftChkbxTable input, .pkgEditorLeftChkbxTable a {
     display: inline-block;
     vertical-align: middle;
 }
