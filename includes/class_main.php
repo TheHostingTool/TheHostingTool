@@ -10,10 +10,10 @@
 if(THT != 1){die();}
 
 class main {
-	
+
 	public $postvar = array(), $getvar = array(), $requestvar = array(); # All post/get/request strings
 	public $cache = array(); // A place to cache the results (in memory) of time-consuming functions
-	
+
 	public function cleaninteger($var){ # Transforms an Integer Value (1/0) to a Friendly version (Yes/No)
 	     $patterns[0] = '/0/';
          $patterns[1] = '/1/';
@@ -21,7 +21,7 @@ class main {
          $replacements[1] = 'Yes';
          return preg_replace($patterns, $replacements, $var);
 	}
-	
+
 	public function cleanwip($var){ # Cleans v* from the version Number so we can work
 	     if(preg_match('/v/', $var)){
 	     $wip[0] = '/v/';
@@ -40,7 +40,7 @@ class main {
 		}
 		echo "/////////////////<br />";
 	}
-	
+
 	public function redirect($url, $headers = 0, $long = 0) { # Redirects user, default headers
 		if(!$headers) {
 			header("Location: ". $url);	# Redirect with headers
@@ -50,7 +50,7 @@ class main {
 			echo '<meta http-equiv="REFRESH" content="'.$long.';url='.$url.'">'; # HTML Headers
 		}
 	}
-	
+
 	public function errors($error = 0) { # Shows error default, sets error if $error set
 		if(!$error) {
 			if($_SESSION['errors']) {
@@ -63,14 +63,14 @@ class main {
 			$_SESSION['errors'] = serialize($errors);
 		}
 	}
-	
+
 	public function table($header, $content = 0, $width = 0, $height = 0) { # Returns the HTML for a THT table
 		global $style;
 		if($width) {
-			$props = "width:".$width.";";	
+			$props = "width:".$width.";";
 		}
 		if($height) {
-			$props .= "height:".height.";";	
+			$props .= "height:".height.";";
 		}
 		$array['PROPS'] = $props;
 		$array['HEADER'] = $header;
@@ -98,7 +98,7 @@ class main {
 		}
 		return $tbl;
 	}
-	
+
 	public function evalreturn($code) { # Evals code and then returns it without showing
 		ob_start();
 		eval("?> " . $code . "<?php ");
@@ -106,7 +106,7 @@ class main {
 		ob_clean();
 		return $data;
 	}
-	
+
 	public function done() { # Redirects the user to the right part
 		global $main;
         $url = "";
@@ -114,21 +114,21 @@ class main {
 		foreach($main->getvar as $key => $value) {
 			if($key != "do") {
 				if($i) {
-					$i = "&";	
+					$i = "&";
 				}
 				else {
-					$i = "?";	
+					$i = "?";
 				}
 				$url .= $i . $key . "=" . $value;
 			}
 		}
 		$main->redirect($url);
 	}
-	
+
 	public function check_email($email) {
         return $this->validEmail($email);
 	}
-	
+
 	public function dropDown($name, $values, $default = 0, $top = 1, $class = "") { # Returns HTML for a drop down menu with all values and selected
         $html = "";
 		if($top) {
@@ -148,7 +148,7 @@ class main {
 		}
 		return $html;
 	}
-	
+
 	public function userDetails($id) { # Returns the details of a user in an array
 		global $db;
 		global $main;
@@ -157,14 +157,14 @@ class main {
 			$array['Error'] = "That user doesn't exist!";
 			$array['User ID'] = $id;
 			$main->error($array);
-			return;	
+			return;
 		}
 		else {
 			$data = $db->fetch_array($query);
 			return $data;
 		}
 	}
-	
+
 	public function folderFiles($link, $ignored = array(".", "..", ".svn", "index.html")) { // Returns the filenames of a content in a folder
 		$folder = $link;
 		if ($handle = opendir($folder)) { // Open the folder
@@ -177,7 +177,7 @@ class main {
 		closedir($handle); // Close the folder
 		return $values;
 	}
-	
+
 	public function checkIP($ip) { # Returns boolean for ip. Checks if exists
 		global $db;
 		global $main;
@@ -186,10 +186,10 @@ class main {
 			return false;
 		}
 		else {
-			return true;	
+			return true;
 		}
 	}
-	
+
 	public function checkPerms($id, $user = 0) { # Checks the staff permissions for a nav item
 		global $main, $db;
 		if(!$user) {
@@ -206,13 +206,13 @@ class main {
 			$perms = explode(",", $data['perms']);
 			foreach($perms as $value) {
 				if($value == $id) {
-					return false;	
+					return false;
 				}
 			}
 			return true;
 		}
 	}
-	
+
 	public function clientLogin($user, $pass) { # Checks the credentails of the client and logs in, returns true or false
 		global $db, $main;
 		if($user && $pass) {
@@ -276,7 +276,7 @@ class main {
 			return false;
 		}
 	}
-	
+
 	public function staffLogin($user, $pass) { # Checks the credentials of a staff member and returns true or false
 		global $db, $main;
 		if($user && $pass) {
@@ -296,8 +296,8 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'STAFF LOGIN SUCCESSFUL ($ip)')");
-					$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
-					$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
+					$newpass = password_hash($_POST["pass"], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
+					$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `id` = ?", array($newpass, $data['id']));
 					$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 														'{$data['id']}',
 														'{$main->postvar['user']}',
@@ -305,7 +305,7 @@ class main {
 														'Staff Password Hashed to BCrypt ($ip)')");
 					return true;
 				}
-				elseif (password_verify($main->postvar['pass'], $data['password'])){
+				elseif (password_verify($_POST["pass"], $data['password'])){
 					$_SESSION['logged'] = 1;
 					$_SESSION['user'] = $data['id'];
 					$date = time();
@@ -315,8 +315,8 @@ class main {
 														'{$main->postvar['user']}',
 														'{$date}',
 														'STAFF LOGIN SUCCESSFUL ($ip)')");
-					if(password_needs_rehash($data['password'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST))){
-						$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
+					if(password_needs_rehash($data['password'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST))){
+						$newpass = password_hash($main->postvar['pass'], PASSWORD_BCRYPT, array('cost' => PASSWORD_COST));
 						$db->query("UPDATE `<PRE>staff` SET `password` = ? WHERE `user` = ?", array($newpass, $data['user']));
 						$db->query("INSERT INTO `<PRE>logs` (uid, loguser, logtime, message) VALUES(
 							'{$data['id']}',
@@ -342,14 +342,14 @@ class main {
 			return false;
 		}
 	}
-	
+
 	public function laterMonth($num) { # Makes the date with num of months after current
 		$day = date('d');
 		$month = date('m');
 		$year = date('Y');
-		
+
 		$endMonth = $month + $num;
-		
+
 		switch($endMonth) {
 		case 1:
 		$year++;
@@ -364,10 +364,10 @@ class main {
 		}
 		break;
 		default:
-		// nothing to do 
+		// nothing to do
 		break;
 		}
-		
+
 		return mktime(0,0,0,$endMonth,$day,$year);
 	}
 
@@ -375,7 +375,7 @@ class main {
 	{
        return (bool)preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i', $email);
 	}
-	
+
 	/*
 	 * A more or less centralized function for changing a client's
 	 * password. This updates both the cPanel/WHM and THT password.
@@ -390,17 +390,17 @@ class main {
 		if($db->num_rows($query) == 0) {
 			return "That client does not exist.";
 		}
-		
+
 		/*
 		 * We're going to set the password in cPanel/WHM first. That way
-		 * if the password is rejected for some reason, THT will not 
+		 * if the password is rejected for some reason, THT will not
 		 * desync.
 		 */
 		$command = $server->changePwd($clientid, $newpass);
 		if($command !== true) {
 			return $command;
 		}
-		
+
 		/*
 		 * Let's change THT's copy of the password. Might as well make a
 		 * new salt while we're at it.
@@ -410,11 +410,11 @@ class main {
 		$password = password_hash($newpass, PASSWORD_BCRYPT, array('cost'=>PASSWORD_COST));
 		$db->query("UPDATE `<PRE>users` SET `password` = '{$password}' WHERE `id` = '{$db->strip($clientid)}'");
 		$db->query("UPDATE `<PRE>users` SET `salt` = '{$salt}' WHERE `id` = '{$db->strip($clientid)}'");
-		
+
 		//Let's wrap it all up.
 		return true;
 	}
-	
+
         /*
          * Converts two-letter country codes to their full names.
          * This will probably come in handy considering we use the two-letter
@@ -433,7 +433,7 @@ class main {
 		if($code=='VU')$country='Vanuatu';if($code=='VE')$country='Venezuela';if($code=='VN')$country='Vietnam';if($code=='WF')$country='Wallis and Futuna';if($code=='EH')$country='Western Sahara';if($code=='YE')$country='Yemen';if($code=='ZM')$country='Zambia';if($code=='ZW')$country='Zimbabwe';if( $country == '') $country = $code;
 		return $country;
 	}
-	
+
 	/*
 	 * Returns the IP address of this server the way external devices will see it.
 	 */
@@ -455,7 +455,7 @@ class main {
 		$this->cache['getWanIp'] = substr(trim($edata[1]), 0, -14);
 		return $this->cache['getWanIp'];
 	}
-	
+
 	/*
 	 * Returns true if it's safe to run a function, false otherwise.
 	 */
@@ -466,7 +466,7 @@ class main {
 		$this->cache['canRun'][$function] = (function_exists($function) and stripos(ini_get('disable_functions'), $function) === false);
 		return $this->cache['canRun'][$function];
 	}
-	
+
 	/*
 	 * Checks the current version against the version returned from the update server to determine update availability.
 	 */
