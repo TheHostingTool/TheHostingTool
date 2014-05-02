@@ -1021,13 +1021,15 @@ class Ajax {
                     (!isset($_POST["desc"]) || $_POST["desc"] == "") ||
                     (!isset($_POST["type"]) || $_POST["type"] == "") ||
                     // Must be integer
-                    (!isset($_POST["server"]) || !is_numeric($_POST["server"])) ||
+                    (!isset($_POST["server"]) || !ctype_digit($_POST["server"])) ||
                     // Boolean (check later)
                     (!isset($_POST["admin"]) || $_POST["admin"] == "") ||
                     (!isset($_POST["reseller"]) || $_POST["reseller"] == "") ||
                     (!isset($_POST["domain"]) || $_POST["domain"] == "") ||
                     (!isset($_POST["hidden"]) || $_POST["hidden"] == "") ||
-                    (!isset($_POST["disabled"]) || $_POST["disabled"] == "")
+                    (!isset($_POST["disabled"]) || $_POST["disabled"] == "") ||
+                    // Custom fields. An array of ints. Optional.
+                    (isset($_POST["custom"]) && !is_array($_POST["custom"]))
                 ) {
                     echo json_encode(false);
                     return;
@@ -1043,8 +1045,38 @@ class Ajax {
                 $domain = $_POST["domain"] === "true";
                 $hidden = $_POST["hidden"] === "true";
                 $disabled = $_POST["disabled"] === "true";
-                if(!mysql_num_rows($db->query("SELECT `id` FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'"))) {
+                $custom = isset($_POST["custom"]) ? $_POST["custom"] : false;
+
+                // Make certain custom fields array holds only integers and in DB
+                if($custom !== false) {
+                    $dbChkFields = array("i" => 0, "in" => ""); // Using our own index i for safety
+                    $safeCustom = array(); // An array that is guaranteed to be non-associative
+                    foreach($custom as $cf) {
+                        if(!ctype_digit($cf)) {
+                            echo json_encode(false);
+                            return;
+                        }
+                        $safeCustom[] = (int)$cf;
+                        $dbChkFields["in"] .= ":id_" . $dbChkFields["i"]++ . ",";
+                    }
+                    // $safeCustom should be in the same order as the :id_n params, but here order
+                    // doesn't matter. As long as the number of :id_n params = length of $safeCustom
+                    $dbChkFields["q"] = $db->query("SELECT `id` FROM `<PRE>orderfields` WHERE `id` IN(" . rtrim($dbChkFields["in"], ",") . ")", $safeCustom);
+                    $dbChkFields["a"] = $db->fetch_array($dbChkFields["q"]);
+                    // If the db output is less than the db input at least 1 field doesn't exist
+                    if((int)$dbChkFields["a"][0] < count($custom)) {
+                        echo json_encode(false);
+                        return;
+                    }
+                    $custom = json_encode($safeCustom);
+                } else {
+                    $custom = "[]";
+                }
+
+
+                if(!$db->num_rows($db->query("SELECT `id` FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'"))) {
                     echo json_encode(false);
+                    return;
                 }
                 if($_POST["operation"] != "new") {
                     // Do not allow "new0" ids
@@ -1056,7 +1088,7 @@ class Ajax {
                     $db->query("UPDATE `<PRE>packages` SET `name` = '{$db->strip($name)}', `backend` = '{$db->strip($backend)}',
                         `description` = '{$db->strip($desc)}', `type` = '{$db->strip($type)}', `server` = '{$db->strip($server)}', `admin` = '{$db->strip((int)$admin)}',
                         `reseller` = '{$db->strip((int)$reseller)}', `is_hidden` = '{$db->strip((int)$hidden)}', `is_disabled` = '{$db->strip((int)$disabled)}',
-                        `custom_fields` = '[]', `allow_domains` = '{$db->strip((int)$domain)}' WHERE `id` = '{$db->strip($id)}'");
+                        `custom_fields` = '{$db->strip($custom)}', `allow_domains` = '{$db->strip((int)$domain)}' WHERE `id` = '{$db->strip($id)}'");
                     echo json_encode(true);
                     return;
                 }
@@ -1064,7 +1096,7 @@ class Ajax {
                     `additional`, `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`)
                     VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($type)}',
                     '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '', '0',
-                    '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '[]', '{$db->strip((int)$domain)}')");
+                    '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}')");
                 echo json_encode(array($id, $db->insert_id()));
                 return;
             case "delete":

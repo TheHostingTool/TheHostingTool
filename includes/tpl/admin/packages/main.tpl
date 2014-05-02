@@ -22,7 +22,7 @@
     padding-left: 5px;
 }
 .packagebox label, .packagebox a {
-    font-family: "Arial" !important;
+    font-family: "Lucida Grande", "Lucida Sans", "Trebuchet MS", Helvetica, Arial, Verdana, sans-serif;
 }
 .packagebox td {
     font-size: 12px;
@@ -157,8 +157,14 @@ $(document).ready(function() {
                 break;
             }
             var td = $("<td>");
-            td.append($("<label>").text(initialCFields[cfIndex].name));
-            td.append($("<input>", {type: "checkbox"}));
+            td.append($("<label>", {
+                for: "pkg-field-custom-5id5-" + initialCFields[cfIndex].id
+            }).text(initialCFields[cfIndex].name));
+            td.append($("<input>", {
+                type: "checkbox",
+                id: "pkg-field-custom-5id5-" + initialCFields[cfIndex].id,
+                class: "pkg-field pkg-field-5id5 pkg-field-custom pkg-field-custom-5id5"
+            }));
             tr.append(td);
         }
         $("#pkgEditorRightTable-5id5 tbody").append(tr);
@@ -199,12 +205,15 @@ $(document).ready(function() {
         $("#pkg-field-desc-" + entry.id).val(entry.description);
         $("#pkg-field-type-" + entry.id).val(entry.type);
         $("#pkg-field-server-" + entry.id).val(entry.server);
-        $("#pkg-field-admin-" + entry.id).prop('checked', entry.admin);
-        $("#pkg-field-resell-" + entry.id).prop('checked', entry.reseller);
-        $("#pkg-field-dmains-" + entry.id).prop('checked', entry.domains);
-        $("#pkg-field-hidden-" + entry.id).prop('checked', entry.hidden);
-        $("#pkg-field-disabled-" + entry.id).prop('checked', entry.disabled);
+        $("#pkg-field-admin-" + entry.id).prop("checked", entry.admin);
+        $("#pkg-field-resell-" + entry.id).prop("checked", entry.reseller);
+        $("#pkg-field-dmains-" + entry.id).prop("checked", entry.domains);
+        $("#pkg-field-hidden-" + entry.id).prop("checked", entry.hidden);
+        $("#pkg-field-disabled-" + entry.id).prop("checked", entry.disabled);
         $("#savePkgBtnDiv-" + entry.id).hide();
+        entry.custom.forEach(function(cf) {
+            $("#pkg-field-custom-" + entry.id + "-" + cf).prop("checked", true);
+        });
         doTooltip(".tooltip-" + entry.id, true);
     };
 
@@ -318,6 +327,14 @@ $(document).ready(function() {
         var id = $this.id.split("-")[1];
         $($this).prop("disabled", true).html("Saving...");
 
+        var customFields = [];
+        $(".pkg-field-custom-" + id).each(function(index, entry) {
+            if(!$(entry).prop("checked")) {
+                return;
+            }
+            customFields.push(parseInt(entry.id.split("-")[4], 10));
+        });
+
         var json = {
             operation: "edit",
             id: id,
@@ -330,7 +347,8 @@ $(document).ready(function() {
             reseller: $("#pkg-field-resell-" + id).prop("checked"),
             domain: $("#pkg-field-dmains-" + id).prop("checked"),
             hidden: $("#pkg-field-hidden-" + id).prop("checked"),
-            disabled: $("#pkg-field-disabled-" + id).prop("checked")
+            disabled: $("#pkg-field-disabled-" + id).prop("checked"),
+            custom: customFields
         };
         json[csrfMagicName] = csrfMagicToken;
 
@@ -357,7 +375,8 @@ $(document).ready(function() {
                     reseller: json.reseller,
                     domain: json.domain,
                     hidden: json.hidden,
-                    disabled: json.disabled
+                    disabled: json.disabled,
+                    custom: customFields
                 }, "#packagebox-" + id);
                 rebindEvents();
                 $("#packagebox-" + id).slideUp(function() {
@@ -476,7 +495,7 @@ $(document).ready(function() {
                 <table class="pkgEditorRightTable" id="pkgEditorRightTable-5id5" width="100%" border="0" cellpadding="5"><tbody style="text-align: center; font-size: 12px;">
                     <tr>
                         <th width="33%"></th>
-                        <th width="33%" style="font-size: 14px;">Custom Fields</th>
+                        <th width="33%" style="font-size: 14px; font-family: Lucida Grande;">Custom Fields</th>
                         <th width="33%"></th>
                     </tr>
                 </tbody></table>

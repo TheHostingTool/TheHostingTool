@@ -41,7 +41,7 @@ class page {
 			$pkgs[] = array("id" => (int)$p["id"], "name" => $p["name"], "backend" => $p["backend"], "description" => $p["description"],
 			"type" => $p["type"], "server" => (int)$p["server"], "admin" => (bool)$p["admin"], "reseller" => (int)$p["reseller"],
 			"order" => (int)$p["order"], "hidden" => (bool)$p["is_hidden"], "disabled" => (bool)$p["is_disabled"],
-			"domains" => (bool)$p["allow_domains"]);
+			"domains" => (bool)$p["allow_domains"], "custom" => json_decode($p["custom_fields"], true));
 		}
 		$servers = array("srvtypes" => array(), "srvs" => array());
 		if($serversDir = opendir(LINK . "servers")) {
