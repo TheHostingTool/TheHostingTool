@@ -16,17 +16,17 @@ let us know exactly where we can improve!
 
 ## Our Team
 ### Management
-* Jonny (Creator) <jonny@thehostingtool.com>
-* Kevin (Lead Developer, QA Lead, Support Lead) <kevin@thehostingtool.com> [@Kev1nMark](https://twitter.com/Kev1nMark)
-* Nick (Staff Coordinator) <nick@thehostingtool.com> [@thtnick](https://twitter.com/thtnick)
+* [Jonny  Huxtable](https://thehostingtool.com/forum/user-1.html) (Creator)
+* [Kevin Mark](https://thehostingtool.com/forum/user-13.html) (Maintainer, Lead Developer) [@Kev1nMark](https://twitter.com/Kev1nMark)
 
 
 ### Developers
+* [Justin Edwards](https://thehostingtool.com/forum/user-17709.html)
 * If you're interested in directly contributing to TheHostingTool, give Kevin an email or PM on the forums. You can always fork THT on GitHub and submit a pull request!
 
 ### Support Team
-* TheBingsta
-* zzbomb <zzbomb@thehostingtool.com> @zzbomb
+* [Liam D.](https://thehostingtool.com/forum/user-3960.html)
+* [TheBingsta](https://thehostingtool.com/forum/user-1676.html)
 
 ### Wiki Team
 * Wiki project on hold for now.
@@ -36,23 +36,24 @@ let us know exactly where we can improve!
 
 # Installation
 Visit /install to get started. We think this is pretty simple, but just in case:
-[http://wiki.thehostingtool.com/index.php?title=Installation_Guide](http://wiki.thehostingtool.com/index.php?title=Installation_Guide)
+[https://wiki.thehostingtool.com/index.php?title=Installation_Guide](https://wiki.thehostingtool.com/index.php?title=Installation_Guide)
 
 
 # Upgrading
 The latest version of THT can only be upgraded on top of the release directly before it.
-[http://wiki.thehostingtool.com/index.php?title=Installation_Guide#Upgrades](http://wiki.thehostingtool.com/index.php?title=Installation_Guide#Upgrades)
+[https://wiki.thehostingtool.com/index.php?title=Installation_Guide#Upgrades](https://wiki.thehostingtool.com/index.php?title=Installation_Guide#Upgrades)
 
 
 # Getting Help
-We have our own IRC channel, #tht on freenode. It rarely gets used but try popping in
+We have our own IRC channel, [#tht on freenode](https://webchat.freenode.net/?channels=tht). It rarely gets used but try popping in
 there once and see if anybody is around. The best way to get support is by posting on
 our forums. Please refrain from emailing team members with THT related support
-questions as they are best handled on the forum. We also have another #THT IRC
-channel on irc.expertec.co.uk
+questions as they are best handled on the forum.
 
 
 # Licensing Information
 Copyright &copy; 2008-2014 TheHostingTool
 
 TheHostingTool is licensed under the GNU-GPLv3. See `COPYING.md` for license details.
+
+See `CREDITS.md` for a list of our contributors.
