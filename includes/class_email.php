@@ -1,160 +1,170 @@
 <?php
-//////////////////////////////
-// The Hosting Tool
-// Email functions class
-// By Jonny H
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 //Check if called by script
 if(THT != 1){die();}
 
 class email {
-	
-	private $method, $details = array(), $email = array();
-	
-	public function __construct() { # When class is made, retrieves all details like sending method, details.
-		global $db, $main;
-		if(INSTALL == 1) {
-			$this->method = $db->config("emailmethod");
-			$this->details['from'] = $db->config("emailfrom");
-			$query = $db->query("SELECT * FROM `<PRE>config` WHERE `name` LIKE 'smtp_%'");
-			if($db->num_rows($query) == 0) {
-				$array['Error'] = "SMTP Values can't be found";
-				$array['Details'] = "The SMTP records in the DB don't exist!";
-				$main->error($array);
-			}
-			else {
-				while($data = $db->fetch_array($query)) {
-					$this->details[$data['name']] = $data['value'];	
-				}
-			}
-		}
-	}
-	
-	private function phpmail() { # Sends the email using PHP Mail
-		$headers = "From: ".$this->details['from']."\r\n" .
-				'X-Mailer: PHP/' . phpversion() . "\r\n" .
-				"MIME-Version: 1.0\r\n" .
-				"Content-Type: text/html; charset=utf-8\r\n" .
-				"Content-Transfer-Encoding: 8bit\r\n\r\n";
-		return mail($this->email['to'],$this->email['subject'],$this->email['content'],$headers);
-	}
-	
-	private function smtp() { # Sends the email using SMTP Auth PEAR
-		// Check for PEAR
-		$PEAR = false;
-		if(@include_once("System.php")) {
-			if(class_exists("System")) {
-				// Cool, it's installed.
-				$PEAR = true; 
-			}
-		}
-		if(!$PEAR) {
-			global $main;
-			$error['Error'] = "SMTP Failed!";
-			$error['Details'] = "You need PEAR installed to send email with SMTP. Please use the PHP method or install PEAR.";
-			$main->error($error);
-			return false;
-		}
-		
-		require_once LINK."pear/Mail.php";
-		
-		$from = $this->details['from'];
-		$to = $this->email['to'];
-		$subject = $this->email['subject'];
-		$body = $this->email['content'];
-		
-		$host = $this->details['smtp_host'];
-		$secure = (bool)$this->details['smtp_secure'];
-		$port = $this->details['smtp_port'];
-		$username = $this->details['smtp_user'];
-		$password = $this->details['smtp_password'];
-		
-		$headers = array ('Content-Type' => 'text/html', 'From' => $from, # We need to set the content-type as text/html or it won't be parsed.
-		  'To' => $this->email['to'],
-		  'Subject' => $this->email['subject']);
-		$mail = new Mail();
-		$smtp = $mail->factory('smtp',
-		  array ('host' => ($secure?'ssl://':'').$host,
-			'auth' => true,
-			'username' => $username,
-			'port' => $port,
-			'password' => $password));
-		$mail = $smtp->send($to, $headers, $body);
-		
-		$PEAR = new PEAR();
-		if ($PEAR->isError($mail)) {
-			global $main;
-			$array['Error'] = "SMTP Failed!";
-			$array['Details'] = $mail->getMessage();
-		 	$main->error($array);
-			return false;
-		 }
-		 return true;
-	}
-	
-	public function send($to, $subject, $content, $array = 0) { # Gets the content, edits the class vars and sends to right function
-		$this->email['to'] = strtolower($to);
-		if($array != 0) {
-			$this->email['content'] = $this->parseEmail($content, $array);
-		}
-		else {
-			$this->email['content'] = $content;	
-		}
-		$this->email['subject'] = $subject;
-		$method = $this->method;
-		if($method == "php") {
-			return $this->phpmail();	
-		}
-		elseif($method == "smtp") {
-			return $this->smtp();	
-		}
-		else {
-			global $main;
-			$array['Error'] = "Email method not found!";
-			$array['What happened'] = "The script couldn't found what way the host wants to send the email";
-			$array['What to do'] = "Please report this to the host immediately!";
-			$main->error($array);
-			return false;
-		}
-	}
-	
-	public function staff($subject, $content, $array = 0) { # Sends every staff member a email with the chosen content
-		global $db;
-		$query = $db->query("SELECT * FROM `<PRE>staff`");
-		while($data = $db->fetch_array($query)) {
-			$this->send($data['email'], $subject, $content, $array);	
-		}
-	}
 
-	// Send an email confirmation
-	public function sendConfirmEmail($id) {
-		global $db;
-		$id = (int)$id;	
-		$query = $db->query("SELECT `user`,`email`,`newemail`,`confirmcode` FROM `<PRE>users` WHERE `id` = {$id}");
-		if($db->num_rows($query) == 0) {
-			return false;
-		}
-		$data = $db->fetch_array($query);
-		if($data['confirmcode'] === null) {
-			$data['confirmcode'] = sha1($id.mt_rand(0,99999).$data['user'].microtime().$data['email']);
-			$db->query("UPDATE `<PRE>users` SET `confirmcode` = '".$data['confirmcode']."' WHERE `id` = {$id}");
-		}
-		$to = $data['newemail'] === null ? $data['email'] : $data['newemail'];
-		$template = $db->emailTemplate('emailconfirm');
-		$confirm = $db->config('url') . 'client/confirm.php?i=' . $id . "&u=".$data['user']."&c=" . $data['confirmcode'];
-		if($this->send($to, $template['subject'], $template['content'], array('USER' => $data['user'], 'CONFIRM' => $confirm))) {
-			return array($data['user'], $to);
-		}
-		return false;
-	}
-	
-	private function parseEmail($content, $array) { # Retrieves the array and replaces all the email variables with the content
-		foreach($array as $key => $value) {
-			$content = preg_replace("/%". $key ."%/si", $value, $content);
-		}
-		return $content;
-	}
+    private $method, $details = array(), $email = array();
+
+    public function __construct() { # When class is made, retrieves all details like sending method, details.
+        global $db, $main;
+        if(INSTALL == 1) {
+            $this->method = $db->config("emailmethod");
+            $this->details['from'] = $db->config("emailfrom");
+            $query = $db->query("SELECT * FROM `<PRE>config` WHERE `name` LIKE 'smtp_%'");
+            if($db->num_rows($query) == 0) {
+                $array['Error'] = "SMTP Values can't be found";
+                $array['Details'] = "The SMTP records in the DB don't exist!";
+                $main->error($array);
+            }
+            else {
+                while($data = $db->fetch_array($query)) {
+                    $this->details[$data['name']] = $data['value'];
+                }
+            }
+        }
+    }
+
+    private function phpmail() { # Sends the email using PHP Mail
+        $headers = "From: ".$this->details['from']."\r\n" .
+                'X-Mailer: PHP/' . phpversion() . "\r\n" .
+                "MIME-Version: 1.0\r\n" .
+                "Content-Type: text/html; charset=utf-8\r\n" .
+                "Content-Transfer-Encoding: 8bit\r\n\r\n";
+        return mail($this->email['to'],$this->email['subject'],$this->email['content'],$headers);
+    }
+
+    private function smtp() { # Sends the email using SMTP Auth PEAR
+        // Check for PEAR
+        $PEAR = false;
+        if(@include_once("System.php")) {
+            if(class_exists("System")) {
+                // Cool, it's installed.
+                $PEAR = true;
+            }
+        }
+        if(!$PEAR) {
+            global $main;
+            $error['Error'] = "SMTP Failed!";
+            $error['Details'] = "You need PEAR installed to send email with SMTP. Please use the PHP method or install PEAR.";
+            $main->error($error);
+            return false;
+        }
+
+        require_once LINK."pear/Mail.php";
+
+        $from = $this->details['from'];
+        $to = $this->email['to'];
+        $subject = $this->email['subject'];
+        $body = $this->email['content'];
+
+        $host = $this->details['smtp_host'];
+        $secure = (bool)$this->details['smtp_secure'];
+        $port = $this->details['smtp_port'];
+        $username = $this->details['smtp_user'];
+        $password = $this->details['smtp_password'];
+
+        $headers = array ('Content-Type' => 'text/html', 'From' => $from, # We need to set the content-type as text/html or it won't be parsed.
+          'To' => $this->email['to'],
+          'Subject' => $this->email['subject']);
+        $mail = new Mail();
+        $smtp = $mail->factory('smtp',
+          array ('host' => ($secure?'ssl://':'').$host,
+            'auth' => true,
+            'username' => $username,
+            'port' => $port,
+            'password' => $password));
+        $mail = $smtp->send($to, $headers, $body);
+
+        $PEAR = new PEAR();
+        if ($PEAR->isError($mail)) {
+            global $main;
+            $array['Error'] = "SMTP Failed!";
+            $array['Details'] = $mail->getMessage();
+         	$main->error($array);
+            return false;
+         }
+         return true;
+    }
+
+    public function send($to, $subject, $content, $array = 0) { # Gets the content, edits the class vars and sends to right function
+        $this->email['to'] = strtolower($to);
+        if($array != 0) {
+            $this->email['content'] = $this->parseEmail($content, $array);
+        }
+        else {
+            $this->email['content'] = $content;
+        }
+        $this->email['subject'] = $subject;
+        $method = $this->method;
+        if($method == "php") {
+            return $this->phpmail();
+        }
+        elseif($method == "smtp") {
+            return $this->smtp();
+        }
+        else {
+            global $main;
+            $array['Error'] = "Email method not found!";
+            $array['What happened'] = "The script couldn't found what way the host wants to send the email";
+            $array['What to do'] = "Please report this to the host immediately!";
+            $main->error($array);
+            return false;
+        }
+    }
+
+    public function staff($subject, $content, $array = 0) { # Sends every staff member a email with the chosen content
+        global $db;
+        $query = $db->query("SELECT * FROM `<PRE>staff`");
+        while($data = $db->fetch_array($query)) {
+            $this->send($data['email'], $subject, $content, $array);
+        }
+    }
+
+    // Send an email confirmation
+    public function sendConfirmEmail($id) {
+        global $db;
+        $id = (int)$id;
+        $query = $db->query("SELECT `user`,`email`,`newemail`,`confirmcode` FROM `<PRE>users` WHERE `id` = {$id}");
+        if($db->num_rows($query) == 0) {
+            return false;
+        }
+        $data = $db->fetch_array($query);
+        if($data['confirmcode'] === null) {
+            $data['confirmcode'] = sha1($id.mt_rand(0,99999).$data['user'].microtime().$data['email']);
+            $db->query("UPDATE `<PRE>users` SET `confirmcode` = '".$data['confirmcode']."' WHERE `id` = {$id}");
+        }
+        $to = $data['newemail'] === null ? $data['email'] : $data['newemail'];
+        $template = $db->emailTemplate('emailconfirm');
+        $confirm = $db->config('url') . 'client/confirm.php?i=' . $id . "&u=".$data['user']."&c=" . $data['confirmcode'];
+        if($this->send($to, $template['subject'], $template['content'], array('USER' => $data['user'], 'CONFIRM' => $confirm))) {
+            return array($data['user'], $to);
+        }
+        return false;
+    }
+
+    private function parseEmail($content, $array) { # Retrieves the array and replaces all the email variables with the content
+        foreach($array as $key => $value) {
+            $content = preg_replace("/%". $key ."%/si", $value, $content);
+        }
+        return $content;
+    }
 }
-?>

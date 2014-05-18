@@ -1,10 +1,21 @@
 <?php
-//////////////////////////////
-// TheHostingTool
-// Admin Area - Order Form
-// By Kevin Mark
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // Check if called by script
 if(THT != 1){die();}
@@ -12,45 +23,45 @@ if(THT != 1){die();}
 if(!class_exists("Ajax")) { define("PAGE", "Order Form"); }
 
 class page {
-	
-	public $navtitle;
-	public $navlist = array();
-	
-	public function __construct() {
-		$this->navtitle = "Order Form Actions";
-		$this->navlist[] = array("Custom Fields", "table_gear.png", "customf");
+
+    public $navtitle;
+    public $navlist = array();
+
+    public function __construct() {
+        $this->navtitle = "Order Form Actions";
+        $this->navlist[] = array("Custom Fields", "table_gear.png", "customf");
         $this->navlist[] = array("Settings", "cog.png", "settings");
-	}
-	
-	public function description() {
-		return "<strong>Client Order Form Options</strong><br />
-		This is where you can modify and customize your frontend order form. Most notably,
-		you can add and edit custom fields to meet your exact needs.";
-	}
-	
-	public function content() {
-		global $main;
-		// An honest attempt to make this system a little less painful (for me)...
-		if(array_key_exists("sub", $main->getvar) && !empty($main->getvar["sub"])) {
-			$sub = "_" . strtolower($main->getvar["sub"]);
-			if(method_exists($this, $sub)) {
-				$this->{$sub}();
-				return;
-			}
-			$main->error(array(__FILE__ => "<code>\$this->$sub</code> isn't a method."));
-		}
-	}
-	
-	private function _customf() {
-		global $db, $style;
-		$query = $db->query("SELECT * FROM `<PRE>orderfields` ORDER BY `order` ASC");
+    }
+
+    public function description() {
+        return "<strong>Client Order Form Options</strong><br />
+        This is where you can modify and customize your frontend order form. Most notably,
+        you can add and edit custom fields to meet your exact needs.";
+    }
+
+    public function content() {
+        global $main;
+        // An honest attempt to make this system a little less painful (for me)...
+        if(array_key_exists("sub", $main->getvar) && !empty($main->getvar["sub"])) {
+            $sub = "_" . strtolower($main->getvar["sub"]);
+            if(method_exists($this, $sub)) {
+                $this->{$sub}();
+                return;
+            }
+            $main->error(array(__FILE__ => "<code>\$this->$sub</code> isn't a method."));
+        }
+    }
+
+    private function _customf() {
+        global $db, $style;
+        $query = $db->query("SELECT * FROM `<PRE>orderfields` ORDER BY `order` ASC");
         $boxes = "";
         $globalSelectOptCounter = 0;
-		while($arr = $db->fetch_array($query)) {
-			if(isset($pass)) { unset($pass); }
-			$boxes .= $this->buildFieldBox($arr["id"], $arr["title"], $arr["type"], $arr["default"], $arr["description"],
+        while($arr = $db->fetch_array($query)) {
+            if(isset($pass)) { unset($pass); }
+            $boxes .= $this->buildFieldBox($arr["id"], $arr["title"], $arr["type"], $arr["default"], $arr["description"],
                 $arr["required"], $arr["regex"], $arr["extra"], $globalSelectOptCounter);
-		}
+        }
         $newbox = array("ID" => "new", "TITLE" => "New Field", "REQ" => "", "REQC" => "", "MIN" => "", "MAX" => "",
             "STEP" => "", "SELECTOPTIONS" => "", "SELECTOPTIONS4REAL" => "", "DEFAULTSELECTED" => " selected",
             "CHECKED" => "", "DEFAULTVALUE" => "", "REGEX" => "", "DESCRIPTION" => "", "DELETEDISABLED" => "disabledGrey",
@@ -60,8 +71,8 @@ class page {
             "GLOBALSELECTOPTIONCOUNTER" => $globalSelectOptCounter);
         echo $style->replaceVar("tpl/aorderform/top.tpl", $top);
         echo $boxes;
-		echo $style->replaceVar("tpl/aorderform/bottom.tpl");
-	}
+        echo $style->replaceVar("tpl/aorderform/bottom.tpl");
+    }
 
     private function _settings() {
         global $main;
@@ -176,7 +187,5 @@ class page {
             )
         );
     }
-	
-}
 
-?>
+}

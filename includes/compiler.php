@@ -1,10 +1,22 @@
 <?php
-//////////////////////////////
-// The Hosting Tool
-// Compiler
-// By Jonny H
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 // Define the main THT
@@ -148,7 +160,7 @@ if(isset($_GET)) {
 			$main->getvar[$key] = $db->strip($value);
 		}
 		else {
-			$main->getvar[$key] = $value;	
+			$main->getvar[$key] = $value;
 		}
 	}
 }
@@ -176,12 +188,12 @@ if(!is_dir("../includes") && !is_dir("../themes") && !is_dir("../admin")) {
 	}
 }
 
-if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we installing?  
+if(FOLDER != "install" && FOLDER != "includes" && INSTALL != 1) { # Are we installing?
                 // Old Method - Uncomment if having trouble installing
         //$error['Error'] = "THT isn't Installed!";
         //$error['What to do'] = "Please run the install script @ <a href='".LINK."../install'>here</a>";
         //die($main->error($error));
-        
+
                 // Lets just redirect to the installer, shall we?
         $installURL = LINK . "../install";
         header("Location: $installURL");
@@ -229,5 +241,3 @@ function checkForDependencies() {
 		return $output;
 	}
 }
-	
-?>

@@ -1,10 +1,21 @@
 <?php
-//////////////////////////////
-// The Hosting Tool
-// Admin Area
-// By Jonny H
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // Compile THT
 define("LINK", "../includes/");
@@ -16,262 +27,261 @@ define("PAGE", "Admin Area");
 
 // Main ACP Function - Creates the ACP basically
 function acp() {
-	global $main;
-	global $db;
-	global $style;
-	global $type;
-	global $email;
-	ob_start(); // Stop the output buffer
+    global $main;
+    global $db;
+    global $style;
+    global $type;
+    global $email;
+    ob_start(); // Stop the output buffer
 
-	if(!$main->getvar['page']) { 
-		$main->getvar['page'] = "home";
-	}
-	$query = $db->query("SELECT * FROM `<PRE>acpnav` WHERE `link` = '{$main->getvar['page']}'");
-	$page = $db->fetch_array($query);
-	// "Hack" to get the credits and tickets page looking nicer
-	switch($main->getvar["page"]) {
-		case "credits":
-			$header = "Credits";
-			break;
-		
-		case "ticketsall":
-			$header = "All Tickets";
-			break;
-		
-		default:
-			$header = $page['visual'];
-			break;
-	}
-	$link = "pages/". $main->getvar['page'] .".php";
-	if(!file_exists($link)) {
-		$html = "<strong>THT Fatal Error:</strong> Seems like the .php is non existant. Is it deleted?";	
-	}
-	elseif(!$main->checkPerms($page['id']) && $db->num_rows($query) != 0) {
-		$html = "You don't have access to this page.";	
-	}
-	else {
-		//If deleting something
-		if(preg_match("/[\.*]/", $main->getvar['page']) == 0) {
-			include($link);
-			$content = new page;
-			// Main Side Bar HTML
-			$nav = "Sidebar Menu";
-		
-			$sub = $db->query("SELECT * FROM `<PRE>acpnav`");
-			while($row = $db->fetch_array($sub)) {
-				if($main->checkPerms($row['id'])) {
-					$array2['IMGURL'] = $row['icon'];
-					$array2['LINK'] = "?page=".$row['link'];
-					$array2['VISUAL'] = $row['visual'];
-					$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-				}
-			}
-			// Types Navbar
-			/*
-			 * When Working on the navbar, to make a spacer use this:
-			 * $array['LINKS'] .= $style->replaceVar("tpl/spacer.tpl");
-			 */
-			$type->createAll();
-			foreach($type->classes as $key => $value) {
-				if($type->classes[$key]->acpNav) {
-					foreach($type->classes[$key]->acpNav as $key2 => $value)  {
-						$array2['IMGURL'] = $value[2];
-						$array2['LINK'] = "?page=type&type=".$key."&sub=".$value[1];
-						$array2['VISUAL'] = $value[0];
-						$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);	
-						if($main->getvar['page'] == "type" && $main->getvar['type'] == $key && $main->getvar['sub'] == $value[1]) {
-							define("SUB", $value[3]);
-							$header = $value[3];
-							$main->getvar['myheader'] = $value[3];
-						}
-					}
-				}
-			}
-			$array2['IMGURL'] = "information.png";
-			$array2['LINK'] = "?page=credits";
-			$array2['VISUAL'] = "Credits";
-			$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-			$array2['IMGURL'] = "delete.png";
-			$array2['LINK'] = "?page=logout";
-			$array2['VISUAL'] = "Logout";
-			$array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-			$sidebar = $style->replaceVar("tpl/sidebar.tpl", $array);
-			
-			//Page Sidebar
-			if($content->navtitle) {
-				$subnav = $content->navtitle;
-				$sub = $db->query("SELECT * FROM `<PRE>acpnav`");
-				foreach($content->navlist as $key => $value) {
-					$array2['IMGURL'] = $value[1];
-					$array2['LINK'] = "?page=".$main->getvar['page']."&sub=".$value[2];
-					$array2['VISUAL'] = $value[0];
-					$array3['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-				}
-				$subsidebar = $style->replaceVar("tpl/sidebar.tpl", $array3);
-			}
-			
-			if($main->getvar['sub'] && $main->getvar['page'] != "type") {
-				foreach($content->navlist as $key => $value) {
-					if($value[2] == $main->getvar['sub']) {
-						if(!$value[0]) {
-							define("SUB", $main->getvar['page']);	
-							$header = $main->getvar['page'];
-						}
-						else {
-							define("SUB", $value[0]);
-							$header = $value[0];
-						}
-					}
-				}
-			}
-			if($main->getvar['sub'] == "delete" && isset($main->getvar['do']) && !$_POST && !$main->getvar['confirm']) {
-				foreach($main->postvar as $key => $value) {
-					$array['HIDDEN'] .= '<input name="'.$key.'" type="hidden" value="'.$value.'" />';
-				}
-				$array['HIDDEN'] .= " ";
-				$html = $style->replaceVar("tpl/warning.tpl", $array);	
-			}
-			elseif($main->getvar['sub'] == "delete" && isset($main->getvar['do']) && $_POST && !$main->getvar['confirm']) {
-				if($main->postvar['yes']) {
-					foreach($main->getvar as $key => $value) {
-					  if($i) {
-						  $i = "&";	
-					  }
-					  else {
-						  $i = "?";	
-					  }
-					  $url .= $i . $key . "=" . $value;
-					}
-					$url .= "&confirm=1";
-					$main->redirect($url);
-				}
-				elseif($main->postvar['no']) {
-					$main->done();	
-				}
-			}
-			else {
-				if(isset($main->getvar['sub'])) {
-					ob_start();
-					$content->content();
-					$html = ob_get_clean();
-				}
-				elseif($content->navlist) {
-					$html .= $content->description(); // First, we gotta get the page description.
+    if(!$main->getvar['page']) {
+        $main->getvar['page'] = "home";
+    }
+    $query = $db->query("SELECT * FROM `<PRE>acpnav` WHERE `link` = '{$main->getvar['page']}'");
+    $page = $db->fetch_array($query);
+    // "Hack" to get the credits and tickets page looking nicer
+    switch($main->getvar["page"]) {
+        case "credits":
+            $header = "Credits";
+            break;
+
+        case "ticketsall":
+            $header = "All Tickets";
+            break;
+
+        default:
+            $header = $page['visual'];
+            break;
+    }
+    $link = "pages/". $main->getvar['page'] .".php";
+    if(!file_exists($link)) {
+        $html = "<strong>THT Fatal Error:</strong> Seems like the .php is non existant. Is it deleted?";
+    }
+    elseif(!$main->checkPerms($page['id']) && $db->num_rows($query) != 0) {
+        $html = "You don't have access to this page.";
+    }
+    else {
+        //If deleting something
+        if(preg_match("/[\.*]/", $main->getvar['page']) == 0) {
+            include($link);
+            $content = new page;
+            // Main Side Bar HTML
+            $nav = "Sidebar Menu";
+
+            $sub = $db->query("SELECT * FROM `<PRE>acpnav`");
+            while($row = $db->fetch_array($sub)) {
+                if($main->checkPerms($row['id'])) {
+                    $array2['IMGURL'] = $row['icon'];
+                    $array2['LINK'] = "?page=".$row['link'];
+                    $array2['VISUAL'] = $row['visual'];
+                    $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
+                }
+            }
+            // Types Navbar
+            /*
+             * When Working on the navbar, to make a spacer use this:
+             * $array['LINKS'] .= $style->replaceVar("tpl/spacer.tpl");
+             */
+            $type->createAll();
+            foreach($type->classes as $key => $value) {
+                if($type->classes[$key]->acpNav) {
+                    foreach($type->classes[$key]->acpNav as $key2 => $value)  {
+                        $array2['IMGURL'] = $value[2];
+                        $array2['LINK'] = "?page=type&type=".$key."&sub=".$value[1];
+                        $array2['VISUAL'] = $value[0];
+                        $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
+                        if($main->getvar['page'] == "type" && $main->getvar['type'] == $key && $main->getvar['sub'] == $value[1]) {
+                            define("SUB", $value[3]);
+                            $header = $value[3];
+                            $main->getvar['myheader'] = $value[3];
+                        }
+                    }
+                }
+            }
+            $array2['IMGURL'] = "information.png";
+            $array2['LINK'] = "?page=credits";
+            $array2['VISUAL'] = "Credits";
+            $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
+            $array2['IMGURL'] = "delete.png";
+            $array2['LINK'] = "?page=logout";
+            $array2['VISUAL'] = "Logout";
+            $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
+            $sidebar = $style->replaceVar("tpl/sidebar.tpl", $array);
+
+            //Page Sidebar
+            if($content->navtitle) {
+                $subnav = $content->navtitle;
+                $sub = $db->query("SELECT * FROM `<PRE>acpnav`");
+                foreach($content->navlist as $key => $value) {
+                    $array2['IMGURL'] = $value[1];
+                    $array2['LINK'] = "?page=".$main->getvar['page']."&sub=".$value[2];
+                    $array2['VISUAL'] = $value[0];
+                    $array3['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
+                }
+                $subsidebar = $style->replaceVar("tpl/sidebar.tpl", $array3);
+            }
+
+            if($main->getvar['sub'] && $main->getvar['page'] != "type") {
+                foreach($content->navlist as $key => $value) {
+                    if($value[2] == $main->getvar['sub']) {
+                        if(!$value[0]) {
+                            define("SUB", $main->getvar['page']);
+                            $header = $main->getvar['page'];
+                        }
+                        else {
+                            define("SUB", $value[0]);
+                            $header = $value[0];
+                        }
+                    }
+                }
+            }
+            if($main->getvar['sub'] == "delete" && isset($main->getvar['do']) && !$_POST && !$main->getvar['confirm']) {
+                foreach($main->postvar as $key => $value) {
+                    $array['HIDDEN'] .= '<input name="'.$key.'" type="hidden" value="'.$value.'" />';
+                }
+                $array['HIDDEN'] .= " ";
+                $html = $style->replaceVar("tpl/warning.tpl", $array);
+            }
+            elseif($main->getvar['sub'] == "delete" && isset($main->getvar['do']) && $_POST && !$main->getvar['confirm']) {
+                if($main->postvar['yes']) {
+                    foreach($main->getvar as $key => $value) {
+                      if($i) {
+                          $i = "&";
+                      }
+                      else {
+                          $i = "?";
+                      }
+                      $url .= $i . $key . "=" . $value;
+                    }
+                    $url .= "&confirm=1";
+                    $main->redirect($url);
+                }
+                elseif($main->postvar['no']) {
+                    $main->done();
+                }
+            }
+            else {
+                if(isset($main->getvar['sub'])) {
+                    ob_start();
+                    $content->content();
+                    $html = ob_get_clean();
+                }
+                elseif($content->navlist) {
+                    $html .= $content->description(); // First, we gotta get the page description.
                     $html .= "<br /><br />"; // Break it up
                     // Now we should prepend some stuff here
                     $subsidebar2 .= "<strong>Page Submenu</strong><div class='break'></div>";
                     $subsidebar2 .= $subsidebar;
                     // Done, now output it in a sub() table
                     $html .= $main->sub($subsidebar2, NULL); // Initial implementation, add the SubSidebar(var) into the description, basically append it
-					if(isset($content->defaultNav)) {
-						header("Location: ?page=".$main->getvar['page']."&sub=".$content->navlist[$content->defaultNav][2]);
-						die();
-					}
-				}
-				else {
-					ob_start();
-					$content->content();
-					$html = ob_get_clean();
-				}
-			}
-		}
-		else {
-			$html = "No.";
-		}
-	}
-	$staffuser = $db->staff($_SESSION['user']);
-	define("SUB", $header);
-	define("INFO", '<b>Welcome back, '. strip_tags($staffuser['name']) .'</b><br />'. SUB);
-	
-	echo '<div id="left">';
-	echo $main->table($nav, $sidebar);
-	if($content->navtitle) {
-		echo "<br />";
-		echo $main->table($subnav, $subsidebar);
-	}
-	echo '</div>';
-	
-	echo '<div id="right">';
-	echo $main->table($header, $html);
-	echo '</div>';
-	
-	$data = ob_get_clean();
-	
-	return $data; // Return the HTML
+                    if(isset($content->defaultNav)) {
+                        header("Location: ?page=".$main->getvar['page']."&sub=".$content->navlist[$content->defaultNav][2]);
+                        die();
+                    }
+                }
+                else {
+                    ob_start();
+                    $content->content();
+                    $html = ob_get_clean();
+                }
+            }
+        }
+        else {
+            $html = "No.";
+        }
+    }
+    $staffuser = $db->staff($_SESSION['user']);
+    define("SUB", $header);
+    define("INFO", '<b>Welcome back, '. strip_tags($staffuser['name']) .'</b><br />'. SUB);
+
+    echo '<div id="left">';
+    echo $main->table($nav, $sidebar);
+    if($content->navtitle) {
+        echo "<br />";
+        echo $main->table($subnav, $subsidebar);
+    }
+    echo '</div>';
+
+    echo '<div id="right">';
+    echo $main->table($header, $html);
+    echo '</div>';
+
+    $data = ob_get_clean();
+
+    return $data; // Return the HTML
 }
 
 if(!$_SESSION['logged']) {
-	if($main->getvar['page'] == "forgotpass") {
-		define("SUB", "Reset Password");
-		define("INFO", SUB);
-		echo $style->get("header.tpl");
-		
-		if($_POST) {
-			foreach($main->postvar as $key => $value) {
-				if($value == "" && !$n) {
-					$main->errors("Please fill in all the fields!");
-					$n++;
-				}
-			}
-			if(!$n) {
-				$user = $main->postvar['user'];
-				$email2 = $main->postvar['email'];
-				$query = $db->query("SELECT * FROM `<PRE>staff` WHERE `user` = '{$user}' AND `email` = '{$email2}'");
-				if($db->num_rows($query) == 0) {
-					$main->errors("That account doesn't exist!");
-				}
-				else {
-					$curstaff = $db->fetch_array($query);
-					$password = rand(0,999999);
-					$newpass = md5(md5($password) . md5($curstaff['salt']));
-					$db->query("UPDATE `<PRE>staff` SET `password` = '{$newpass}' WHERE `id` = '{$curstaff['id']}'");
-					$main->errors("Password reset!");
-					$array['PASS'] = $password;
-					$emaildata = $db->emailTemplate("areset");
-					$email->send($email2, $emaildata['subject'], $emaildata['content'], $array);
-				}
-			}
-		}
-		echo '<div align="center">'.$main->table("Admin Area - Reset Password", $style->replaceVar("tpl/areset.tpl", $array), "300px").'</div>';
-		
-		echo $style->get("footer.tpl");
-	}
-	else{
-		define("SUB", "Login");
-		define("INFO", " ");
-		if($_POST) { // If user submitts form
-		if($main->staffLogin($main->postvar['user'], $main->postvar['pass'])) {
-			$queryString = $_SERVER["QUERY_STRING"];
-			if($queryString == "") {
-				$queryString = "page=home";
-			}
-			$main->redirect(URL . "admin/?" . $queryString);	
-		}
-		else {
-			$main->errors("Incorrect username or password!");
-		}
-	}
-	
-	echo $style->get("header.tpl");
-	$array[] = "";
-	echo '<div align="center">'.$main->table("Admin Area - Login", $style->replaceVar("tpl/alogin.tpl", $array), "300px").'</div>';
-	echo $style->get("footer.tpl");
+    if($main->getvar['page'] == "forgotpass") {
+        define("SUB", "Reset Password");
+        define("INFO", SUB);
+        echo $style->get("header.tpl");
+
+        if($_POST) {
+            foreach($main->postvar as $key => $value) {
+                if($value == "" && !$n) {
+                    $main->errors("Please fill in all the fields!");
+                    $n++;
+                }
+            }
+            if(!$n) {
+                $user = $main->postvar['user'];
+                $email2 = $main->postvar['email'];
+                $query = $db->query("SELECT * FROM `<PRE>staff` WHERE `user` = '{$user}' AND `email` = '{$email2}'");
+                if($db->num_rows($query) == 0) {
+                    $main->errors("That account doesn't exist!");
+                }
+                else {
+                    $curstaff = $db->fetch_array($query);
+                    $password = rand(0,999999);
+                    $newpass = md5(md5($password) . md5($curstaff['salt']));
+                    $db->query("UPDATE `<PRE>staff` SET `password` = '{$newpass}' WHERE `id` = '{$curstaff['id']}'");
+                    $main->errors("Password reset!");
+                    $array['PASS'] = $password;
+                    $emaildata = $db->emailTemplate("areset");
+                    $email->send($email2, $emaildata['subject'], $emaildata['content'], $array);
+                }
+            }
+        }
+        echo '<div align="center">'.$main->table("Admin Area - Reset Password", $style->replaceVar("tpl/areset.tpl", $array), "300px").'</div>';
+
+        echo $style->get("footer.tpl");
+    }
+    else{
+        define("SUB", "Login");
+        define("INFO", " ");
+        if($_POST) { // If user submitts form
+        if($main->staffLogin($main->postvar['user'], $main->postvar['pass'])) {
+            $queryString = $_SERVER["QUERY_STRING"];
+            if($queryString == "") {
+                $queryString = "page=home";
+            }
+            $main->redirect(URL . "admin/?" . $queryString);
+        }
+        else {
+            $main->errors("Incorrect username or password!");
+        }
+    }
+
+    echo $style->get("header.tpl");
+    $array[] = "";
+    echo '<div align="center">'.$main->table("Admin Area - Login", $style->replaceVar("tpl/alogin.tpl", $array), "300px").'</div>';
+    echo $style->get("footer.tpl");
 }
 }
-	elseif($_SESSION['logged']) {
-	if(!$main->getvar['page']) {
-		$main->getvar['page'] = "home";
-	}
-	elseif($main->getvar['page'] == "logout") {
-		session_destroy();
-		$main->redirect("?page=home");
-	}
-	$content = acp();
-	echo $style->get("header.tpl");
-	echo $content;
-	echo $style->get("footer.tpl");
+    elseif($_SESSION['logged']) {
+    if(!$main->getvar['page']) {
+        $main->getvar['page'] = "home";
+    }
+    elseif($main->getvar['page'] == "logout") {
+        session_destroy();
+        $main->redirect("?page=home");
+    }
+    $content = acp();
+    echo $style->get("header.tpl");
+    echo $content;
+    echo $style->get("footer.tpl");
 }
 
 // End the script
 include(LINK ."output.php");
-?>

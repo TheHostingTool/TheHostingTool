@@ -1,41 +1,52 @@
 <?php
-//////////////////////////////
-// The Hosting Tool
-// Admin Area - General Settings
-// By Jonny H
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-//Check if called by script
+// Check if called by script
 if(THT != 1){die();}
 
 class page {
-	
-	public $navtitle;
-	public $navlist = array();
-							
-	public function __construct() {
-		$this->navtitle = "General Settings Sub Menu";
-		$this->navlist[] = array("General Configuration", "world.png", "paths");
-		$this->navlist[] = array("Security Settings", "lock.png", "security");
-		$this->navlist[] = array("Signup Form", "user_red.png", "signup");
-		$this->navlist[] = array("Terms of Service", "application_edit.png", "tos");
-		$this->navlist[] = array("Client Area", "user_go.png", "client");
-		$this->navlist[] = array("Support Area", "help.png", "support");
-		$this->navlist[] = array("Email Configuration", "email.png", "email");
-	}
-	
-	public function description() {
-		return "<strong>System Settings</strong><br />
-		This is where you can control the way TheHostingTool operates. Most options available for you to configure<br />
-		can be found in one of the sub-menus. Check out the Look &amp; Feel center on the main Admin CP navigation to
-		change style-related settings.";
-	}
-	
-	public function content() { // Displays the page
-		global $main;
-		global $style;
-		global $db;
+
+    public $navtitle;
+    public $navlist = array();
+
+    public function __construct() {
+        $this->navtitle = "General Settings Sub Menu";
+        $this->navlist[] = array("General Configuration", "world.png", "paths");
+        $this->navlist[] = array("Security Settings", "lock.png", "security");
+        $this->navlist[] = array("Signup Form", "user_red.png", "signup");
+        $this->navlist[] = array("Terms of Service", "application_edit.png", "tos");
+        $this->navlist[] = array("Client Area", "user_go.png", "client");
+        $this->navlist[] = array("Support Area", "help.png", "support");
+        $this->navlist[] = array("Email Configuration", "email.png", "email");
+    }
+
+    public function description() {
+        return "<strong>System Settings</strong><br />
+        This is where you can control the way TheHostingTool operates. Most options available for you to configure<br />
+        can be found in one of the sub-menus. Check out the Look &amp; Feel center on the main Admin CP navigation to
+        change style-related settings.";
+    }
+
+    public function content() { // Displays the page
+        global $main;
+        global $style;
+        global $db;
         global $email;
         if(isset($_POST["testemail"])) {
             if($email->send($_POST["test_email"], "TheHostingTool Email Config Test",
@@ -46,23 +57,23 @@ class page {
                 $main->errors("Error sending email.");
             }
         }
-		elseif($_POST) {
-			foreach($main->postvar as $key => $value) {
-				if($value == "") {
-					$main->errors("Please fill in all fields!");
+        elseif($_POST) {
+            foreach($main->postvar as $key => $value) {
+                if($value == "") {
+                    $main->errors("Please fill in all fields!");
                     $this->contentSwitch($main->getvar["sub"]);
                     return;
-				}
-			}
-			foreach($_POST as $key => $value) {
+                }
+            }
+            foreach($_POST as $key => $value) {
                 // It's safe to use $_POST here because updateConfig doesn't assume $key or $value is friendly.
                 if($key != "add" && $key != $GLOBALS['csrf']['input-name'])
-				    $db->updateConfig($key, $value);
-			}
-			$main->errors("Settings Updated!");
-		}
+                    $db->updateConfig($key, $value);
+            }
+            $main->errors("Settings Updated!");
+        }
         $this->contentSwitch($main->getvar["sub"]);
-	}
+    }
 
     private function contentSwitch($page) {
         global $main, $style, $db;
@@ -153,4 +164,3 @@ class page {
         }
     }
 }
-?>

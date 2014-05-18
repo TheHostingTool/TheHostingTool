@@ -52,6 +52,7 @@ questions as they are best handled on the forum. We also have another #THT IRC
 channel on irc.expertec.co.uk
 
 
-# Copyright Information
-Copyright © 2008-2013 TheHostingTool Development Team and Contributors
+# Licensing Information
+Copyright &copy; 2008-2014 TheHostingTool
+
 TheHostingTool is licensed under the GNU-GPLv3. See `COPYING.md` for license details.

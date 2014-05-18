@@ -1,10 +1,21 @@
 <?php
-//////////////////////////////
-// The Hosting Tool
-// Ajax Class
-// By Jonny H and Kevin M
-// Released under the GNU-GPL
-//////////////////////////////
+/* Copyright © 2014 TheHostingTool
+ *
+ * This file is part of TheHostingTool.
+ *
+ * TheHostingTool is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheHostingTool is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 define("LINK", "./");
 include("compiler.php");
@@ -24,7 +35,7 @@ class Ajax {
         global $main;
         echo $type->acpPadd($main->getvar['type']);
     }
-    
+
     public function pdescription() {
         global $main;
         global $db;
@@ -36,11 +47,11 @@ class Ajax {
             echo $data['description'];
         }
     }
-    
+
     public function usernamecheck() {
         global $main;
         global $db;
-        
+
         //If it's over 8 characters then complain.
         if(strlen($main->getvar['username']) > 8) {
             echo 0;
@@ -117,7 +128,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function firstnamecheck() {
         global $main;
         if(!preg_match("/^([a-zA-Z\.\'\ \-])+$/", $main->getvar['firstname'])) {
@@ -128,7 +139,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function lastnamecheck() {
         global $main;
         if(!preg_match("/^([a-zA-Z\.\'\ \-])+$/", $main->getvar['lastname'])) {
@@ -139,7 +150,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function addresscheck() {
         global $main;
         if(!preg_match("/^([0-9a-zA-Z\.\ \-])+$/", $main->getvar['address'])) {
@@ -150,7 +161,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function citycheck() {
         global $main;
         if(!preg_match("/^([a-zA-Z ])+$/", $main->getvar['city'])) {
@@ -161,7 +172,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function statecheck() {
         global $main;
         if(!preg_match("/^([a-zA-Z\.\ -])+$/", $main->getvar['state'])) {
@@ -172,7 +183,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function zipcheck() {
         global $main;
         if(strlen($main->getvar['zip']) > 7) {
@@ -188,7 +199,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function phonecheck() {
         global $main;
         if(strlen($main->getvar['phone']) > 15) {
@@ -216,7 +227,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function clientcheck() {
         if($_SESSION['check']['email'] == true && $_SESSION['check']['username'] == true && $_SESSION['check']['password'] == true && $_SESSION['check']['human'] == true && $_SESSION['check']['address'] == true && $_SESSION['check']['state'] == true && $_SESSION['check']['zip'] == true && $_SESSION['check']['phone'] == true) {
             echo 1;
@@ -224,7 +235,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function domaincheck() {
         global $main;
         if(!$main->getvar['domain']) {
@@ -238,7 +249,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function create() {
         global $main;
         global $server;
@@ -334,7 +345,7 @@ class Ajax {
                 return;
         }
     }
-    
+
     public function cancelacc() {
         global $db, $main, $type, $server, $email;
         $user  = $main->getvar['user'];
@@ -359,7 +370,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function template() {
         global $main, $db, $style;
         if($_SESSION['logged']) {
@@ -374,7 +385,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function cat() {
         global $main, $db, $style;
         if($_SESSION['logged']) {
@@ -404,7 +415,7 @@ class Ajax {
             }
         }
     }
-    
+
     public function search() {
         global $main, $db, $style;
         if($_SESSION['logged']) {
@@ -488,13 +499,13 @@ class Ajax {
         }
         echo $main->dropdown("csub2", $values, $values[0]['subdomain']);
     }
-    
+
     public function phpinfo() {
         if($_SESSION['logged']) {
             phpinfo();
         }
     }
-    
+
     public function ticketStatus() {
         if(!$_SESSION['logged']) {
             return;
@@ -510,7 +521,7 @@ class Ajax {
             echo "<img src=" . URL . "themes/icons/cross.png>";
         }
     }
-    
+
     public function serverhash() {
         global $main;
         $type = $main->getvar['type'];
@@ -522,7 +533,7 @@ class Ajax {
             echo 1;
         }
     }
-    
+
     public function editserverhash() {
         if($_SESSION['logged']) {
             global $main, $db;
@@ -540,7 +551,7 @@ class Ajax {
             echo ";:;" . $data['accesshash'];
         }
     }
-    
+
     public function sqlcheck() {
         global $main, $style;
         if(INSTALL != 1) {
@@ -659,14 +670,14 @@ class Ajax {
         $sDoubleSlash = '~~DOUBLE_SLASH~~';
         $sSlashQuote  = '~~SLASH_QUOTE~~';
         $sSlashSQuote = '~~SLASH_SQUOTE~~';
-        
+
         $sContents = str_replace('\\\\', $sDoubleSlash, $sContents);
         $sContents = str_replace('\"', $sSlashQuote, $sContents);
         $sContents = str_replace("\'", $sSlashSQuote, $sContents);
-        
+
         $iContents         = strlen($sContents);
         $sDefaultDelimiter = ';';
-        
+
         $aSql       = array();
         $sSql       = '';
         $bInQuote   = false;
@@ -686,7 +697,7 @@ class Ajax {
                     continue;
                 }
             }
-            
+
             if(in_array($sContents[$i], $aQuote)) {
                 $bInQuote = !$bInQuote;
                 if($bInQuote) {
@@ -700,7 +711,7 @@ class Ajax {
                     );
                 }
             }
-            
+
             if($bInQuote) {
                 $sSql .= $sContents[$i];
             } else {
@@ -709,18 +720,18 @@ class Ajax {
                     // Clear Comments
                     $sSql = preg_replace("/^(-{2,}.+)/", '', $sSql);
                     $sSql = preg_replace("/(?:\r|\n)(-{2,}.+)/", '', $sSql);
-                    
+
                     // Put quotes back where you found them
                     $sSql = str_replace($sDoubleSlash, '\\\\', $sSql);
                     $sSql = str_replace($sSlashQuote, '\\"', $sSql);
                     $sSql = str_replace($sSlashSQuote, "\\'", $sSql);
-                    
+
                     // FIXME: odd replacement issue, just fix it for now and move on
                     $sSql = str_replace('IFEXISTS`', 'IF EXISTS `', $sSql);
-                    
+
                     $aSql[] = $sSql;
                     $sSql   = '';
-                    
+
                     // pass delimiter
                     $i += $iDelimiter;
                 } else {
@@ -728,10 +739,10 @@ class Ajax {
                 }
             }
         }
-        
+
         $aSql = array_map('trim', $aSql);
         $aSql = array_filter($aSql);
-        
+
         $n = 0;
         foreach($aSql as $sSql) {
             if($con) {
@@ -857,7 +868,7 @@ class Ajax {
             echo $style->replaceVar("tpl/acppacks/editbox.tpl", $array);
         }
     }
-    
+
     function nedit() {
         if($_SESSION['logged']) {
             global $db, $style, $main;
@@ -874,7 +885,7 @@ class Ajax {
             return true;
         }
     }
-    
+
     private function randomString($length = 8, $possible = '0123456789bcdfghjkmnpqrstvwxyz') {
         $string = "";
         $i      = 0;
@@ -887,7 +898,7 @@ class Ajax {
         }
         return $string;
     }
-    
+
     function editcss() {
         global $main, $db, $style;
         if($_SESSION['logged']) {
@@ -903,7 +914,7 @@ class Ajax {
         }
         return true;
     }
-    
+
     function edittpl() {
         global $main, $db, $style;
         if($_SESSION['logged']) {
@@ -935,7 +946,7 @@ class Ajax {
         }
         return true;
     }
-    
+
     function notice() {
         global $style;
         if(isset($_REQUEST['status']) and isset($_REQUEST['message'])) {
@@ -948,13 +959,13 @@ class Ajax {
         }
         return true;
     }
-    
+
     function upload() {
         global $main;
         if($_SESSION['logged']) {
         }
     }
-    
+
     function navbar() {
         global $main, $db;
         if($_SESSION['logged']) {
@@ -1133,7 +1144,7 @@ class Ajax {
             }
         }
     }
-    
+
     function ispaid() {
         global $db, $main;
         $package = $db->fetch_array($db->query("SELECT * FROM `<PRE>packages` WHERE `id` = '{$main->getvar['pid']}'"));
@@ -1144,7 +1155,7 @@ class Ajax {
             echo $invoice['id'];
         }
     }
-    
+
     function deleteTicket() {
         if($_SESSION['logged']) {
             global $main, $db;
