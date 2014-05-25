@@ -115,6 +115,7 @@ $(document).ready(function() {
     var initialPackages = %INITPKGS%;
     var initialServers = %INITSRVS%;
     var initialCFields = %INITCFLD%;
+    var initialPkgTypes = %INITTYPS%;
     var iconDir = "<ICONDIR>";
     var newId = 0;
     //$.fn.htmlInclusive = function() { return $('<div />').append($(this).clone()).html(); }
@@ -139,6 +140,47 @@ $(document).ready(function() {
                 $("#orderSpinner").spin();
             });
     };
+
+    // Populate type selector
+    $.each(initialPkgTypes, function(index, entry) {
+        $("#pkg-field-type-5id5").append($("<option>", {value: entry.tid}).text(entry.name));
+        if(entry.fields === false) {
+            return;
+        }
+        var html = $("#pkgTypeHtmlTemplate").html();
+        html = html.replace(/-5type5/g, "-" + entry.tid);
+        $("#pkg-typetd-5id5").append(html);
+        $.each(entry.fields, function(index2, entry2) {
+            var idformat = "pkg-field-typefield-5id5-" + entry.tid + "-" + entry2.id;
+            var classformat = "pkg-field pkg-field-5id5 pkg-typefield pkg-field-typefield-5id5-" + entry.tid;
+            var tr = $("<tr>");
+            tr.append($("<td>").append($("<label>", {for: idformat}).text(entry2.name + ":")));
+            var td = $("<td>");
+            switch(entry2.type) {
+                case "select":
+                    var select = $("<select>", {
+                        id: idformat,
+                        class: classformat
+                    });
+                    $.each(entry2.options, function(index3, entry3) {
+                        select.append($("<option>", {value: index3}).text(entry3));
+                    });
+                    if(entry2.hasOwnProperty("default")) {
+                        // TODO for some stupid reason you can't set the default until later
+                    }
+                    td.append(select);
+                    break;
+                default:
+                    td.append($("<input>", {
+                        type: entry2.type,
+                        id: idformat,
+                        class: classformat
+                    }));
+            }
+            tr.append(td);
+            $("#pkg-typefields-tbody-" + entry.tid + "-5id5").append(tr);
+        });
+    });
 
     // Populate server selector
     $.each(initialServers.srvs, function(index, entry) {
@@ -211,6 +253,17 @@ $(document).ready(function() {
         $("#pkg-field-hidden-" + entry.id).prop("checked", entry.hidden);
         $("#pkg-field-disabled-" + entry.id).prop("checked", entry.disabled);
         $("#savePkgBtnDiv-" + entry.id).hide();
+        var typefields = $("#pkg-typefields-" + entry.type + "-" + entry.id);
+        if(typefields.length > 0) {
+            typefields.show();
+        }
+        if(entry.additional != null && entry.additional.hasOwnProperty("types")) {
+            $.each(entry.additional.types, function(typeid, typevals) {
+                $.each(typevals, function(fieldkey, fieldval) {
+                    $("#pkg-field-typefield-" + entry.id + "-" + typeid + "-" + fieldkey).val(fieldval);
+                });
+            });
+        }
         entry.custom.forEach(function(cf) {
             $("#pkg-field-custom-" + entry.id + "-" + cf).prop("checked", true);
         });
@@ -295,27 +348,38 @@ $(document).ready(function() {
     });
 
     var onPackageFieldChanged = function() {
-        var $this = this;
-        var id = $this.id.split("-")[3];
+        var $this = $(this);
+        var id = this.id.split("-")[3];
         var btnDiv = $("#savePkgBtnDiv-" + id);
         if(!btnDiv.is(":visible")) {
             btnDiv.slideDown();
         }
 
-        if($($this).hasClass("pkg-field-name")) {
+        if($this.hasClass("pkg-field-name")) {
             $("#packageName-" + id + " > a").fadeOut(function() {
-                $(this).html($($this).val()).fadeIn();
+                $(this).html($this.val()).fadeIn();
             });
             return;
         }
 
-        if($($this).hasClass("pkg-field-disabled")) {
-            if($($this).prop("checked")) {
+        if($this.hasClass("pkg-field-disabled")) {
+            if($this.prop("checked")) {
                 $("#packageIcon-" + id).addClass("disabledGrey");
                 return;
             }
             $("#packageIcon-" + id).removeClass("disabledGrey");
             return;
+        }
+
+        if($this.hasClass("pkg-field-type")) {
+            var typefields = $("#pkg-typefields-" + $this.val() + "-" + id);
+            var oldfields = $(".pkg-typefieldsid-" + id + ":visible");
+            if(oldfields.length > 0) {
+                oldfields.slideUp();
+            }
+            if(typefields.length > 0) {
+                typefields.slideDown();
+            }
         }
     };
 
@@ -335,6 +399,11 @@ $(document).ready(function() {
             customFields.push(parseInt(entry.id.split("-")[4], 10));
         });
 
+        var typeFields = {};
+        $(".pkg-field-typefield-" + id + "-" + $("#pkg-field-type-" + id).val()).each(function(index, entry) {
+            typeFields[entry.id.split("-")[5]] = $(entry).val();
+        });
+
         var json = {
             operation: "edit",
             id: id,
@@ -348,7 +417,8 @@ $(document).ready(function() {
             domain: $("#pkg-field-dmains-" + id).prop("checked"),
             hidden: $("#pkg-field-hidden-" + id).prop("checked"),
             disabled: $("#pkg-field-disabled-" + id).prop("checked"),
-            custom: customFields
+            custom: customFields,
+            typefields: typeFields
         };
         json[csrfMagicName] = csrfMagicToken;
 
@@ -434,6 +504,11 @@ $(document).ready(function() {
     });
 });
 </script>
+<div id="pkgTypeHtmlTemplate" class="hiddenStyle">
+    <div id="pkg-typefields-5type5-5id5" class="pkg-typefields pkg-typefields-5type5 pkg-typefieldsid-5id5" style="display: none;">
+        <table><tbody id="pkg-typefields-tbody-5type5-5id5"><!-- Added dynamically --></table></tbody>
+    </div>
+</div>
 <div id="pkgHtmlTemplate" class="hiddenStyle">
     <div class="packagebox subborder sortableHandle " id="packagebox-5id5" style="display: none;">
     <div class="sub">
@@ -460,12 +535,8 @@ $(document).ready(function() {
                         <td><label for="pkg-field-desc-5id5">Description:</label></td><td><textarea id="pkg-field-desc-5id5" class="pkg-field pkg-field-5id5 pkg-field-desc"></textarea><a href="javascript:void(0);"><img class="template-tooltip template-tooltip2" title="The user-visible description of the package." src="<ICONDIR>information.png"></a></td>
                     </tr>
                     <tr>
-                        <td><label for="pkg-field-type-5id5">Type:</label></td><td>
-                        <select id="pkg-field-type-5id5" class="pkg-field pkg-field-5id5 pkg-field-type">
-                            <option value="free">Free</option>
-                            <option value="p2h">Post2Host</option>
-                            <option value="paid">Paid</option>
-                        </select>
+                        <td><label for="pkg-field-type-5id5">Type:</label></td><td id="pkg-typetd-5id5">
+                        <select id="pkg-field-type-5id5" class="pkg-field pkg-field-5id5 pkg-field-type"><!-- Added dynamically --></select>
                         <a href="javascript:void(0);"><img class="template-tooltip template-tooltip2" title="The type of package." src="<ICONDIR>information.png"></a>
                         </td>
                     </tr>

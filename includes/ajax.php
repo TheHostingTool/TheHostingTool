@@ -1017,7 +1017,7 @@ class Ajax {
         if(!$_SESSION['logged']) {
             return;
         }
-        global $db;
+        global $db, $type;
         switch($_POST["operation"]) {
             case "new":
             case "edit":
@@ -1040,7 +1040,9 @@ class Ajax {
                     (!isset($_POST["hidden"]) || $_POST["hidden"] == "") ||
                     (!isset($_POST["disabled"]) || $_POST["disabled"] == "") ||
                     // Custom fields. An array of ints. Optional.
-                    (isset($_POST["custom"]) && !is_array($_POST["custom"]))
+                    (isset($_POST["custom"]) && !is_array($_POST["custom"])) ||
+                    // Type fields. Assoc array of unknown values. Optional.
+                    (isset($_POST["typefields"]) && !is_array($_POST["typefields"]))
                 ) {
                     echo json_encode(false);
                     return;
@@ -1049,7 +1051,7 @@ class Ajax {
                 $name = $_POST["name"];
                 $backend = $_POST["backend"];
                 $desc = $_POST["desc"];
-                $type = $_POST["type"];
+                $pkgtype = $_POST["type"];
                 $server = (int)$_POST["server"];
                 $admin = $_POST["admin"] === "true";
                 $reseller = $_POST["reseller"] === "true";
@@ -1057,6 +1059,7 @@ class Ajax {
                 $hidden = $_POST["hidden"] === "true";
                 $disabled = $_POST["disabled"] === "true";
                 $custom = isset($_POST["custom"]) ? $_POST["custom"] : false;
+                $typefields = isset($_POST["typefields"]) ? $_POST["typefields"] : false;
 
                 // Make certain custom fields array holds only integers and in DB
                 if($custom !== false) {
@@ -1084,6 +1087,20 @@ class Ajax {
                     $custom = "[]";
                 }
 
+                // Check to see if $pkgtype is loaded
+                if(!array_key_exists($pkgtype, $type->classes)) {
+                    echo json_encode(false);
+                    return;
+                }
+
+                // Validate type fields (if any)
+                $typefields = $typefields === false ? array() : $typefields;
+                $val = $type->classes[$pkgtype]->validatePkgFields($typefields);
+                // Error?
+                if(is_string($val) || $val === false) {
+                    echo json_encode(false);
+                    return;
+                }
 
                 if(!$db->num_rows($db->query("SELECT `id` FROM `<PRE>servers` WHERE `id` = '{$db->strip($server)}'"))) {
                     echo json_encode(false);
@@ -1096,18 +1113,35 @@ class Ajax {
                         return;
                     }
                     $id = abs((int)$id);
+
+                    // Check if $id exists before UPDATE
+                    $q = $db->query("SELECT `additional` FROM `<PRE>packages` WHERE `id` = ?", array($id));
+                    if($q->rowCount() === 0) {
+                        echo json_encode(false);
+                        break;
+                    }
+                    $q = $db->fetch_array($q); // Array dereferencing is PHP 5.4+ only
+                    $additional = json_decode($q["additional"], true);
+                    $additional = $additional === null ? array() : $additional;
+                    // Replace old type data
+                    $additional["types"][$pkgtype] = $typefields;
+                    $additional = json_encode($additional);
+
                     $db->query("UPDATE `<PRE>packages` SET `name` = '{$db->strip($name)}', `backend` = '{$db->strip($backend)}',
-                        `description` = '{$db->strip($desc)}', `type` = '{$db->strip($type)}', `server` = '{$db->strip($server)}', `admin` = '{$db->strip((int)$admin)}',
+                        `description` = '{$db->strip($desc)}', `type` = '{$db->strip($pkgtype)}', `server` = '{$db->strip($server)}', `admin` = '{$db->strip((int)$admin)}',
                         `reseller` = '{$db->strip((int)$reseller)}', `is_hidden` = '{$db->strip((int)$hidden)}', `is_disabled` = '{$db->strip((int)$disabled)}',
-                        `custom_fields` = '{$db->strip($custom)}', `allow_domains` = '{$db->strip((int)$domain)}' WHERE `id` = '{$db->strip($id)}'");
+                        `custom_fields` = '{$db->strip($custom)}', `allow_domains` = '{$db->strip((int)$domain)}',
+                        `additional` = '{$db->strip($additional)}' WHERE `id` = '{$db->strip($id)}'");
                     echo json_encode(true);
                     return;
                 }
+                $additional = json_encode(array("types" => array($pkgtype => $typefields)));
                 $db->query("INSERT INTO `<PRE>packages` (`id`, `name`, `backend`, `description`, `type`, `server`, `admin`, `reseller`,
-                    `additional`, `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`)
-                    VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($type)}',
+                    `additional`, `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`, `additional`)
+                    VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($pkgtype)}',
                     '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '', '0',
-                    '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}')");
+                    '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}',
+                    '{$db->strip($additional)}')");
                 echo json_encode(array($id, $db->insert_id()));
                 return;
             case "delete":

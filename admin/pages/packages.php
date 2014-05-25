@@ -45,14 +45,15 @@ class page {
     }
 
     public function content() { # Displays the page
-        global $main, $db, $style;
+        global $main, $db, $style, $type;
         $pkgs = array();
         $query = $db->query("SELECT * FROM `<PRE>packages` ORDER BY `order` ASC");
         while($p = $db->fetch_array($query)) {
             $pkgs[] = array("id" => (int)$p["id"], "name" => $p["name"], "backend" => $p["backend"], "description" => $p["description"],
             "type" => $p["type"], "server" => (int)$p["server"], "admin" => (bool)$p["admin"], "reseller" => (int)$p["reseller"],
             "order" => (int)$p["order"], "hidden" => (bool)$p["is_hidden"], "disabled" => (bool)$p["is_disabled"],
-            "domains" => (bool)$p["allow_domains"], "custom" => json_decode($p["custom_fields"], true));
+            "domains" => (bool)$p["allow_domains"], "custom" => json_decode($p["custom_fields"], true),
+            "additional" => json_decode($p["additional"], true));
         }
         $servers = array("srvtypes" => array(), "srvs" => array());
         if($serversDir = opendir(LINK . "servers")) {
@@ -82,10 +83,19 @@ class page {
         while($c = $db->fetch_array($query)) {
             $cfields[] = array("id" => $c["id"], "name" => $c["title"]);
         }
+        $pkgtypes = array();
+        foreach($type->classes as $t) {
+            $pkgtypes[] = array(
+                "tid" => $t->getInternalName(),
+                "name" => $t->getName(),
+                "fields" => $t->getPkgFields()
+            );
+        }
         $data = array(
             "INITPKGS" => json_encode($pkgs),
             "INITSRVS" => json_encode($servers),
-            "INITCFLD" => json_encode($cfields)
+            "INITCFLD" => json_encode($cfields),
+            "INITTYPS" => json_encode($pkgtypes)
         );
         echo $style->replaceVar("tpl/admin/packages/main.tpl", $data);
     }

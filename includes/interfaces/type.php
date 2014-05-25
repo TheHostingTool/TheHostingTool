@@ -17,29 +17,22 @@
  * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace TheHostingTool\Types;
+namespace TheHostingTool\Interfaces;
 
-class Free implements \TheHostingTool\Interfaces\Type {
-    const DISPLAY_NAME = "Free";
-    const INTERNAL_NAME = "free";
+interface Type {
 
-    public static function getName() {
-        return self::DISPLAY_NAME;
-    }
+    // Returns the type's display name
+    public static function getName();
 
-    public static function getInternalName() {
-        return self::INTERNAL_NAME;
-    }
+    // Returns the unique THT-internal name to use for the type
+    public static function getInternalName();
 
-    public function cron() {
-        //
-    }
+    // Method called every time the cron script is run
+    public function cron();
 
-    public function getPkgFields() {
-        return false;
-    }
+    // Returns per-package type admin config fields in JSON
+    public function getPkgFields();
 
-    public function validatePkgFields(&$data) {
-        return true;
-    }
+    // Validates the fields provided by getPkgFields
+    public function validatePkgFields(&$data);
 }

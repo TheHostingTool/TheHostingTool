@@ -19,9 +19,9 @@
 
 namespace TheHostingTool\Types;
 
-class Free implements \TheHostingTool\Interfaces\Type {
-    const DISPLAY_NAME = "Free";
-    const INTERNAL_NAME = "free";
+class Post2Host implements \TheHostingTool\Interfaces\Type {
+    const DISPLAY_NAME = "Post2Host";
+    const INTERNAL_NAME = "p2h";
 
     public static function getName() {
         return self::DISPLAY_NAME;
@@ -36,10 +36,25 @@ class Free implements \TheHostingTool\Interfaces\Type {
     }
 
     public function getPkgFields() {
-        return false;
+        return array(
+            array("id" => "signup", "name" => "Signup Posts", "type" => "number"),
+            array("id" => "monthly", "name" => "Monthly Posts", "type" => "number"),
+            array("id" => "forum", "name" => "Forum", "type" => "select", "options" => array(
+                "tstfrm" => "Test Forum", "anthrfrm" => "Another Forum"
+            ), "default" => "anthrfrm")
+        );
     }
 
     public function validatePkgFields(&$data) {
+        // Ensure signup and monthly posts are both set and numbers
+        if(!isset($data["signup"]) || !ctype_digit($data["signup"])) {
+            return "Invalid input for Signup Posts.";
+        }
+        if(!isset($data["monthly"]) || !ctype_digit($data["monthly"])) {
+            return "Invalid input for Monthly Posts.";
+        }
+
+        // Ensure forum is available
         return true;
     }
 }

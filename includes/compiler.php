@@ -19,6 +19,16 @@
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
+spl_autoload_register(function($class) {
+    // Convert namespace and class path to a file path
+    $path = LINK . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR,
+        substr(ltrim(strtolower($class), "thehostingtool"), 1)) . ".php";
+    // Fail autoload silently
+    if(file_exists($path) && is_readable($path)) {
+        include_once($path);
+    }
+});
+
 // Define the main THT
 define("THT", 1);
 

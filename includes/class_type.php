@@ -27,6 +27,18 @@ class type {
 
     # Start the functions #
 
+    function __construct() {
+        if($typesDir = opendir(LINK . "types")) {
+            while(false !== ($entry = readdir($typesDir))) {
+                if(!preg_match("/^(\w[\w\.]*)\.php$/", $entry, $matches)) {
+                    continue;
+                }
+                $newType = $this->createType($matches[1]);
+                $this->classes[$newType->getInternalName()] = $newType;
+            }
+        }
+    }
+
     public function acpPadd($type) { # Returns the html of a custom form
         global $style;
         if(!$this->classes[$type]) {
@@ -116,28 +128,21 @@ class type {
         }
     }
 
-    public function createType($type) { # Creates a class and then returns it
-        $file = LINK . "types/". $type .".php";
-        if(!file_exists($file)) {
-            echo "Type doesn't exist!";
+    public function createType($type) { // Autoloads the type and returns it
+        $class = "\TheHostingTool\Types\\$type";
+        if(!class_exists($class)) {
+            die("THT Fatal Error: No such type ($class).");
         }
-        else {
-            include($file);
-            $type = new $type;
-            return $type;
+        // Check for proper inheritance
+        if(!in_array("TheHostingTool\Interfaces\Type", class_implements($class))) {
+            die("THT Fatal Error: $class does not implement TheHostingTool\Interfaces\Type");
         }
+        return new $class();
     }
 
-    public function createAll() { # Creates all types and returns them
-        global $main;
-        $files = $main->folderFiles(LINK ."types/");
-        foreach($files as $value) {
-            $data = explode(".", $value);
-            if($data[1] != "svn" and $data[1] == "php") {
-                $classes[$data[0]] = $this->createtype($data[0]);
-            }
-        }
-        $this->classes = $classes;
+    public function createAll() { // Creates all types and returns them
+        xdebug_print_function_stack('$type->createAll called.');
+        die();
     }
 
     public function determineType($id, $showErrors = true) { # Returns type of a package
