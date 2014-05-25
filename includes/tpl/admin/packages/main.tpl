@@ -434,7 +434,7 @@ $(document).ready(function() {
 
         $.post("<AJAX>?function=acpPackages", json, function(data) {
             if(json.operation == "new" && $.isArray(data)) {
-                populatePackage({
+                var pkgjson = {
                     id: data[1],
                     name: json.name,
                     backend: json.backend,
@@ -446,8 +446,17 @@ $(document).ready(function() {
                     domain: json.domain,
                     hidden: json.hidden,
                     disabled: json.disabled,
-                    custom: customFields
-                }, "#packagebox-" + id);
+                    custom: customFields,
+                    additional: {
+                        types: {
+                            //
+                        }
+                    },
+                };
+                // TODO: This eventually needs to taken from data because
+                // it can be changed by the validation process
+                pkgjson.additional.types[json.type] = typeFields;
+                populatePackage(pkgjson, "#packagebox-" + id);
                 rebindEvents();
                 $("#packagebox-" + id).slideUp(function() {
                     $(this).remove();
