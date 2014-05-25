@@ -1137,9 +1137,9 @@ class Ajax {
                 }
                 $additional = json_encode(array("types" => array($pkgtype => $typefields)));
                 $db->query("INSERT INTO `<PRE>packages` (`id`, `name`, `backend`, `description`, `type`, `server`, `admin`, `reseller`,
-                    `additional`, `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`, `additional`)
+                    `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`, `additional`)
                     VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($pkgtype)}',
-                    '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '', '0',
+                    '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '0',
                     '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}',
                     '{$db->strip($additional)}')");
                 echo json_encode(array($id, $db->insert_id()));
