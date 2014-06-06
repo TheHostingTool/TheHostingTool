@@ -18,3 +18,8 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Eclipse stuff
+.buildpath
+.project
+.settings
