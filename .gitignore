@@ -1,5 +1,6 @@
 .idea
 /includes/conf.inc.php
+/includes/csrf-secret.php
 
 # Mac stuff
 .DS_Store
@@ -18,3 +19,8 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Eclipse stuff
+.buildpath
+.project
+.settings
