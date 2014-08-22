@@ -1142,7 +1142,7 @@ class Ajax {
                     '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '0',
                     '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}',
                     '{$db->strip($additional)}')");
-                echo json_encode(array($id, $db->insert_id()));
+                echo json_encode(array("oldId" => $id, "insertId" => $db->insert_id(), "typeFields" => $typefields));
                 return;
             case "delete":
                 header("Content-type: application/json");

@@ -433,9 +433,9 @@ $(document).ready(function() {
         }
 
         $.post("<AJAX>?function=acpPackages", json, function(data) {
-            if(json.operation == "new" && $.isArray(data)) {
+            if(json.operation == "new" && typeof(data) == "object") {
                 var pkgjson = {
-                    id: data[1],
+                    id: data.insertId,
                     name: json.name,
                     backend: json.backend,
                     description: json.desc,
@@ -449,19 +449,18 @@ $(document).ready(function() {
                     custom: customFields,
                     additional: {
                         types: {
-                            //
+                            // Added below
                         }
-                    },
+                    }
                 };
-                // TODO: This eventually needs to taken from data because
-                // it can be changed by the validation process
-                pkgjson.additional.types[json.type] = typeFields;
+                // Types can modify field values during the validation process
+                pkgjson.additional.types[json.type] = data.typeFields === false ? {} : data.typeFields;
                 populatePackage(pkgjson, "#packagebox-" + id);
                 rebindEvents();
                 $("#packagebox-" + id).slideUp(function() {
                     $(this).remove();
                 });
-                $("#hiddenFieldBox-" + data[1]).slideDown();
+                $("#hiddenFieldBox-" + data.insertId).slideDown();
             }
             else if(data === true) {
                 $($this).prop("disabled", false).html("Saved!");
