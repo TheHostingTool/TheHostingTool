@@ -1,17 +1,11 @@
-<script type="text/javascript" src="<URL>includes/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-	tinyMCE.init({
-	mode : "textareas",
-	skin : "o2k7",
-	theme : "advanced"
-	});
-</script>
-<script type="text/javascript">
+$(document).ready(function() {
+    $("#msgcontent").ckeditor();
+});
 var working = '<div align="center"><img src="<URL>themes/icons/working.gif"></div>';
 function sendemail() {
-    tinyMCE.triggerSave(true,true);
     var subject = document.getElementById("msgsubject").value;
-    var msg = tinyMCE.get('msgcontent').getContent();
+    var msg = $("#msgcontent").val();
     document.getElementById("ajaxemail").innerHTML = working;
     var json = { };
     json["subject"] = subject;

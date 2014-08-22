@@ -87,19 +87,20 @@ class style {
     }
 
     public function javascript() { # Returns the HTML code for the header that includes all the JS in the javascript folder
-        $folder = LINK ."javascript/";
-        $html .= "<script type=\"text/javascript\" src='".URL."includes/javascript/jquery.js'></script>\n";
+        $folder = LINK . "javascript/";
+        $html = '<script type="text/javascript" src="'.URL.'includes/javascript/jquery.js"></script>'."\r\n";
         if ($handle = opendir($folder)) { # Open the folder
             while (false !== ($file = readdir($handle))) { # Read the files
                 if($file != "." && $file != ".." && $file != "jquery.js" && $file != "simpletip.js") { # Check aren't these names
                     $base = explode(".", $file); # Explode the file name, for checking
                     if($base[count($base)-1] == "js") { # Is it a JS?
-                        $html .= "<script type=\"text/javascript\" src='".URL."includes/javascript/{$file}'></script>\n"; # Creates the HTML
+                        $html .= '<script type="text/javascript" src="'.URL.'includes/javascript/'.$file.'"></script>'."\r\n";
                     }
                 }
             }
         }
-        $html .= "<script type=\"text/javascript\" src='".URL."includes/tinymce/jscripts/tiny_mce/tiny_mce.js'></script>";
+        $html .= '<script type="text/javascript" src="'.URL.'includes/ckeditor/ckeditor.js"></script>'."\r\n";
+        $html .= '<script type="text/javascript" src="'.URL.'includes/ckeditor/adapters/jquery.js"></script>'."\r\n";
         closedir($handle); #Close the folder
         return $html;
     }

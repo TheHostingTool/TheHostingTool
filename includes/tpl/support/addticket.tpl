@@ -1,11 +1,7 @@
-<script type="text/javascript" src="<URL>includes/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-	tinyMCE.init({
-	mode : "textareas",
-	skin : "o2k7",
-	width : "50%",
-	theme : "simple"
-	});
+$(document).ready(function() {
+    $("#ticketcontent").ckeditor();
+});
 </script>
 <ERRORS>
 <form id="addticket" name="addticket" method="post" action="">
@@ -30,7 +26,7 @@
   </tr>
   <tr>
     <td valign="top">Content:</td>
-    <td colspan="2"><textarea name="content" id="content" cols="45" rows="5"></textarea></td>
+    <td colspan="2"><textarea name="content" id="ticketcontent" cols="45" rows="5"></textarea></td>
   </tr>
   <tr>
     <td align="center" colspan="3"><input type="submit" name="add" id="add" value="Add Ticket" /></td>

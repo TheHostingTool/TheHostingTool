@@ -1,9 +1,14 @@
 <script type="text/javascript">
-function addme() {
-	$("#addbox").slideToggle(500);	
-}
+
 </script>
 <script type="text/javascript">
+$(document).ready(function() {
+    $("#editdescription").ckeditor();
+    $("#adddescription").ckeditor();
+});
+function addme() {
+    $("#addbox").slideToggle(500);
+}
 function editme(id) {
     var post = {};
     post[csrfMagicName] = csrfMagicToken;
@@ -11,28 +16,20 @@ function editme(id) {
 			var result = data.split("{}[]{}");
 			if(document.getElementById("editbox").style.display == "none") {
 				document.getElementById("editname").value = result[0];
-				tinyMCE.get("editdescription").execCommand('mceSetContent',false, result[1] );
+
+                $("#editdescription").val(result[1]);
 				$("#editbox").slideDown(500);	
 			}
 			else {
 				$("#editbox").slideUp(500, function(data) {
 					document.getElementById("editname").value = result[0];
-					tinyMCE.get("editdescription").execCommand('mceSetContent',false, result[1] );
+                    $("#editdescription").val(result[1]);
 					$("#editbox").slideDown(500);
 														});		
 			}
 			document.getElementById("id").value = id;
-															});
+    });
 }
-</script>
-<script type="text/javascript" src="<URL>includes/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript">
-	tinyMCE.init({
-	mode : "textareas",
-	skin : "o2k7",
-	theme : "simple",
-	width : "75%"
-	});
 </script>
 <ERRORS>
 <div class="subborder">
@@ -55,11 +52,11 @@ function editme(id) {
             %CATID%
             <tr>
                 <td width="20%">%SUB%:</td>
-                <td><input name="name" type="text" id="name" size="40" /></td>
+                <td><input name="name" type="text" id="addname" size="40" /></td>
             </tr>
             <tr>
                 <td width="20%" valign="top">%SUB2%:</td>
-                <td><textarea name="description" id="description" cols="" rows=""></textarea></td>
+                <td><textarea name="description" id="adddescription" cols="" rows=""></textarea></td>
             </tr>
             <tr>
                 <td colspan="2" align="center"><input name="add" id="add" type="submit" value="Add %NAME%" /></td>
