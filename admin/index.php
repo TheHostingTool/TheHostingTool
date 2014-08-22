@@ -77,27 +77,11 @@ function acp() {
                     $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
                 }
             }
-            // Types Navbar
+            // Types Navbar (Removed for now)
             /*
              * When Working on the navbar, to make a spacer use this:
              * $array['LINKS'] .= $style->replaceVar("tpl/spacer.tpl");
              */
-            $type->createAll();
-            foreach($type->classes as $key => $value) {
-                if($type->classes[$key]->acpNav) {
-                    foreach($type->classes[$key]->acpNav as $key2 => $value)  {
-                        $array2['IMGURL'] = $value[2];
-                        $array2['LINK'] = "?page=type&type=".$key."&sub=".$value[1];
-                        $array2['VISUAL'] = $value[0];
-                        $array['LINKS'] .= $style->replaceVar("tpl/sidebarlink.tpl", $array2);
-                        if($main->getvar['page'] == "type" && $main->getvar['type'] == $key && $main->getvar['sub'] == $value[1]) {
-                            define("SUB", $value[3]);
-                            $header = $value[3];
-                            $main->getvar['myheader'] = $value[3];
-                        }
-                    }
-                }
-            }
             $array2['IMGURL'] = "information.png";
             $array2['LINK'] = "?page=credits";
             $array2['VISUAL'] = "Credits";
