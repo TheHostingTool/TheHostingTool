@@ -228,6 +228,40 @@ $(document).ready(function() {
         $(".packageDelBtn").bind("click", onPackageDeleteClick);
     };
 
+    var initEditor = function($element, defaultHtml) {
+        var arglen = arguments.length;
+        $element.ckeditor(function(textarea) {
+            var firstCall = false;
+            if(arglen > 1) {
+                firstCall = true;
+                $(textarea).val(defaultHtml);
+            }
+            this.on("change", function() {
+                // Even though we set the value of the textarea first the onChange event is still somehow
+                // being called afterwards for the initial data. To workaround, we need to ignore the first call.
+                if(firstCall) {
+                    firstCall = false;
+                    return;
+                }
+                onPackageFieldChanged.call(textarea);
+            });
+        }, {
+            toolbarGroups: [
+                { name: "document",	   groups: [ "mode", "document", "doctools" ] },
+                { name: "editing",     groups: [ "find", "selection", "spellchecker" ] },
+                { name: "basicstyles", groups: [ "basicstyles", "cleanup" ] },
+                { name: "paragraph",   groups: [ "list", "indent", "blocks", "align", "bidi" ] },
+                { name: "links" },
+                { name: "insert" },
+                { name: "colors" },
+                { name: "tools" },
+                { name: "others" },
+                { name: "about" }
+            ],
+            removeButtons: "Cut,Copy,Paste,Undo,Redo,Anchor,Underline,Strike,Subscript,Superscript"
+        });
+    };
+
     var populatePackage = function(entry, insertAfter) {
         // Get template HTML
         var html = $("#pkgHtmlTemplate").html();
@@ -244,7 +278,7 @@ $(document).ready(function() {
         $("#packageName-" + entry.id + " > a").html(entry.name);
         $("#pkg-field-name-" + entry.id).val(entry.name);
         $("#pkg-field-backend-" + entry.id).val(entry.backend);
-        $("#pkg-field-desc-" + entry.id).val(entry.description);
+        initEditor($("#pkg-field-desc-" + entry.id), entry.description);
         $("#pkg-field-type-" + entry.id).val(entry.type);
         $("#pkg-field-server-" + entry.id).val(entry.server);
         $("#pkg-field-admin-" + entry.id).prop("checked", entry.admin);
@@ -275,11 +309,23 @@ $(document).ready(function() {
         populatePackage(entry);
     });
 
+    var onSortableStart = function(event, ui) {
+        var id = ui.item.context.id.split("-")[1];
+        $("#pkg-field-desc-" + id).ckeditorGet().destroy();
+    };
+
+    var onSortableStop = function(event, ui) {
+        var id = ui.item.context.id.split("-")[1];
+        initEditor($("#pkg-field-desc-" + id));
+    };
+
     var onSortableChange = function(event, ui) {
         $("#saveOrderChangesDiv").slideDown();
     };
 
     $("#sortablePackages").sortable({
+        start: onSortableStart,
+        stop: onSortableStop,
         change: onSortableChange
     });
 
@@ -328,7 +374,7 @@ $(document).ready(function() {
             }
             stopSpin();
         });
-    }
+    };
 
     $(".packageDelBtn").bind("click", onPackageDeleteClick);
 
@@ -343,6 +389,7 @@ $(document).ready(function() {
         $("#packageIcon-new" + $newId).attr("src", iconDir + "package_green.png");
         doTooltip(".tooltip-new" + $newId, true);
         $("#savePkgBtn-new" + $newId).html("Create Package");
+        initEditor($("#pkg-field-desc-new" + $newId));
         $("#packagebox-new" + $newId).slideDown();
         rebindEvents();
     });
