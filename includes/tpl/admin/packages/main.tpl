@@ -231,12 +231,13 @@ $(document).ready(function() {
     var initEditor = function($element, defaultHtml) {
         var arglen = arguments.length;
         $element.ckeditor(function(textarea) {
+            var editor = this;
             var firstCall = false;
             if(arglen > 1) {
                 firstCall = true;
                 $(textarea).val(defaultHtml);
             }
-            this.on("change", function() {
+            editor.on("change", function() {
                 // Even though we set the value of the textarea first the onChange event is still somehow
                 // being called afterwards for the initial data. To workaround, we need to ignore the first call.
                 if(firstCall) {
@@ -244,6 +245,14 @@ $(document).ready(function() {
                     return;
                 }
                 onPackageFieldChanged.call(textarea);
+            });
+            editor.on("mode", function() {
+                if(this.mode == "source") {
+                    var editable = editor.editable();
+                    editable.attachListener(editable, "input", function() {
+                        onPackageFieldChanged.call($element[0]);
+                    });
+                }
             });
         }, {
             toolbarGroups: [
