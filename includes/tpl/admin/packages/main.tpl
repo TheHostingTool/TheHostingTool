@@ -109,6 +109,19 @@ label {
     /* Firefox 10+, Firefox on Android */
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
 }
+.cke_chrome {
+    display: inline-block;
+    width: 82%;
+}
+.topActions {
+    font-weight: bold;
+}
+.topActions > img {
+    vertical-align: middle;
+}
+.topActions > span {
+    vertical-align: middle;
+}
 </style>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -550,7 +563,7 @@ $(document).ready(function() {
             var json = {
                 operation: "order",
                 order: order
-            }
+            };
             json[csrfMagicName] = csrfMagicToken;
             $.post("<AJAX>?function=acpPackages", json, function(data) {
                 if(data) {
@@ -627,10 +640,9 @@ $(document).ready(function() {
                 </tbody></table>
             </td>
             <td class="pkgEditorRightTd" id="pkgEditorRightTd-5id5">
+                <div style="text-align: center; font-weight: bold; font-size: 14px; font-family: Lucida Grande, sans-serif;">Custom Fields</div>
                 <table class="pkgEditorRightTable" id="pkgEditorRightTable-5id5" width="100%" border="0" cellpadding="5"><tbody style="text-align: center; font-size: 12px;">
                     <tr>
-                        <th width="33%"></th>
-                        <th width="33%" style="font-size: 14px; font-family: Lucida Grande;">Custom Fields</th>
                         <th width="33%"></th>
                     </tr>
                 </tbody></table>
@@ -642,7 +654,7 @@ $(document).ready(function() {
     </div>
     </div>
 </div>
-<a href="javascript:void(0);" id="newPackage"><strong><img src="<ICONDIR>add.png" /> New Package</strong></a>
+<a href="javascript:void(0);" id="newPackage" class="topActions"><img src="<ICONDIR>add.png" />&nbsp;<span>New Package</span></a>
 <div id="orderSpinnerDiv" class="hiddenStyle"><a id="orderSpinner" class="orderSpinner"></a></div>
 <div id="sortablePackages">
 </div>
