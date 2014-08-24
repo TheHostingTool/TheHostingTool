@@ -100,6 +100,7 @@
     width: 16px;
     position: relative;
     top: 10px;
+    right: 5px;
 }
 label {
     font-weight: bold;
@@ -113,14 +114,21 @@ label {
     display: inline-block;
     width: 82%;
 }
+#pkgTopActions {
+    margin: 3px 0 5px 5px;
+}
 .topActions {
     font-weight: bold;
+    margin-right: 10px;
 }
 .topActions > img {
     vertical-align: middle;
 }
 .topActions > span {
     vertical-align: middle;
+}
+#shrinkEditor {
+    display: none;
 }
 </style>
 <script type="text/javascript">
@@ -579,6 +587,42 @@ $(document).ready(function() {
             });
         });
     });
+
+    var cssRightWidth = $("#right").width() + "px";
+    // Attempt to nab raw CSS width value
+    $.each(document.styleSheets, function(k1, stylesheet) {
+        $.each(stylesheet.rules || stylesheet.cssRules, function(k2, rule) {
+            if(rule instanceof CSSStyleRule && rule.selectorText.toLowerCase() == "#right") {
+                cssRightWidth = rule.style.getPropertyValue("width");
+            }
+        });
+    });
+
+    $("#growEditor").click(function() {
+        var $footer = $(".footer");
+        $(this).fadeOut();
+        $footer.fadeOut();
+        $("#left").fadeOut(function() {
+            $("#right").animate({
+                width: "100%"
+            });
+            $footer.fadeIn();
+            $("#shrinkEditor").fadeIn();
+        });
+    });
+
+    $("#shrinkEditor").click(function() {
+        var $footer = $(".footer");
+        $(this).fadeOut();
+        $footer.fadeOut();
+        $("#right").animate({
+            width: cssRightWidth
+        }, function() {
+            $("#left").fadeIn();
+            $footer.fadeIn();
+            $("#growEditor").fadeIn();
+        });
+    });
 });
 </script>
 <div id="pkgTypeHtmlTemplate" class="hiddenStyle">
@@ -654,8 +698,12 @@ $(document).ready(function() {
     </div>
     </div>
 </div>
-<a href="javascript:void(0);" id="newPackage" class="topActions"><img src="<ICONDIR>add.png" />&nbsp;<span>New Package</span></a>
 <div id="orderSpinnerDiv" class="hiddenStyle"><a id="orderSpinner" class="orderSpinner"></a></div>
+<div id="pkgTopActions">
+    <a href="javascript:void(0);" id="newPackage" class="topActions"><img src="<ICONDIR>add.png" />&nbsp;<span>New Package</span></a>
+    <a href="javascript:void(0);" id="growEditor" class="topActions"><img src="<ICONDIR>arrow_out.png" />&nbsp;<span>Grow Editor</span></a>
+    <a href="javascript:void(0);" id="shrinkEditor" class="topActions"><img src="<ICONDIR>arrow_in.png" />&nbsp;<span>Shrink Editor</span></a>
+</div>
 <div id="sortablePackages">
 </div>
 <div id="atBottomDiv" style="text-align: center;">
