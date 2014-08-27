@@ -195,4 +195,11 @@ class da {
         }
         return true;
     }
+    
+    
+    public function changePwd($acct, $newpwd, $server)
+    {
+        return true;
+    }
+    
 }
