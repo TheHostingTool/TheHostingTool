@@ -18,3 +18,4 @@ INSERT INTO `%PRE%config` (`name`, `value`) VALUES
 ('adminurl', 'admin'),
 ('welcomemsg', '<p><strong>Welcome to TheHostingTool! Select a package to get started.</strong></p>');
 ALTER TABLE `%PRE%packages` ADD `allow_domains` BOOLEAN NOT NULL DEFAULT TRUE ;
+ALTER TABLE `%PRE%packages` ADD `hidden_hash` CHAR(16) NOT NULL ;

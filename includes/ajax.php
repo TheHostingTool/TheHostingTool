@@ -1061,6 +1061,8 @@ class Ajax {
                 $custom = isset($_POST["custom"]) ? $_POST["custom"] : false;
                 $typefields = isset($_POST["typefields"]) ? $_POST["typefields"] : false;
 
+                $hash = \TheHostingTool\Utils\Crypto::getPassword(str_split("abcdefghijklmnopqrstuvwxyz0123456789"), 16);
+
                 // Make certain custom fields array holds only integers and in DB
                 if($custom !== false) {
                     $dbChkFields = array("i" => 0, "in" => ""); // Using our own index i for safety
@@ -1137,12 +1139,16 @@ class Ajax {
                 }
                 $additional = json_encode(array("types" => array($pkgtype => $typefields)));
                 $db->query("INSERT INTO `<PRE>packages` (`id`, `name`, `backend`, `description`, `type`, `server`, `admin`, `reseller`,
-                    `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`, `additional`)
+                    `order`, `is_hidden`, `is_disabled`, `custom_fields`, `allow_domains`, `additional`, `hidden_hash`)
                     VALUES (NULL, '{$db->strip($name)}', '{$db->strip($backend)}', '{$db->strip($desc)}', '{$db->strip($pkgtype)}',
                     '{$db->strip($server)}', '{$db->strip((int)$admin)}', '{$db->strip((int)$reseller)}', '0',
                     '{$db->strip((int)$hidden)}', '{$db->strip((int)$disabled)}', '{$db->strip($custom)}', '{$db->strip((int)$domain)}',
-                    '{$db->strip($additional)}')");
-                echo json_encode(array("oldId" => $id, "insertId" => $db->insert_id(), "typeFields" => $typefields));
+                    '{$db->strip($additional)}', '{$db->strip($hash)}')");
+                echo json_encode(array(
+                    "oldId" => $id,
+                    "insertId" => $db->insert_id(),
+                    "typeFields" => $typefields,
+                    "hash" => $hash));
                 return;
             case "delete":
                 header("Content-type: application/json");
@@ -1165,6 +1171,21 @@ class Ajax {
                     $db->query("UPDATE `<PRE>packages` SET `order` = '{$i}' WHERE `id` = '{$id}'");
                 }
                 echo json_encode(true);
+                return;
+            case "resetHash":
+                header("Content-type: application/json");
+                if(!array_key_exists("id", $_POST) || !ctype_digit($_POST["id"])) {
+                    echo json_encode(array("error" => "Bad id"));
+                    return;
+                }
+                $id = (int)$_POST["id"];
+                $hash = \TheHostingTool\Utils\Crypto::getPassword(str_split("abcdefghijklmnopqrstuvwxyz0123456789"), 16);
+                $q = $db->query("UPDATE `<PRE>packages` SET `hidden_hash` = ? WHERE `id` = ?", array($hash, $id));
+                if($q->rowCount() == 0) {
+                    echo json_encode(array("error" => "Bad id"));
+                    return false;
+                }
+                echo json_encode(array("error" => false, "hash" => $hash));
                 return;
         }
     }

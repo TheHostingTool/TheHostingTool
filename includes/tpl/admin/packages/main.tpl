@@ -247,6 +247,9 @@ $(document).ready(function() {
         $(".packageName").one("click", onPackageNameClick);
         $(".packageEditBtn").one("click", onPackageNameClick);
         $(".packageDelBtn").bind("click", onPackageDeleteClick);
+
+        $(".pkg-field-hiddenurlreset").unbind("click", onResetHiddenUrlClick);
+        $(".pkg-field-hiddenurlreset").bind("click", onResetHiddenUrlClick);
     };
 
     var initEditor = function($element, defaultHtml) {
@@ -316,6 +319,12 @@ $(document).ready(function() {
         $("#pkg-field-dmains-" + entry.id).prop("checked", entry.domains);
         $("#pkg-field-hidden-" + entry.id).prop("checked", entry.hidden);
         $("#pkg-field-disabled-" + entry.id).prop("checked", entry.disabled);
+        var hiddenHash = "Click Reset for hidden URL.";
+        if(entry.hiddenHash != '') {
+            hiddenHash = "<URL>order/?p=" + entry.hiddenHash;
+        }
+        $("#pkg-field-hiddenurl-" + entry.id).val(hiddenHash);
+        $("#pkg-field-hiddenurlreset-" + entry.id).prop("disabled", false);
         $("#savePkgBtnDiv-" + entry.id).hide();
         var typefields = $("#pkg-typefields-" + entry.type + "-" + entry.id);
         if(typefields.length > 0) {
@@ -462,6 +471,33 @@ $(document).ready(function() {
 
     $(".pkg-field").bind("change", onPackageFieldChanged);
 
+    var onResetHiddenUrlClick = function() {
+        var $this = $(this);
+        var id = this.id.split("-")[3];
+        var $field = $("#pkg-field-hiddenurl-" + id);
+
+        $this.prop("disabled", true);
+        $field.val("Resetting...");
+
+        var json = {
+            operation: "resetHash",
+            id: id
+        };
+        json[csrfMagicName] = csrfMagicToken;
+
+        $.post("<AJAX>?function=acpPackages", json, function(data) {
+            if(data.error) {
+                $field.val("Error: " + data.error);
+            } else {
+                $field.val("<URL>order/?p=" + data.hash);
+            }
+            $this.prop("disabled", false);
+        });
+        return false;
+    };
+
+    $(".pkg-field-hiddenurlreset").bind("click", onResetHiddenUrlClick);
+
     var onSavePackageClick = function() {
         startSpin();
         var $this = this;
@@ -528,7 +564,8 @@ $(document).ready(function() {
                         types: {
                             // Added below
                         }
-                    }
+                    },
+                    hiddenHash: data.hash
                 };
                 // Types can modify field values during the validation process
                 pkgjson.additional.types[json.type] = data.typeFields === false ? {} : data.typeFields;
@@ -679,7 +716,7 @@ $(document).ready(function() {
                     </tr>
                     <tr>
                         <td><label for="pkg-field-disabled-5id5">Disabled:</label><input id="pkg-field-disabled-5id5" class="pkg-field pkg-field-5id5 pkg-field-disabled" type="checkbox" value="1"><a href="javascript:void(0);"><img class="template-tooltip template-tooltip2" title="Do not allow new clients to register for this package." src="<ICONDIR>information.png"></a></td>
-                        <td><input type="text" value="Hidden URL here"></td>
+                        <td><input id="pkg-field-hiddenurl-5id5" class="pkg-field-hiddenurl" type="text" value="Create package first..." readonly><input type="submit" value="Reset" id="pkg-field-hiddenurlreset-5id5" class="pkg-field-hiddenurlreset" disabled><a href="javascript:void(0);"><img class="template-tooltip template-tooltip2" title="The URL that can be used to directly refer and link users to this package. This is the only way to access a hidden package. Only available after the package has been created." src="<ICONDIR>information.png"></a></td>
                     </tr>
                 </tbody></table>
             </td>
