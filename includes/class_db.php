@@ -30,9 +30,9 @@ class db {
         include(LINK."conf.inc.php"); # Get the config
         $this->sql = $sql; # Assign the settings to DB Class
         $this->db = new PDO("mysql:host={$this->sql['host']};dbname={$this->sql['db']};", $this->sql['user'], $this->sql['pass']); #Connect to SQL
-    $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    $this->prefix = $this->sql['pre'];
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->prefix = $this->sql['pre'];
     }
 
     private function error($name, $mysqlerror, $func) { #Shows a SQL error from main class

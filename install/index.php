@@ -18,8 +18,8 @@
  */
 
 // The new version of THT we're installing
-define("NVER", "1.3");
-define("NVERCODE", 1010300);
+define("NVER", "1.4.0");
+define("NVERCODE", 1010400);
 
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
@@ -91,13 +91,19 @@ $array['VERSION'] = NVER;
 $array['VCODE'] = NVERCODE;
 $array['ANYTHING'] = "";
 $link = LINK."conf.inc.php";
-if(file_exists($link)) {
+
+//check for existence of config.inc.php, if it exists then load it, if not then create an empty file
+if (!file_exists($link)) {
+    $file = fopen($link, 'w') or die("can't open file");
+    fclose($file);
+} else {
     unset($sql);
     require($link);
-    if(isset($sql)) {
+    if (isset($sql)) {
         $db = new db();
     }
 }
+
 $disable = false;
 if($sql['install'] == 'true') {
     if(!writeconfig($sql['host'], $sql['user'], $sql['pass'], $sql['db'], $sql['pre'], "false")) {

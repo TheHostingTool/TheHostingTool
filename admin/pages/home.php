@@ -22,6 +22,8 @@ if(THT != 1){die();}
 
 class page {
 
+    protected $FEEDURL;
+
     public function checkDir($dir){
     	if (is_dir($dir)) {
     		return "<div class='warn'><img src='../themes/icons/cross.png' alt='' /> Warning: Your install directory still exists. Please delete it!</div>";
@@ -41,6 +43,7 @@ class page {
     }
 
     public function content() { # Displays the page
+        $this->FEEDURL = "https://thehostingtool.com/forum/syndication.php?fid=2&limit=3";
         global $db;
         global $main;
         global $style;
@@ -96,14 +99,18 @@ class page {
         $content_notepad = $style->replaceVar('tpl/notepad.tpl', $array);
         echo '<br />'; //br it, br it
         echo $main->table('Admin Notepad', $content_notepad, 'auto', 'auto');
-        require_once(LINK.'rss/rss_fetch.inc');
-        $url = "http://thehostingtool.com/forum/syndication.php?fid=2&limit=3";
-        $rss = fetch_rss($url);
-        $news = $main->sub("<strong>Add the THT RSS Feed!</strong>", '<a href="http://thehostingtool.com/forum/syndication.php?fid=2" target="_blank" class="tooltip" title="Add the THT RSS Feed!"><img src="<URL>themes/icons/feed.png" /></a>');
-        foreach ($rss->items as $item) {
+        //require_once(LINK.'rss/rss_fetch.inc');
+
+        include (LINK.'rss/RSSParser.php');
+        $rss = new \TheHostingTool\RSS\RSSParser($this->FEEDURL);
+
+        //$url = "https://thehostingtool.com/forum/syndication.php?fid=2&limit=3";
+        //$rss = fetch_rss($url);
+        $news = $main->sub("<strong>Add the THT RSS Feed!</strong>", '<a href="https://thehostingtool.com/forum/syndication.php?fid=2" target="_blank" class="tooltip" title="Add the THT RSS Feed!"><img src="<URL>themes/icons/feed.png" /></a>');
+        foreach ($rss->getFeed() as $item) {
             $array['title'] = $item['title'];
             $array['link'] = $item['link'];
-            $array['TIME'] = $item["pubdate"];
+            $array['TIME'] = $item["date"];
             // By some miracle, this works perfectly for correcting MyBB's stupid relative URLs in its feeds
             preg_match_all('/(<(?:a|img) (?:href|src)=(?:"|\'))([-A-Z0-9+&@#\/%?=~_|!:,.;]*[A-Z0-9+&@#\/%=~_|])((?:"|\')[a-z0-9]*[^<>]*\/?>)/si', $item['summary'], $matches, PREG_SET_ORDER);
             for($matchi = 0; $matchi < count($matches); $matchi++) {
@@ -118,4 +125,5 @@ class page {
         echo "<br />";
         echo $main->table('THT News & Updates', $news);
     }
+
 }

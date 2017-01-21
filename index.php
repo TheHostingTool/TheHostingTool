@@ -17,6 +17,8 @@
  * along with TheHostingTool.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require ('includes/init.php');
+
 // Include the compiler, creates everything
 define("LINK", "includes/");
 include(LINK ."compiler.php");

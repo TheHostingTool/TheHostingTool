@@ -219,15 +219,15 @@ function checkForDependencies() {
 	// Here, we're going to see if we have the functions that we need. :D
 	$needed = array();
 	// First things first:
-	if(version_compare(PHP_VERSION, '5.3.0', '<')) {
+	if(version_compare(PHP_VERSION, '7.0.0', '<')) {
 		die("PHP Version 5.3 or greater is required! You're currently running PHP " . PHP_VERSION);
 	}
     // Check for a few extensions that are commonly unavailable
 	if(!extension_loaded("curl")) {
 		$needed[] = "cURL";
 	}
-	if(!extension_loaded("mysql")) {
-		$needed[] = "MySQL";
+	if(!extension_loaded("mysqli")) {
+		$needed[] = "MySQLi";
 	}
     if(!extension_loaded("gd")) {
         $needed[] = "GD";

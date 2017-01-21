@@ -561,11 +561,11 @@ class Ajax {
             $db   = $_GET['db'];
             $pre  = $_GET['pre'];
             //die($_SERVER['REQUEST_URI']);
-            $con  = @mysql_connect($host, $user, $pass);
+            $con  = new mysqli($host, $user, $pass);
             if(!$con) {
                 echo 0;
             } else {
-                $seldb = mysql_select_db($db, $con);
+                $seldb = $con->select_db($db);
                 if(!$seldb) {
                     echo 1;
                 } else {
@@ -605,35 +605,35 @@ class Ajax {
         global $style, $db, $main;
         if(INSTALL != 1) {
             include(LINK . "conf.inc.php");
-            $dbCon = mysql_connect($sql['host'], $sql['user'], $sql['pass']);
-            $dbSel = mysql_select_db($sql['db'], $dbCon);
+            $dbCon = new mysqli($sql['host'], $sql['user'], $sql['pass']);
+            $dbCon->select_db($sql['db']);
             if($main->getvar['type'] == "install") {
                 $errors = $this->installsql("sql/install.sql", $sql['pre'], $dbCon);
             } elseif($main->getvar['type'] == "upgrade") {
                 $errors  = $this->installsql("sql/upgrade.sql", $sql['pre'], $dbCon);
-                $porders = mysql_query("SELECT * FROM `{$sql['pre']}packages`", $dbCon);
+                $porders = $dbCon->query("SELECT * FROM `{$sql['pre']}packages`");
                 $n       = 1;
-                while($data = mysql_fetch_array($porders)) {
+                while($data = $porders->fetch_array(MYSQLI_NUM)) {
                     if($data['oid'] == "0") {
-                        mysql_query("UPDATE `{$sql['pre']}packages` SET `oid` = '{$n}' WHERE `id` = '{$data['id']}'", $dbCon);
+                        $dbCon->query("UPDATE `{$sql['pre']}packages` SET `oid` = '{$n}' WHERE `id` = '{$data['id']}'");
                         $n++;
                     }
                 }
                 if($n > 1) {
-                    mysql_query("ALTER TABLE `{$sql['pre']}packages` ADD UNIQUE (`oid`)", $dbCon);
+                    $dbCon->query("ALTER TABLE `{$sql['pre']}packages` ADD UNIQUE (`oid`)");
                 }
             } else {
                 echo "Fatal Error Debug: " . $main->getvar['type'];
             }
-            $vname  = mysql_real_escape_string($_GET['vname']);
-            $vcode  = mysql_real_escape_string($_GET['vcode']);
-            $query  = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = '{$vname}' WHERE `name` = 'vname'");
-            $query2 = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = '{$vcode}' WHERE `name` = 'vcode'");
+            $vname  = $dbCon->real_escape_string($_GET['vname']);
+            $vcode  = $dbCon->real_escape_string($_GET['vcode']);
+            $query  = $dbCon->query("UPDATE `{$sql['pre']}config` SET `value` = '{$vname}' WHERE `name` = 'vname'");
+            $query2 = $dbCon->query("UPDATE `{$sql['pre']}config` SET `value` = '{$vcode}' WHERE `name` = 'vcode'");
             if(!$query || !$query2) {
                 echo '<div class="errors">There was a problem editing your script version!</div>';
             }
             if($main->getvar['type'] == "install") {
-                $query = mysql_query("UPDATE `{$sql['pre']}config` SET `value` = 'Reloaded2' WHERE `name` = 'theme'");
+                $query = $dbCon->query("UPDATE `{$sql['pre']}config` SET `value` = 'Reloaded2' WHERE `name` = 'theme'");
                 if(!$query) {
                     echo '<div class="errors">There was a problem setting your default theme!</div>';
                 }
@@ -746,7 +746,7 @@ class Ajax {
         $n = 0;
         foreach($aSql as $sSql) {
             if($con) {
-                $query = mysql_query($sSql, $con);
+                $query = $con->query($sSql);
             } else {
                 $query = $db->query($sSql);
             }
