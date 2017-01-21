@@ -62,9 +62,9 @@ class page {
 
             $array2['list'] .= $style->replaceVar("tpl/invoices/invoice-list-item.tpl", $array);
         }
-        $array2['num'] = mysql_num_rows($query);
-        $array2['numpaid'] = intval($array2['num']-mysql_num_rows($query2));
-        $array2['numunpaid'] = mysql_num_rows($query2);
+        $array2['num'] = $query->num_rows;
+        $array2['numpaid'] = intval($array2['num'] - $query2->num_rows);
+        $array2['numunpaid'] = $query2->num_rows;
         echo $style->replaceVar("tpl/invoices/admin-page.tpl", $array2);
     }
 }
