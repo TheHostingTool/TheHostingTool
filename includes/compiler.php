@@ -32,6 +32,14 @@ spl_autoload_register(function($class) {
 // Define the main THT
 define("THT", 1);
 
+//Define the path and time
+if(!defined('THT_ROOT'))
+{
+    define('THT_ROOT', dirname(dirname(__FILE__))."/");
+}
+
+define("TIME_NOW", time());
+
 // Helps prevent against CSRF attacks.
 require_once("csrf-magic.php");
 
@@ -219,8 +227,8 @@ function checkForDependencies() {
 	// Here, we're going to see if we have the functions that we need. :D
 	$needed = array();
 	// First things first:
-	if(version_compare(PHP_VERSION, '7.0.0', '<')) {
-		die("PHP Version 5.3 or greater is required! You're currently running PHP " . PHP_VERSION);
+	if(version_compare(PHP_VERSION, '5.6.0', '<')) {
+		die("PHP Version 5.6 or greater is required! You're currently running PHP " . PHP_VERSION);
 	}
     // Check for a few extensions that are commonly unavailable
 	if(!extension_loaded("curl")) {
