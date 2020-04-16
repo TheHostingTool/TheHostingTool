@@ -1,0 +1,36 @@
+{
+  "name": "thehostingtool/thehostingtool",
+  "description": "TheHostingTool (THT) is a PHP-based, open-source, client management script for web hosting providers.",
+  "license": "MIT",
+  "keywords": ["tht", "TheHostingTool", "billing", "p2h", "hosting"],
+  "autoload": {
+    "psr-4": {
+      "TheHostingTool\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.2",
+    "symfony/console": "^5.0",
+    "symfony/dotenv": "^5.0",
+    "symfony/flex": "^1.6",
+    "symfony/framework-bundle": "^5.0",
+    "symfony/orm-pack": "^1.0",
+    "symfony/twig-pack": "^1.0",
+    "symfony/yaml": "^5.0"
+  },
+  "conflict": {
+    "symfony/symfony": "*"
+  },
+  "scripts": {
+    "auto-scripts": {
+      "cache:clear": "symfony-cmd",
+      "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    }
+  },
+  "config": {
+    "preferred-install": {
+      "thehostingtool/*": "dist"
+    },
+    "sort-packages": true
+  }
+}
